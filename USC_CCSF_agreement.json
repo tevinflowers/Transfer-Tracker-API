@@ -1,0 +1,773 @@
+{
+  "metadata": {
+    "source_file": "USC-Articulation_Agreement.pdf",
+    "academic_year": "2025-2026",
+    "effective_period": "Fall 2025 - Summer 2026",
+    "from_institution": "City College of San Francisco",
+    "to_institution": "University of Southern California",
+    "agreement_type": "comprehensive",
+    "date_published": "2025",
+    "notes": [
+      "This is a flat agreement covering all CCSF \u2192 USC transfers.",
+      "Major-specific requirements must be checked separately on USC department websites.",
+      "Courses not listed may still be appropriate for transfer in some instances."
+    ]
+  },
+  "ge_requirements": {
+    "core_literacy": {
+      "description": "Students must take 8 courses from 6 GE Core Literacy areas.",
+      "categories": {
+        "A_arts": {
+          "label": "Category A: The Arts",
+          "courses_required": 1,
+          "ccsf_courses": [
+            "AFAM 55",
+            "ARCH 31A",
+            "ARCH 31B",
+            "ARCH 32",
+            "ART 101",
+            "ART 102",
+            "ART 103",
+            "ART 104",
+            "ART 105",
+            "ART 106",
+            "ART 107",
+            "ART 108",
+            "ART 109",
+            "ART 116",
+            "ART 118",
+            "ART 122A",
+            "ART 123U",
+            "ART 123V",
+            "ART 123W",
+            "ART 123X",
+            "ART 123Y",
+            "ART 123Z",
+            "ASIA 11",
+            "ASIA 15",
+            "ASIA 30",
+            "CINE 18",
+            "CINE 20A",
+            "CINE 20B",
+            "CINE 21",
+            "CINE 22",
+            "CINE 23A",
+            "CINE 23B",
+            "DANC 30",
+            "DANC 32",
+            "ENGL 53",
+            "HUM 20",
+            "HUM 25",
+            "LGBT 11",
+            "LGBT 12",
+            "LGBT 20",
+            "LGBT 25",
+            "LGBT 55",
+            "LGBT 75",
+            "LGBT 77",
+            "MUS 21",
+            "MUS 22A",
+            "MUS 22B",
+            "MUS 22C",
+            "MUS 23",
+            "MUS 24",
+            "MUS 25",
+            "MUS 26",
+            "MUS 27A",
+            "MUS 27B",
+            "MUS 27R",
+            "MUS 28",
+            "PHST 30",
+            "PHOT 50A",
+            "PHOT 50B",
+            "TH A 30",
+            "TH A 31",
+            "TH A 32",
+            "THA 30",
+            "VMD 110",
+            "WOMN 10"
+          ]
+        },
+        "B_humanistic_inquiry": {
+          "label": "Category B: Humanistic Inquiry",
+          "courses_required": 2,
+          "ccsf_courses": [
+            "AM C 11A",
+            "AM C 11B",
+            "CLAS 35",
+            "ENGL 20",
+            "ENGL 30A",
+            "ENGL 30B",
+            "ENGL 36",
+            "ENGL 43",
+            "ENGL 44A",
+            "ENGL 44B",
+            "ENGL 46A",
+            "ENGL 46B",
+            "ENGL 46C",
+            "ENGL 48B",
+            "ENGL 48C",
+            "ENGL 48K",
+            "ENGL 50",
+            "ENGL 52",
+            "ENGL 55",
+            "ENGL 57",
+            "ENGL 58",
+            "HIST 4A",
+            "HIST 4B",
+            "HIST 17A",
+            "HIST 17B",
+            "HIST 18A",
+            "HIST 20",
+            "HIST 31",
+            "HIST 32",
+            "HIST 33",
+            "HIST 34",
+            "HIST 35A",
+            "HIST 36",
+            "HIST 37",
+            "HIST 48",
+            "HUM 7",
+            "HUM 8",
+            "HUM 11",
+            "HUM 12",
+            "HUM 35",
+            "HUM 41A",
+            "HUM 41B",
+            "HUM 48",
+            "IDST 4",
+            "IDST 14",
+            "IDST 27A",
+            "IDST 27B",
+            "IDST 29",
+            "IDST 36",
+            "IDST 38",
+            "IDST 42",
+            "IDST 44",
+            "IDST 46",
+            "IDST 47",
+            "LGBT 15",
+            "LGBT 18",
+            "PHIL 2",
+            "PHIL 4",
+            "PHIL 25A",
+            "PHIL 25C",
+            "PIL 39A",
+            "PIL 39B",
+            "POLS 3"
+          ]
+        },
+        "C_social_analysis": {
+          "label": "Category C: Social Analysis",
+          "courses_required": 2,
+          "ccsf_courses": [
+            "ADMJ 59",
+            "ADMJ 67",
+            "AFAM 30",
+            "AFAM 40",
+            "AFAM 42",
+            "AFAM 60",
+            "AMS 5",
+            "ANTH 2",
+            "ANTH 3",
+            "ANTH 3AC",
+            "ANTH 4",
+            "ANTH 8",
+            "ANTH 11",
+            "ANTH 12",
+            "ANTH 15",
+            "ANTH 20",
+            "ANTH 25",
+            "ASAM 6",
+            "ASAM 8",
+            "ASAM 10",
+            "ASAM 20",
+            "ASAM 22",
+            "ASAM 23",
+            "ASAM 27",
+            "ASAM 30",
+            "ASAM 35",
+            "ASAM 40",
+            "ASAM 42",
+            "ASIA 1",
+            "GEOG 3",
+            "GEOG 4",
+            "GEOG 7",
+            "ECON 6",
+            "ECON 10",
+            "ECON 15",
+            "ECON 25",
+            "ECON 30",
+            "HIST 1",
+            "HIST 3A",
+            "HIST 3B",
+            "HIST 5",
+            "HIST 9",
+            "HIST 12A",
+            "HIST 12B",
+            "HIST 15A",
+            "HIST 15B",
+            "HIST 18B",
+            "HIST 21",
+            "HIST 35B",
+            "HIST 38",
+            "HIST 39",
+            "HIST 40",
+            "HIST 41A",
+            "HIST 41B",
+            "HIST 44",
+            "HIST 45",
+            "IDST 10D",
+            "IDST 28G",
+            "IDST 30",
+            "IDST 31",
+            "IDST 37",
+            "IDST 45",
+            "LBCS 15",
+            "LBCS 70A",
+            "LBCS 70B",
+            "LBCS 88",
+            "LBCS 100",
+            "LALS 1",
+            "LALS 9",
+            "LALS 10",
+            "LALS 11",
+            "LALS 13",
+            "LALS 15",
+            "LGBT 5",
+            "LGBT 9",
+            "LGBT 30",
+            "LGBT 50",
+            "LGBT 60",
+            "PHST 20",
+            "PHST 40",
+            "POLS 4",
+            "POLS 5",
+            "POLS 6",
+            "POLS 7",
+            "POLS 8",
+            "POLS 9",
+            "POLS 10",
+            "POLS 12",
+            "POLS 13",
+            "POLS 18",
+            "POLS 22",
+            "POLS 35",
+            "POLS 43",
+            "POLS 45",
+            "POLS 46",
+            "POLS 47",
+            "POLS 48",
+            "POLS C1000",
+            "PSYC 23",
+            "PSYC 25",
+            "SOC 1",
+            "SOC 2",
+            "SOC 3",
+            "SOC 25",
+            "SOC 35",
+            "WGST 25"
+          ]
+        },
+        "D_life_sciences": {
+          "label": "Category D: Life Sciences",
+          "courses_required": 1,
+          "ccsf_courses": [
+            "ANTH 1 with ANTH 1L",
+            "BIO 11",
+            "BIO 32 with BIO 32L",
+            "BIO 100A"
+          ]
+        },
+        "E_physical_sciences": {
+          "label": "Category E: Physical Sciences",
+          "courses_required": 1,
+          "ccsf_courses": [
+            "CHEM 32",
+            "CHEM 101A",
+            "CHEM 103A",
+            "CHEM 110 with CHEM 110L",
+            "GEOG 1 with GEOG 1L",
+            "GEOL 30 with GEOL 30L",
+            "P SC 11 with P SC 11L",
+            "PHYC 2A with PHYC 2AL",
+            "PHYC 10 with PHYC 10L"
+          ]
+        },
+        "F_quantitative_reasoning": {
+          "label": "Category F: Quantitative Reasoning",
+          "courses_required": 1,
+          "ccsf_courses": [
+            "ECON 1",
+            "ECON 3",
+            "ECON 5",
+            "LALS 5",
+            "MATH 70",
+            "MATH 75",
+            "MATH 80",
+            "MATH 90",
+            "MATH 97",
+            "MATH 98",
+            "MATH 100A",
+            "MATH 100B",
+            "MATH 110A",
+            "MATH 110B",
+            "MATH 110C",
+            "PHIL 12A",
+            "PSYC 5"
+          ]
+        }
+      }
+    },
+    "global_perspectives": {
+      "description": "May be fulfilled with transfer courses before entering USC or in summer terms after starting USC.",
+      "categories": {
+        "G_citizenship_global_era": {
+          "label": "Category G: Citizenship in a Global Era",
+          "ccsf_courses": [
+            "ADMJ 67",
+            "ASAM 23",
+            "IDST 7",
+            "IDST 37",
+            "POLS 5"
+          ]
+        },
+        "H_traditions_historical": {
+          "label": "Category H: Traditions and Historical Foundations",
+          "ccsf_courses": [
+            "AM C 11A",
+            "AM C 11B",
+            "ARCH 31A",
+            "ARCH 31B",
+            "ART 101",
+            "ART 102",
+            "ART 104",
+            "ART 105",
+            "ART 116",
+            "CHIN 39",
+            "ENGL 50",
+            "HIST 4A",
+            "HIST 4B",
+            "HIST 17A",
+            "HIST 17B",
+            "HIST 18A",
+            "HIST 20",
+            "HIST 31",
+            "HIST 32",
+            "HIST 33",
+            "HIST 34",
+            "HIST 35A",
+            "HIST 36",
+            "HIST 37",
+            "HIST 48",
+            "HUM 41A",
+            "HUM 41B",
+            "IDST 27A",
+            "IDST 27B",
+            "IDST 29",
+            "ITAL 41",
+            "JAPA 39",
+            "MUS 22A",
+            "MUS 22B",
+            "MUS 22C",
+            "PHIL 25A",
+            "PHIL 25C",
+            "POLS 3"
+          ]
+        }
+      }
+    },
+    "writing_requirement": {
+      "label": "Lower Division Writing Requirement",
+      "description": "Equivalent to USC WRIT 130 / WRIT 150. Must be completed after high school graduation and before starting at USC.",
+      "ccsf_courses": [
+        "ENGL 1B",
+        "ENGL C1001"
+      ]
+    },
+    "foreign_language": {
+      "label": "Foreign Language Requirement",
+      "description": "Many majors require third-semester foreign language or equivalent.",
+      "levels": {
+        "level_1": [
+          "CHIN 1",
+          "GERM 1",
+          "JAPA 1",
+          "RUSS 1A with RUSS 1B"
+        ],
+        "level_2": [
+          "CHIN 2A with CHIN 2B",
+          "FREN 3",
+          "GERM 2 / GERM 2A with GERM 2B",
+          "JAPA 3 / JAPA 3A with JAPA 3B",
+          "PIL 2",
+          "SPAN 2"
+        ],
+        "level_3": [
+          "CHIN 4 / CHIN 4A with CHIN 4B",
+          "FREN 4",
+          "GERM 3A with GERM 3B",
+          "JAPA 4 / JAPA 4A with JAPA 4B",
+          "SPAN 6"
+        ],
+        "level_4": [
+          "GERM 4"
+        ]
+      }
+    }
+  },
+  "course_equivalences": [
+    {
+      "ccsf_courses": [
+        "BIO 100A",
+        "BIO 101B"
+      ],
+      "usc_courses": [
+        "BISC 120",
+        "BISC 220"
+      ],
+      "requires_all": true,
+      "notes": "Both CCSF courses required together"
+    },
+    {
+      "ccsf_courses": [
+        "CHEM 101A"
+      ],
+      "usc_courses": [
+        "CHEM 105A"
+      ],
+      "requires_all": false
+    },
+    {
+      "ccsf_courses": [
+        "CHEM 101B"
+      ],
+      "usc_courses": [
+        "CHEM 105B"
+      ],
+      "requires_all": false
+    },
+    {
+      "ccsf_courses": [
+        "CHEM 103A"
+      ],
+      "usc_courses": [
+        "CHEM 105A"
+      ],
+      "requires_all": false
+    },
+    {
+      "ccsf_courses": [
+        "CHEM 212A"
+      ],
+      "usc_courses": [
+        "CHEM 322A"
+      ],
+      "requires_all": false
+    },
+    {
+      "ccsf_courses": [
+        "CHEM 212B"
+      ],
+      "usc_courses": [
+        "CHEM 322B"
+      ],
+      "requires_all": false
+    },
+    {
+      "ccsf_courses": [
+        "ECON 1"
+      ],
+      "usc_courses": [
+        "ECON 205"
+      ],
+      "requires_all": false
+    },
+    {
+      "ccsf_courses": [
+        "ECON 3"
+      ],
+      "usc_courses": [
+        "ECON 203"
+      ],
+      "requires_all": false
+    },
+    {
+      "ccsf_courses": [
+        "ENGL 1B"
+      ],
+      "usc_courses": [
+        "WRIT 130"
+      ],
+      "requires_all": false
+    },
+    {
+      "ccsf_courses": [
+        "ENGL C1001"
+      ],
+      "usc_courses": [
+        "WRIT 130"
+      ],
+      "requires_all": false
+    },
+    {
+      "ccsf_courses": [
+        "FREN 3"
+      ],
+      "usc_courses": [
+        "FREN 220"
+      ],
+      "requires_all": false
+    },
+    {
+      "ccsf_courses": [
+        "GERM 3A",
+        "GERM 3B"
+      ],
+      "usc_courses": [
+        "GERM 201"
+      ],
+      "requires_all": true
+    },
+    {
+      "ccsf_courses": [
+        "JAPA 3"
+      ],
+      "usc_courses": [
+        "EALC 220"
+      ],
+      "requires_all": false
+    },
+    {
+      "ccsf_courses": [
+        "JAPA 3A",
+        "JAPA 3B"
+      ],
+      "usc_courses": [
+        "EALC 220"
+      ],
+      "requires_all": true
+    },
+    {
+      "ccsf_courses": [
+        "MATH 80"
+      ],
+      "usc_courses": [
+        "MATH 114"
+      ],
+      "requires_all": false
+    },
+    {
+      "ccsf_courses": [
+        "MATH 97"
+      ],
+      "usc_courses": [
+        "MATH 108"
+      ],
+      "requires_all": false
+    },
+    {
+      "ccsf_courses": [
+        "MATH 98"
+      ],
+      "usc_courses": [
+        "MATH 108"
+      ],
+      "requires_all": false
+    },
+    {
+      "ccsf_courses": [
+        "MATH 100B"
+      ],
+      "usc_courses": [
+        "MATH 118"
+      ],
+      "requires_all": false
+    },
+    {
+      "ccsf_courses": [
+        "MATH 110A"
+      ],
+      "usc_courses": [
+        "MATH 125"
+      ],
+      "requires_all": false
+    },
+    {
+      "ccsf_courses": [
+        "MATH 110B"
+      ],
+      "usc_courses": [
+        "MATH 126"
+      ],
+      "requires_all": false
+    },
+    {
+      "ccsf_courses": [
+        "MATH 110C"
+      ],
+      "usc_courses": [
+        "MATH 226"
+      ],
+      "requires_all": false
+    },
+    {
+      "ccsf_courses": [
+        "MATH 120",
+        "MATH 125"
+      ],
+      "usc_courses": [
+        "MATH 225",
+        "MATH 245"
+      ],
+      "requires_all": true
+    },
+    {
+      "ccsf_courses": [
+        "MATH 125"
+      ],
+      "usc_courses": [
+        "MATH 245"
+      ],
+      "requires_all": false
+    },
+    {
+      "ccsf_courses": [
+        "MATH 130"
+      ],
+      "usc_courses": [
+        "MATH 225"
+      ],
+      "requires_all": false
+    },
+    {
+      "ccsf_courses": [
+        "PHYC 2A",
+        "PHYC 2AL"
+      ],
+      "usc_courses": [
+        "PHYS 135A"
+      ],
+      "requires_all": true
+    },
+    {
+      "ccsf_courses": [
+        "PHYC 4B",
+        "PHYC 4BL",
+        "PHYC 4C",
+        "PHYC 4CL"
+      ],
+      "usc_courses": [
+        "PHYS 152"
+      ],
+      "requires_all": true
+    },
+    {
+      "ccsf_courses": [
+        "PHYC 4C",
+        "PHYC 4CL",
+        "PHYC 4D",
+        "PHYC 4DL"
+      ],
+      "usc_courses": [
+        "PHYS 153"
+      ],
+      "requires_all": true
+    },
+    {
+      "ccsf_courses": [
+        "POLS 2"
+      ],
+      "usc_courses": [
+        "POSC 120"
+      ],
+      "requires_all": false
+    },
+    {
+      "ccsf_courses": [
+        "POLS C1000"
+      ],
+      "usc_courses": [
+        "POSC 100"
+      ],
+      "requires_all": false
+    },
+    {
+      "ccsf_courses": [
+        "SOC 1"
+      ],
+      "usc_courses": [
+        "SOCI 200"
+      ],
+      "requires_all": false
+    }
+  ],
+  "non_transferable": {
+    "BCST": [
+      "119",
+      "120",
+      "135",
+      "136",
+      "159"
+    ],
+    "BSMA": [
+      "68"
+    ],
+    "MABS": [
+      "101"
+    ],
+    "CDEV": [
+      "71",
+      "101",
+      "114",
+      "150"
+    ],
+    "CINE": [
+      "60",
+      "75"
+    ],
+    "CNIT": [
+      "103",
+      "120",
+      "129S",
+      "131H",
+      "195",
+      "198"
+    ],
+    "CS": [
+      "150A"
+    ],
+    "ENGL": [
+      "1AS"
+    ],
+    "ESL": [
+      "186",
+      "188"
+    ],
+    "MATH": [
+      "40",
+      "80S",
+      "90S",
+      "95",
+      "860"
+    ],
+    "SOC": [
+      "12"
+    ],
+    "VMD": [
+      "100",
+      "105",
+      "154",
+      "162A"
+    ]
+  },
+  "transfer_rules": {
+    "minimum_grade": "C- or better (or Pass/Credit)",
+    "max_transfer_units": 64,
+    "pass_no_pass_limit": "No more than 24 units total; no more than 4 units of GE",
+    "writing_requirement_cannot_be_pass_no_pass": true,
+    "online_courses": "Online/hybrid foreign language and lab science courses earn elective units only \u2014 do not satisfy GE or language requirements",
+    "high_school_courses": "Courses taken before high school graduation cannot fulfill writing requirement, foreign language requirement, or earn USC course equivalence",
+    "quarter_conversion": "Divide quarter units by 1.5 to get semester units"
+  }
+}
