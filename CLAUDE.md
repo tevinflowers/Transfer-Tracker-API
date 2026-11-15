@@ -20,17 +20,19 @@ timestamp.
 
 ## Session log
 
-**Last updated:** 2026-11-15 23:00 UTC
+**Last updated:** 2026-11-15 23:20 UTC
 
 **Last 2 topics**
-1. Merged the Lichten project-chat notes into this CLAUDE.md.
-2. Added the ASSIST PDF parser as `parser/parse_assist.py` and fixed its
-   `to_institution` regex. Also fixed the `/match/usc/ge` crash. These changes are in
-   PR tevinflowers/Transfer-Tracker-API#1.
+1. Merged PR tevinflowers/Transfer-Tracker-API#1 into `main`. It contains the USC
+   endpoint fix, `parser/parse_assist.py` with the
+   `to_institution` fix, `.gitignore`, and this CLAUDE.md.
+2. Merged the Lichten project-chat notes into this CLAUDE.md.
 
 **Next 2 topics**
-1. Merge PR #1 into `main` so Railway deploys it, then check the live API (`/`,
-   `/schools`, `/docs`).
+1. Check that Railway deployed the latest `main` commit. If Railway doesn't redeploy
+   on its own, use "Redeploy" on the newest deployment. Then check that `/` loads and
+   `POST /match/usc/ge` returns 200. The Railway service shows "Unexposed service", so
+   check under Settings → Networking that it has a public domain.
 2. Re-run the parser on the agreement PDFs (kept on the owner's Mac, not in the repo)
    to fill in `to_institution` for SFSU/SJSU. While doing it, start on the Known data
    problems below, beginning with the SJSU-is-really-SFSU mix-up.
@@ -75,12 +77,11 @@ ASSIST PDFs → parser/parse_assist.py (pdfplumber) → all_agreements_v3.json
 - **Repo:** `tevinflowers/Transfer-Tracker-API` (public)
 - **Live:** https://transfer-tracker-api-production.up.railway.app (docs at `/docs`)
 - **Stack:** FastAPI + uvicorn, with pdfplumber for parsing.
-- **Hosting:** Railway, using nixpacks (`nixpacks.toml` installs `python311`) and
+- **Hosting:** Railway. It reads the Python version from `runtime.txt` (`python-3.12`,
+  shown as python@3.12.13 in Railway). (`nixpacks.toml` says `python311`; left as-is because that setup deploys fine.) Plus
   `Procfile` (`uvicorn api:app --host 0.0.0.0 --port $PORT`).
   - Write the Python version in `runtime.txt` as `python-3.X`, never `python-3.X.Y`,
     or the build fails.
-  - PR #1 changes `runtime.txt` from 3.12 to 3.11 so it matches `nixpacks.toml`. Watch
-    the first Railway build after it merges.
 - **Run locally:** run `pip3 install -r requirements.txt`, then
   `uvicorn api:app --reload`, then open http://localhost:8000/docs
 
