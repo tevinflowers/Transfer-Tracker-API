@@ -11,8 +11,10 @@ A mobile transfer-tracking app for California community college students moving 
 - **Competitor to know about:** PlanMyTransfer.com, which probably got ASSIST data before access was restricted.
 
 ## Owner / working style
-- The owner describes himself as a beginner ("vibe coder") who learns as he goes. Explain terminal steps one at a time and define basic concepts. Don't assume he knows git, pip or deploy tooling.
-- He works on a Mac in VS Code and uses `python3` / `pip3`.
+- **The owner develops this project through Claude Code in the Claude desktop app.** Claude Code is the tool that runs commands, edits files, and does git and deploy work. When something needs to happen (installing packages, running scripts, committing, pushing, testing endpoints), **do it yourself**. Don't tell him to open VS Code or a terminal and type commands. If a step truly needs him (signing in to Railway, GitHub or Base44, clicking something in a web dashboard, downloading PDFs from ASSIST, pasting a prompt into Base44), say that clearly and explain it one step at a time.
+- If an instruction would otherwise read "run this in your terminal," write it as "I'll run this," or as "paste this into Claude Code" when he's working from another chat.
+- The owner describes himself as a beginner ("vibe coder") who learns as he goes. Explain what you're doing in plain language and define basic concepts. Don't assume he knows git, pip or deploy tooling.
+- He's on a Mac. Use `python3` / `pip3`. His older local files (e.g. `parse_assist_v3.py`, the source PDFs) are in a project folder on his Mac that he opened in VS Code before switching to Claude Code.
 
 ## Architecture (two halves)
 
