@@ -78,7 +78,7 @@ ASSIST PDFs → parser/parse_assist.py (pdfplumber) → all_agreements_v3.json
 - **Live:** https://transfer-tracker-api-production.up.railway.app (docs at `/docs`)
 - **Stack:** FastAPI + uvicorn, with pdfplumber for parsing.
 - **Hosting:** Railway. It reads the Python version from `runtime.txt` (`python-3.12`,
-  shown as python@3.12.13 in Railway). `nixpacks.toml` says `python312` to match. Plus
+  shown as python@3.12.13 in Railway). (`nixpacks.toml` says `python311`; left as-is because that setup deploys fine.) Plus
   `Procfile` (`uvicorn api:app --host 0.0.0.0 --port $PORT`).
   - Write the Python version in `runtime.txt` as `python-3.X`, never `python-3.X.Y`,
     or the build fails.
