@@ -20,22 +20,20 @@ timestamp.
 
 ## Session log
 
-**Last updated:** 2026-11-15 23:20 UTC
+**Last updated:** 2026-11-15 23:30 UTC
 
 **Last 2 topics**
-1. Merged PR tevinflowers/Transfer-Tracker-API#1 into `main`. It contains the USC
-   endpoint fix, `parser/parse_assist.py` with the
-   `to_institution` fix, `.gitignore`, and this CLAUDE.md.
-2. Merged the Lichten project-chat notes into this CLAUDE.md.
+1. Finished roadmap step 1 in Base44: a public Welcome page with Google + email login
+   (fixes the 404), "Continue as demo" with sample student Alex Rivera (CCSF
+   Bioengineering, targeting Berkeley + UCLA, data kept in memory only), onboarding,
+   and per-school goals on Home.
+2. Restored the Railway deploy config (PR #3). The live API is confirmed working:
+   `/` returns `status: ok` with 112 agreements and USC loaded.
 
 **Next 2 topics**
-1. Check that Railway deployed the latest `main` commit. If Railway doesn't redeploy
-   on its own, use "Redeploy" on the newest deployment. Then check that `/` loads and
-   `POST /match/usc/ge` returns 200. The Railway service shows "Unexposed service", so
-   check under Settings → Networking that it has a public domain.
-2. Re-run the parser on the agreement PDFs (kept on the owner's Mac, not in the repo)
-   to fill in `to_institution` for SFSU/SJSU. While doing it, start on the Known data
-   problems below, beginning with the SJSU-is-really-SFSU mix-up.
+1. Roadmap step 2 in Base44: group courses by semester, add 3-dot menus, rename
+   "Courses" to "Requirements", and fix the "golden7" label.
+2. Roadmap step 3: test the tagging flow end to end and write a 2-minute demo script.
 
 ## Working with the owner
 
@@ -188,8 +186,6 @@ ASSIST PDFs → parser/parse_assist.py (pdfplumber) → all_agreements_v3.json
   4. Home.
   5. Deadlines, Profile, polish.
 - **Known app bugs:**
-  - Sign In / Create Account goes to a 404 (there's no login page yet).
-  - Home shows USC as the goal instead of Berkeley/UCLA.
   - My Courses isn't grouped by semester.
   - The tab label "golden7" is lowercase.
   - "Courses" should be renamed "Requirements".
@@ -205,7 +201,7 @@ ASSIST PDFs → parser/parse_assist.py (pdfplumber) → all_agreements_v3.json
 
 ## Roadmap (10 steps, from 2026-11-13)
 Steps 1–5 are the interview/demo path; steps 6–10 lead to launch.
-1. **No login wall for the demo:**
+1. ✅ **No login wall for the demo** (done 2026-11-15):
    - Base44 auth (Google + email).
    - A "Continue as demo" button with a sample CCSF Bioengineering student targeting
      Berkeley + UCLA.
