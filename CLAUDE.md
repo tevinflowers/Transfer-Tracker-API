@@ -20,17 +20,18 @@ timestamp.
 
 ## Session log
 
-**Last updated:** 2026-11-15 23:00 UTC
+**Last updated:** 2026-11-15 23:20 UTC
 
 **Last 2 topics**
-1. Merged the Lichten project-chat notes into this CLAUDE.md.
-2. Added the ASSIST PDF parser as `parser/parse_assist.py` and fixed its
-   `to_institution` regex. Also fixed the `/match/usc/ge` crash. These changes are in
-   PR tevinflowers/Transfer-Tracker-API#1.
+1. Merged PR tevinflowers/Transfer-Tracker-API#1 into `main`. It contains the USC
+   endpoint fix, the Python 3.11 setting, `parser/parse_assist.py` with the
+   `to_institution` fix, `.gitignore`, and this CLAUDE.md.
+2. Merged the Lichten project-chat notes into this CLAUDE.md.
 
 **Next 2 topics**
-1. Merge PR #1 into `main` so Railway deploys it, then check the live API (`/`,
-   `/schools`, `/docs`).
+1. Check that Railway deployed the merge: the build passes on `python-3.11` (if not,
+   set `runtime.txt` back to `python-3.12`), `/` loads, and `POST /match/usc/ge`
+   returns 200.
 2. Re-run the parser on the agreement PDFs (kept on the owner's Mac, not in the repo)
    to fill in `to_institution` for SFSU/SJSU. While doing it, start on the Known data
    problems below, beginning with the SJSU-is-really-SFSU mix-up.
