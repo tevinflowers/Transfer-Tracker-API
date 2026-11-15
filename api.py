@@ -8,7 +8,8 @@ Endpoints:
   GET  /majors?school=X           — list majors for a school
   GET  /agreements                — list all agreements (summary)
   GET  /agreements/{id}           — get one agreement by index
-  POST /match                     — match courses against one agreement
+  POST /match/{id}                — match courses against one agreement
+  POST /match/usc/ge              — check USC GE categories + course equivalences
   POST /compare                   — match courses against all agreements, ranked
   POST /compare/school/{school}   — match against one school only
 
@@ -310,7 +311,7 @@ def match_usc_ge(body: MatchRequest):
     if not USC_AGREEMENT:
         raise HTTPException(status_code=503, detail="USC agreement data not loaded")
 
-    from matcher import normalize_set
+    from matcher import normalize_set, normalize_course
     completed   = normalize_set(body.completed_courses)
     in_progress = normalize_set(body.in_progress_courses)
 
@@ -363,7 +364,6 @@ def match_usc_ge(body: MatchRequest):
     matched_equiv = []
     for eq in equiv:
         ccsf_needed = [normalize_course(c) for c in eq['ccsf_courses']]
-        from matcher import normalize_course
         if eq.get('requires_all'):
             if all(c in completed for c in ccsf_needed):
                 matched_equiv.append({
