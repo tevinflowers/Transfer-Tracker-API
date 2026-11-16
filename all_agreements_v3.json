@@ -292,7 +292,7 @@
                       "courses": [
                         {
                           "code": "MATH 376",
-                          "title": "Ordinary Di\"erential Equations I",
+                          "title": "Ordinary Differential Equations I",
                           "units": 3.0
                         }
                       ]
@@ -303,7 +303,7 @@
                       "courses": [
                         {
                           "code": "MATH 125",
-                          "title": "Di\"erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -2483,7 +2483,7 @@
                       "courses": [
                         {
                           "code": "MATH 245",
-                          "title": "Elementary Di\"erential Equations",
+                          "title": "Elementary Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -2502,7 +2502,7 @@
                             },
                             {
                               "code": "MATH 125",
-                              "title": "Di\"erential Equations",
+                              "title": "Differential Equations",
                               "units": 3.0
                             }
                           ]
@@ -2512,7 +2512,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di\"erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]
@@ -3671,7 +3671,7 @@
                       "courses": [
                         {
                           "code": "MATH 245",
-                          "title": "Elementary Di\"erential Equations",
+                          "title": "Elementary Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -3690,7 +3690,7 @@
                             },
                             {
                               "code": "MATH 125",
-                              "title": "Di\"erential Equations",
+                              "title": "Differential Equations",
                               "units": 3.0
                             }
                           ]
@@ -3700,7 +3700,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di\"erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]
@@ -4593,7 +4593,7 @@
                       "courses": [
                         {
                           "code": "MATH 245",
-                          "title": "Elementary Di\"erential Equations",
+                          "title": "Elementary Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -4612,7 +4612,7 @@
                             },
                             {
                               "code": "MATH 125",
-                              "title": "Di\"erential Equations",
+                              "title": "Differential Equations",
                               "units": 3.0
                             }
                           ]
@@ -4622,7 +4622,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di\"erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]
@@ -5844,7 +5844,7 @@
                       "courses": [
                         {
                           "code": "MATH 245",
-                          "title": "Elementary Di\"erential Equations",
+                          "title": "Elementary Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -5863,7 +5863,7 @@
                             },
                             {
                               "code": "MATH 125",
-                              "title": "Di\"erential Equations",
+                              "title": "Differential Equations",
                               "units": 3.0
                             }
                           ]
@@ -5873,7 +5873,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di\"erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]
@@ -5921,7 +5921,7 @@
                       "courses": [
                         {
                           "code": "MATH 376",
-                          "title": "Ordinary Di\"erential Equations I",
+                          "title": "Ordinary Differential Equations I",
                           "units": 3.0
                         }
                       ]
@@ -5932,7 +5932,7 @@
                       "courses": [
                         {
                           "code": "MATH 125",
-                          "title": "Di\"erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -6220,12 +6220,12 @@
                         },
                         {
                           "code": "MATH 125",
-                          "title": "Di\"erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         },
                         {
                           "code": "MATH 130",
-                          "title": "Linear Algebra and Di\"erential",
+                          "title": "Linear Algebra and Differential",
                           "units": 5.0
                         },
                         {
@@ -7198,7 +7198,7 @@
                       "courses": [
                         {
                           "code": "MATH 376",
-                          "title": "Ordinary Di\"erential Equations I",
+                          "title": "Ordinary Differential Equations I",
                           "units": 3.0
                         }
                       ]
@@ -7209,7 +7209,7 @@
                       "courses": [
                         {
                           "code": "MATH 125",
-                          "title": "Di\"erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -7536,7 +7536,7 @@
                       "courses": [
                         {
                           "code": "MATH 376",
-                          "title": "Ordinary Di\"erential Equations I",
+                          "title": "Ordinary Differential Equations I",
                           "units": 3.0
                         }
                       ]
@@ -7547,7 +7547,7 @@
                       "courses": [
                         {
                           "code": "MATH 125",
-                          "title": "Di\"erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -9945,7 +9945,7 @@
                       "courses": [
                         {
                           "code": "MATH 245",
-                          "title": "Elementary Di\"erential Equations",
+                          "title": "Elementary Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -9964,7 +9964,7 @@
                             },
                             {
                               "code": "MATH 125",
-                              "title": "Di\"erential Equations",
+                              "title": "Differential Equations",
                               "units": 3.0
                             }
                           ]
@@ -9974,7 +9974,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di\"erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]
@@ -10523,7 +10523,7 @@
                       "courses": [
                         {
                           "code": "MATH 245",
-                          "title": "Elementary Di\"erential Equations",
+                          "title": "Elementary Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -10542,7 +10542,7 @@
                             },
                             {
                               "code": "MATH 125",
-                              "title": "Di\"erential Equations",
+                              "title": "Differential Equations",
                               "units": 3.0
                             }
                           ]
@@ -10552,7 +10552,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di\"erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]
@@ -11348,7 +11348,7 @@
                       "courses": [
                         {
                           "code": "MATH 245",
-                          "title": "Elementary Di\"erential Equations",
+                          "title": "Elementary Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -11367,7 +11367,7 @@
                             },
                             {
                               "code": "MATH 125",
-                              "title": "Di\"erential Equations",
+                              "title": "Differential Equations",
                               "units": 3.0
                             }
                           ]
@@ -11377,7 +11377,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di\"erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]
@@ -11987,7 +11987,7 @@
                       "courses": [
                         {
                           "code": "MATH 245",
-                          "title": "Elementary Di\"erential Equations",
+                          "title": "Elementary Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -12006,7 +12006,7 @@
                             },
                             {
                               "code": "MATH 125",
-                              "title": "Di\"erential Equations",
+                              "title": "Differential Equations",
                               "units": 3.0
                             }
                           ]
@@ -12016,7 +12016,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di\"erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]
@@ -13136,7 +13136,7 @@
                       "courses": [
                         {
                           "code": "MATH 245",
-                          "title": "Elementary Di\"erential Equations",
+                          "title": "Elementary Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -13155,7 +13155,7 @@
                             },
                             {
                               "code": "MATH 125",
-                              "title": "Di\"erential Equations",
+                              "title": "Differential Equations",
                               "units": 3.0
                             }
                           ]
@@ -13165,7 +13165,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di\"erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]
@@ -13213,7 +13213,7 @@
                       "courses": [
                         {
                           "code": "MATH 376",
-                          "title": "Ordinary Di\"erential Equations I",
+                          "title": "Ordinary Differential Equations I",
                           "units": 3.0
                         }
                       ]
@@ -13224,7 +13224,7 @@
                       "courses": [
                         {
                           "code": "MATH 125",
-                          "title": "Di\"erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -13512,12 +13512,12 @@
                         },
                         {
                           "code": "MATH 125",
-                          "title": "Di\"erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         },
                         {
                           "code": "MATH 130",
-                          "title": "Linear Algebra and Di\"erential",
+                          "title": "Linear Algebra and Differential",
                           "units": 5.0
                         },
                         {
@@ -14172,7 +14172,7 @@
                       "courses": [
                         {
                           "code": "MATH 54",
-                          "title": "Linear Algebra and Di!erential",
+                          "title": "Linear Algebra and Differential",
                           "units": 4.0
                         }
                       ]
@@ -14186,7 +14186,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di!erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]
@@ -14201,7 +14201,7 @@
                             },
                             {
                               "code": "MATH 125",
-                              "title": "Di!erential Equations",
+                              "title": "Differential Equations",
                               "units": 3.0
                             }
                           ]
@@ -14922,7 +14922,7 @@
                       "courses": [
                         {
                           "code": "MATH 54",
-                          "title": "Linear Algebra and Di!erential",
+                          "title": "Linear Algebra and Differential",
                           "units": 4.0
                         }
                       ]
@@ -14936,7 +14936,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di!erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]
@@ -14951,7 +14951,7 @@
                             },
                             {
                               "code": "MATH 125",
-                              "title": "Di!erential Equations",
+                              "title": "Differential Equations",
                               "units": 3.0
                             }
                           ]
@@ -17245,7 +17245,7 @@
                       "courses": [
                         {
                           "code": "MATH 54",
-                          "title": "Linear Algebra and Di!erential",
+                          "title": "Linear Algebra and Differential",
                           "units": 4.0
                         }
                       ]
@@ -17259,7 +17259,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di!erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]
@@ -17274,7 +17274,7 @@
                             },
                             {
                               "code": "MATH 125",
-                              "title": "Di!erential Equations",
+                              "title": "Differential Equations",
                               "units": 3.0
                             }
                           ]
@@ -18051,7 +18051,7 @@
                       "courses": [
                         {
                           "code": "MATH 54",
-                          "title": "Linear Algebra and Di!erential",
+                          "title": "Linear Algebra and Differential",
                           "units": 4.0
                         }
                       ]
@@ -18065,7 +18065,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di!erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]
@@ -18080,7 +18080,7 @@
                             },
                             {
                               "code": "MATH 125",
-                              "title": "Di!erential Equations",
+                              "title": "Differential Equations",
                               "units": 3.0
                             }
                           ]
@@ -18493,7 +18493,7 @@
                       "courses": [
                         {
                           "code": "MATH 54",
-                          "title": "Linear Algebra and Di!erential",
+                          "title": "Linear Algebra and Differential",
                           "units": 4.0
                         }
                       ]
@@ -18507,7 +18507,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di!erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]
@@ -18522,7 +18522,7 @@
                             },
                             {
                               "code": "MATH 125",
-                              "title": "Di!erential Equations",
+                              "title": "Differential Equations",
                               "units": 3.0
                             }
                           ]
@@ -18942,7 +18942,7 @@
         "groups": [
           {
             "group_number": 1,
-            "completion_rule": "Complete 1 course in 3 di!erent areas.",
+            "completion_rule": "Complete 1 course in 3 different areas.",
             "subgroups": [],
             "articulation_rows": [
               {
@@ -19231,7 +19231,7 @@
                   "courses": [
                     {
                       "code": "HISTORY 3",
-                      "title": "A\"er the Roman Empire: The East",
+                      "title": "After the Roman Empire: The East",
                       "units": 4.0
                     }
                   ]
@@ -19502,7 +19502,7 @@
                       "courses": [
                         {
                           "code": "MATH 54",
-                          "title": "Linear Algebra and Di!erential",
+                          "title": "Linear Algebra and Differential",
                           "units": 4.0
                         }
                       ]
@@ -19516,7 +19516,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di!erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]
@@ -19531,7 +19531,7 @@
                             },
                             {
                               "code": "MATH 125",
-                              "title": "Di!erential Equations",
+                              "title": "Differential Equations",
                               "units": 3.0
                             }
                           ]
@@ -20236,7 +20236,7 @@
                       "courses": [
                         {
                           "code": "MATH 54",
-                          "title": "Linear Algebra and Di!erential",
+                          "title": "Linear Algebra and Differential",
                           "units": 4.0
                         }
                       ]
@@ -20250,7 +20250,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di!erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]
@@ -20265,7 +20265,7 @@
                             },
                             {
                               "code": "MATH 125",
-                              "title": "Di!erential Equations",
+                              "title": "Differential Equations",
                               "units": 3.0
                             }
                           ]
@@ -21455,7 +21455,7 @@
                   "courses": [
                     {
                       "code": "MATH 54",
-                      "title": "Linear Algebra and Di!erential",
+                      "title": "Linear Algebra and Differential",
                       "units": 4.0
                     }
                   ]
@@ -21469,7 +21469,7 @@
                       "courses": [
                         {
                           "code": "MATH 130",
-                          "title": "Linear Algebra and Di!erential",
+                          "title": "Linear Algebra and Differential",
                           "units": 5.0
                         }
                       ]
@@ -21484,7 +21484,7 @@
                         },
                         {
                           "code": "MATH 125",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -22055,7 +22055,7 @@
           },
           {
             "group_number": 3,
-            "completion_rule": "Complete 3 courses in 2 di!erent areas.",
+            "completion_rule": "Complete 3 courses in 2 different areas.",
             "subgroups": [],
             "articulation_rows": [
               {
@@ -23270,7 +23270,7 @@
                       "courses": [
                         {
                           "code": "MATH 54",
-                          "title": "Linear Algebra and Di!erential",
+                          "title": "Linear Algebra and Differential",
                           "units": 4.0
                         }
                       ]
@@ -23284,7 +23284,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di!erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]
@@ -23299,7 +23299,7 @@
                             },
                             {
                               "code": "MATH 125",
-                              "title": "Di!erential Equations",
+                              "title": "Differential Equations",
                               "units": 3.0
                             }
                           ]
@@ -23376,7 +23376,7 @@
                       "courses": [
                         {
                           "code": "MATH 54",
-                          "title": "Linear Algebra and Di!erential",
+                          "title": "Linear Algebra and Differential",
                           "units": 4.0
                         }
                       ]
@@ -23390,7 +23390,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di!erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]
@@ -23405,7 +23405,7 @@
                             },
                             {
                               "code": "MATH 125",
-                              "title": "Di!erential Equations",
+                              "title": "Differential Equations",
                               "units": 3.0
                             }
                           ]
@@ -23505,7 +23505,7 @@
                         },
                         {
                           "code": "MAT 022B",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -23516,7 +23516,7 @@
                       "courses": [
                         {
                           "code": "MATH 130",
-                          "title": "Linear Algebra and Di!erential",
+                          "title": "Linear Algebra and Differential",
                           "units": 5.0
                         }
                       ]
@@ -23562,7 +23562,7 @@
                       "courses": [
                         {
                           "code": "MAT 022B",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -23573,7 +23573,7 @@
                       "courses": [
                         {
                           "code": "MATH 125",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -24798,7 +24798,7 @@
                       "courses": [
                         {
                           "code": "MAT 022B",
-                          "title": "Di\"erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -24809,7 +24809,7 @@
                       "courses": [
                         {
                           "code": "MATH 125",
-                          "title": "Di\"erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -24824,7 +24824,7 @@
                       "courses": [
                         {
                           "code": "MAT 027B",
-                          "title": "Di\"erential Equations with",
+                          "title": "Differential Equations with",
                           "units": 4.0
                         }
                       ]
@@ -24991,7 +24991,7 @@
                         },
                         {
                           "code": "MAT 022B",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -25002,7 +25002,7 @@
                       "courses": [
                         {
                           "code": "MATH 130",
-                          "title": "Linear Algebra and Di!erential",
+                          "title": "Linear Algebra and Differential",
                           "units": 5.0
                         }
                       ]
@@ -25048,7 +25048,7 @@
                       "courses": [
                         {
                           "code": "MAT 022B",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -25059,7 +25059,7 @@
                       "courses": [
                         {
                           "code": "MATH 125",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -25219,7 +25219,7 @@
                         },
                         {
                           "code": "ECS 036B",
-                          "title": "So\"ware Development & Object-",
+                          "title": "Software Development & Object-",
                           "units": 4.0
                         },
                         {
@@ -26632,7 +26632,7 @@
                         },
                         {
                           "code": "MAT 022B",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -26643,7 +26643,7 @@
                       "courses": [
                         {
                           "code": "MATH 130",
-                          "title": "Linear Algebra and Di!erential",
+                          "title": "Linear Algebra and Differential",
                           "units": 5.0
                         }
                       ]
@@ -26689,7 +26689,7 @@
                       "courses": [
                         {
                           "code": "MAT 022B",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -26700,7 +26700,7 @@
                       "courses": [
                         {
                           "code": "MATH 125",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -26748,7 +26748,7 @@
                       "courses": [
                         {
                           "code": "MAT 027B",
-                          "title": "Di!erential Equations with",
+                          "title": "Differential Equations with",
                           "units": 4.0
                         }
                       ]
@@ -27846,7 +27846,7 @@
                         },
                         {
                           "code": "MAT 022B",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -27857,7 +27857,7 @@
                       "courses": [
                         {
                           "code": "MATH 130",
-                          "title": "Linear Algebra and Di!erential",
+                          "title": "Linear Algebra and Differential",
                           "units": 5.0
                         }
                       ]
@@ -27921,7 +27921,7 @@
                       "courses": [
                         {
                           "code": "MAT 022B",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -27932,7 +27932,7 @@
                       "courses": [
                         {
                           "code": "MATH 125",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -27993,7 +27993,7 @@
                       "courses": [
                         {
                           "code": "MAT 027B",
-                          "title": "Di!erential Equations with",
+                          "title": "Differential Equations with",
                           "units": 4.0
                         }
                       ]
@@ -28226,7 +28226,7 @@
                         },
                         {
                           "code": "MAT 022B",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -28237,7 +28237,7 @@
                       "courses": [
                         {
                           "code": "MATH 130",
-                          "title": "Linear Algebra and Di!erential",
+                          "title": "Linear Algebra and Differential",
                           "units": 5.0
                         }
                       ]
@@ -28283,7 +28283,7 @@
                       "courses": [
                         {
                           "code": "MAT 022B",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -28294,7 +28294,7 @@
                       "courses": [
                         {
                           "code": "MATH 125",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -28829,7 +28829,7 @@
                         },
                         {
                           "code": "ECS 036B",
-                          "title": "So\"ware Development & Object-",
+                          "title": "Software Development & Object-",
                           "units": 4.0
                         },
                         {
@@ -28933,7 +28933,7 @@
                       "courses": [
                         {
                           "code": "MATH 130",
-                          "title": "Linear Algebra and Di!erential",
+                          "title": "Linear Algebra and Differential",
                           "units": 5.0
                         }
                       ]
@@ -28948,7 +28948,7 @@
                       "courses": [
                         {
                           "code": "MAT 022B",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -34548,7 +34548,7 @@
                         },
                         {
                           "code": "MAT 022B",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -34559,7 +34559,7 @@
                       "courses": [
                         {
                           "code": "MATH 130",
-                          "title": "Linear Algebra and Di!erential",
+                          "title": "Linear Algebra and Differential",
                           "units": 5.0
                         }
                       ]
@@ -34605,7 +34605,7 @@
                       "courses": [
                         {
                           "code": "MAT 022B",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -34616,7 +34616,7 @@
                       "courses": [
                         {
                           "code": "MATH 125",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -35270,7 +35270,7 @@
                       "courses": [
                         {
                           "code": "MAT 022B",
-                          "title": "Di\"erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -35281,7 +35281,7 @@
                       "courses": [
                         {
                           "code": "MATH 125",
-                          "title": "Di\"erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -35296,7 +35296,7 @@
                       "courses": [
                         {
                           "code": "MAT 027B",
-                          "title": "Di\"erential Equations with",
+                          "title": "Differential Equations with",
                           "units": 4.0
                         }
                       ]
@@ -35652,7 +35652,7 @@
                         },
                         {
                           "code": "MAT 022B",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -35663,7 +35663,7 @@
                       "courses": [
                         {
                           "code": "MATH 130",
-                          "title": "Linear Algebra and Di!erential",
+                          "title": "Linear Algebra and Differential",
                           "units": 5.0
                         }
                       ]
@@ -35709,7 +35709,7 @@
                       "courses": [
                         {
                           "code": "MAT 022B",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -35720,7 +35720,7 @@
                       "courses": [
                         {
                           "code": "MATH 125",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -36484,7 +36484,7 @@
                         },
                         {
                           "code": "MAT 022B",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -36495,7 +36495,7 @@
                       "courses": [
                         {
                           "code": "MATH 130",
-                          "title": "Linear Algebra and Di!erential",
+                          "title": "Linear Algebra and Differential",
                           "units": 5.0
                         }
                       ]
@@ -36541,7 +36541,7 @@
                       "courses": [
                         {
                           "code": "MAT 022B",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -36552,7 +36552,7 @@
                       "courses": [
                         {
                           "code": "MATH 125",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -39489,7 +39489,7 @@
                         },
                         {
                           "code": "MAT 022B",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -39500,7 +39500,7 @@
                       "courses": [
                         {
                           "code": "MATH 130",
-                          "title": "Linear Algebra and Di!erential",
+                          "title": "Linear Algebra and Differential",
                           "units": 5.0
                         }
                       ]
@@ -39682,7 +39682,7 @@
                         },
                         {
                           "code": "MAT 022B",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -39693,7 +39693,7 @@
                       "courses": [
                         {
                           "code": "MATH 130",
-                          "title": "Linear Algebra and Di!erential",
+                          "title": "Linear Algebra and Differential",
                           "units": 5.0
                         }
                       ]
@@ -39898,7 +39898,7 @@
                         },
                         {
                           "code": "MAT 022B",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -39909,7 +39909,7 @@
                       "courses": [
                         {
                           "code": "MATH 130",
-                          "title": "Linear Algebra and Di!erential",
+                          "title": "Linear Algebra and Differential",
                           "units": 5.0
                         }
                       ]
@@ -40096,7 +40096,7 @@
                         },
                         {
                           "code": "MAT 022B",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 3.0
                         }
                       ]
@@ -40107,7 +40107,7 @@
                       "courses": [
                         {
                           "code": "MATH 130",
-                          "title": "Linear Algebra and Di!erential",
+                          "title": "Linear Algebra and Differential",
                           "units": 5.0
                         }
                       ]
@@ -40840,7 +40840,7 @@
                       "courses": [
                         {
                           "code": "MATH 31A",
-                          "title": "Di\"erential and Integral Calculus",
+                          "title": "Differential and Integral Calculus",
                           "units": 4.0
                         }
                       ]
@@ -40968,7 +40968,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di\"erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]
@@ -41285,7 +41285,7 @@
                       "courses": [
                         {
                           "code": "MATH 31A",
-                          "title": "Di!erential and Integral Calculus",
+                          "title": "Differential and Integral Calculus",
                           "units": 4.0
                         }
                       ]
@@ -41413,7 +41413,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di!erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]
@@ -41430,7 +41430,7 @@
                       "courses": [
                         {
                           "code": "MATH 33B",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 4.0
                         }
                       ]
@@ -41444,7 +41444,7 @@
                           "courses": [
                             {
                               "code": "MATH 125",
-                              "title": "Di!erential Equations",
+                              "title": "Differential Equations",
                               "units": 3.0
                             }
                           ]
@@ -41454,7 +41454,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di!erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]
@@ -41698,7 +41698,7 @@
                       "courses": [
                         {
                           "code": "MATH 31A",
-                          "title": "Di!erential and Integral Calculus",
+                          "title": "Differential and Integral Calculus",
                           "units": 4.0
                         }
                       ]
@@ -41826,7 +41826,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di!erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]
@@ -41843,7 +41843,7 @@
                       "courses": [
                         {
                           "code": "MATH 33B",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 4.0
                         }
                       ]
@@ -41857,7 +41857,7 @@
                           "courses": [
                             {
                               "code": "MATH 125",
-                              "title": "Di!erential Equations",
+                              "title": "Differential Equations",
                               "units": 3.0
                             }
                           ]
@@ -41867,7 +41867,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di!erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]
@@ -42470,7 +42470,7 @@
                       "courses": [
                         {
                           "code": "MATH 3C",
-                          "title": "Ordinary Di!erential Equations with",
+                          "title": "Ordinary Differential Equations with",
                           "units": 4.0
                         }
                       ]
@@ -42493,7 +42493,7 @@
                       "courses": [
                         {
                           "code": "MATH 31A",
-                          "title": "Di!erential and Integral Calculus",
+                          "title": "Differential and Integral Calculus",
                           "units": 4.0
                         }
                       ]
@@ -43116,7 +43116,7 @@
                       "courses": [
                         {
                           "code": "MATH 31A",
-                          "title": "Di\"erential and Integral Calculus",
+                          "title": "Differential and Integral Calculus",
                           "units": 4.0
                         }
                       ]
@@ -43244,7 +43244,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di\"erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]
@@ -43261,7 +43261,7 @@
                       "courses": [
                         {
                           "code": "MATH 33B",
-                          "title": "Di\"erential Equations",
+                          "title": "Differential Equations",
                           "units": 4.0
                         }
                       ]
@@ -43275,7 +43275,7 @@
                           "courses": [
                             {
                               "code": "MATH 125",
-                              "title": "Di\"erential Equations",
+                              "title": "Differential Equations",
                               "units": 3.0
                             }
                           ]
@@ -43285,7 +43285,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di\"erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]
@@ -43533,7 +43533,7 @@
                       "courses": [
                         {
                           "code": "MATH 31A",
-                          "title": "Di!erential and Integral Calculus",
+                          "title": "Differential and Integral Calculus",
                           "units": 4.0
                         }
                       ]
@@ -43661,7 +43661,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di!erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]
@@ -43689,7 +43689,7 @@
                       "courses": [
                         {
                           "code": "MATH 33B",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 4.0
                         }
                       ]
@@ -43703,7 +43703,7 @@
                           "courses": [
                             {
                               "code": "MATH 125",
-                              "title": "Di!erential Equations",
+                              "title": "Differential Equations",
                               "units": 3.0
                             }
                           ]
@@ -43713,7 +43713,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di!erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]
@@ -44356,7 +44356,7 @@
                       "courses": [
                         {
                           "code": "COM SCI 35L",
-                          "title": "So!ware Construction Laboratory",
+                          "title": "Software Construction Laboratory",
                           "units": 4.0
                         }
                       ]
@@ -44442,7 +44442,7 @@
                       "courses": [
                         {
                           "code": "MATH 31A",
-                          "title": "Di\"erential and Integral Calculus",
+                          "title": "Differential and Integral Calculus",
                           "units": 4.0
                         }
                       ]
@@ -44570,7 +44570,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di\"erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]
@@ -44587,7 +44587,7 @@
                       "courses": [
                         {
                           "code": "MATH 33B",
-                          "title": "Di\"erential Equations",
+                          "title": "Differential Equations",
                           "units": 4.0
                         }
                       ]
@@ -44601,7 +44601,7 @@
                           "courses": [
                             {
                               "code": "MATH 125",
-                              "title": "Di\"erential Equations",
+                              "title": "Differential Equations",
                               "units": 3.0
                             }
                           ]
@@ -44611,7 +44611,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di\"erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]
@@ -44983,7 +44983,7 @@
                       "courses": [
                         {
                           "code": "MATH 31A",
-                          "title": "Di\"erential and Integral Calculus",
+                          "title": "Differential and Integral Calculus",
                           "units": 4.0
                         }
                       ]
@@ -45256,7 +45256,7 @@
                       "courses": [
                         {
                           "code": "MATH 31A",
-                          "title": "Di!erential and Integral Calculus",
+                          "title": "Differential and Integral Calculus",
                           "units": 4.0
                         }
                       ]
@@ -45384,7 +45384,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di!erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]
@@ -45412,7 +45412,7 @@
                       "courses": [
                         {
                           "code": "MATH 33B",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 4.0
                         }
                       ]
@@ -45426,7 +45426,7 @@
                           "courses": [
                             {
                               "code": "MATH 125",
-                              "title": "Di!erential Equations",
+                              "title": "Differential Equations",
                               "units": 3.0
                             }
                           ]
@@ -45436,7 +45436,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di!erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]
@@ -45818,7 +45818,7 @@
                       "courses": [
                         {
                           "code": "MATH 31A",
-                          "title": "Di!erential and Integral Calculus",
+                          "title": "Differential and Integral Calculus",
                           "units": 4.0
                         }
                       ]
@@ -45946,7 +45946,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di!erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]
@@ -46502,7 +46502,7 @@
                       "courses": [
                         {
                           "code": "MATH 3C",
-                          "title": "Ordinary Di!erential Equations with",
+                          "title": "Ordinary Differential Equations with",
                           "units": 4.0
                         }
                       ]
@@ -46599,7 +46599,7 @@
                       "courses": [
                         {
                           "code": "MATH 31A",
-                          "title": "Di!erential and Integral Calculus",
+                          "title": "Differential and Integral Calculus",
                           "units": 4.0
                         }
                       ]
@@ -47191,7 +47191,7 @@
                       "courses": [
                         {
                           "code": "MATH 31A",
-                          "title": "Di!erential and Integral Calculus",
+                          "title": "Differential and Integral Calculus",
                           "units": 4.0
                         }
                       ]
@@ -47319,7 +47319,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di!erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]
@@ -47336,7 +47336,7 @@
                       "courses": [
                         {
                           "code": "MATH 33B",
-                          "title": "Di!erential Equations",
+                          "title": "Differential Equations",
                           "units": 4.0
                         }
                       ]
@@ -47350,7 +47350,7 @@
                           "courses": [
                             {
                               "code": "MATH 125",
-                              "title": "Di!erential Equations",
+                              "title": "Differential Equations",
                               "units": 3.0
                             }
                           ]
@@ -47360,7 +47360,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di!erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]
@@ -48827,7 +48827,7 @@
                       "courses": [
                         {
                           "code": "MATH 31A",
-                          "title": "Di!erential and Integral Calculus",
+                          "title": "Differential and Integral Calculus",
                           "units": 4.0
                         }
                       ]
@@ -48955,7 +48955,7 @@
                           "courses": [
                             {
                               "code": "MATH 130",
-                              "title": "Linear Algebra and Di!erential",
+                              "title": "Linear Algebra and Differential",
                               "units": 5.0
                             }
                           ]

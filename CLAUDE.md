@@ -97,6 +97,7 @@ ASSIST PDFs → parser/parse_assist.py (pdfplumber) → all_agreements_v3.json
 | `matcher.py` | Matching engine (`match_agreement`, `match_all`), bottom-up: course → row → subgroup → group → section → agreement. `parse_completion_rule()` reads free-text rules ("Complete A or B", "Select 9.00 units…") into `subgroup_logic` (AND/OR) plus `min_count`. Rows with no CCSF equivalent (`not_articulated`) don't block completion. `python3 matcher.py` runs a sample report. |
 | `parser/parse_assist.py` | v3 ASSIST PDF parser (see below). |
 | `parser/validate.py` | Agreement validator (see "Validator" below). |
+| `parser/ligatures.py` | Repairs PDF ligature damage (`Di!erential` → `Differential`). The parser's `norm()` uses it, and `python3 parser/ligatures.py file.json` cleans an existing file. Add words to `KNOWN_WORDS` if new garbled text shows up. |
 | `parser/verified.json` | Agreements hand-checked against the ASSIST PDF. Only add an entry after checking it line by line. |
 | `tests/` | Unit tests: `python3 -m unittest discover tests`. |
 | `all_agreements_v3.json` | 112 agreements (UCB 21, UCLA 20, UCD 28, SFSU 23, SJSU 20) with 1,459 articulation rows. |
@@ -184,8 +185,8 @@ ASSIST PDFs → parser/parse_assist.py (pdfplumber) → all_agreements_v3.json
   The regex is fixed in PR #1, but the parser hasn't been re-run yet.
 - **Wrong major names:** "Biology Concentration in Ecology" → "Conservation Biology",
   "Apparel Design" → "Design".
-- **Bad characters and cut titles:** ligatures come out garbled (`Di"erential`,
-  `Di!erential`, `So"ware`), and some titles are cut off at line wraps.
+- **Cut titles:** some titles are cut off at line wraps. The garbled ligature text
+  (`Di!erential`, `So"ware`) was **fixed 2026-11-16** in both the parser and the data.
 - **Clean and verified:** Berkeley and UCLA Bioengineering.
 - **Planned:** a validator script and a check of the receiving-school header.
 - **Tests:** `python3 -m unittest discover tests` covers the validator and the matcher
@@ -415,7 +416,7 @@ clean.
   - 28 cross-school duplicates (SFSU/SJSU).
   - 12 broken AND lists (Berkeley Architecture requires "all 97" courses).
   - 12 empty rows, 8 empty agreements, 7 pick-N groups, 6 SJSU files with SFSU codes.
-  - 171 garbled titles.
+  - 171 garbled titles (fixed the same day by `parser/ligatures.py`; now 0).
 
 **After the matcher fix (2026-11-16):** 2 verified, 46 auto-parsed, 64 needs review.
 The pick-N problem is fixed in `matcher.py`, so that check was removed.

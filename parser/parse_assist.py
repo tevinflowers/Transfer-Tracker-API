@@ -15,6 +15,9 @@ from pathlib import Path
 from collections import defaultdict
 import pdfplumber
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from ligatures import fix_ligatures  # noqa: E402  (repairs ff/ft ligature damage)
+
 # ── Layout ───────────────────────────────────────────────────────────────────
 DIVIDER_X = 295
 Y_BAND    = 4
@@ -103,7 +106,7 @@ COURSE_RE   = re.compile(
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
 def norm(s):
-    return re.sub(r'\s+', ' ', s).strip()
+    return fix_ligatures(re.sub(r'\s+', ' ', s).strip())
 
 def is_skip(t):
     return bool(SKIP_RE.match(t.strip()))
