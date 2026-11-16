@@ -93,11 +93,18 @@ class ValidatorTests(unittest.TestCase):
         r = self.run_one(agreement(groups=groups))
         self.assertEqual(r[0]["status"], "auto-parsed")
 
-    def test_count_rule_over_subgroups_is_ambiguous_warning(self):
+    def test_count_rule_over_subgroups_is_ambiguous(self):
         groups = [{"group_number": 1, "completion_rule": "Complete 1 course from the following",
                    "subgroups": [{"label": "A", "articulation_rows": [row(single("X 1"), single("A 1"))]},
                                  {"label": "B", "articulation_rows": [row(single("X 2"), single("B 1"))]}]}]
-        r = self.run_one(agreement(groups=groups))
+        # In a required/admission section it's an error ...
+        r = self.run_one(agreement(groups=groups))  # test section is named "REQUIRED"
+        self.assertIn("count_rule_ambiguous", codes_for(r))
+        self.assertEqual(r[0]["status"], "needs review")
+        # ... elsewhere just a warning.
+        ag = agreement(groups=groups)
+        ag["requirement_sections"][0]["section_name"] = "STRONGLY RECOMMENDED COURSES"
+        r = self.run_one(ag)
         self.assertIn("count_rule_ambiguous", codes_for(r))
         self.assertEqual(r[0]["status"], "auto-parsed")
 

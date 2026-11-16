@@ -168,8 +168,37 @@ SCHOOL_ALIASES = {
     'southern california': 'USC',
 }
 
+# Keyword rules for the many ways the app may name a school, e.g.
+# "UC Los Angeles (UCLA)", "University of California, Berkeley", "San Jose State University".
+# CSU names are checked before UC ones so "Cal State LA" never becomes UCLA.
+_SCHOOL_PATTERNS = [
+    (r'san francisco state|\bsfsu\b|\bsf state\b', 'SFSU'),
+    (r'san jos[eé] state|\bsjsu\b', 'SJSU'),
+    (r'\bstate\b|\bcsu\b|cal state|polytechnic|cal poly', None),   # other CSUs: no alias
+    (r'berkeley|\bucb\b', 'UC Berkeley'),
+    (r'los angeles|\bucla\b', 'UCLA'),
+    (r'\bdavis\b|\bucd\b', 'UC Davis'),
+    (r'southern california|\busc\b', 'USC'),
+]
+
 def normalize_school(raw):
-    return SCHOOL_ALIASES.get(raw.lower().strip(), raw.strip())
+    """Map any reasonable school name to the name used in the data."""
+    text = (raw or '').strip()
+    if text.lower() in SCHOOL_ALIASES:
+        return SCHOOL_ALIASES[text.lower()]
+    low = text.lower()
+    for pattern, school in _SCHOOL_PATTERNS:
+        if re.search(pattern, low):
+            return school or text
+    return text
+
+
+def normalize_major(raw):
+    """Lowercase, '&' → 'and', drop punctuation and degree words, collapse spaces."""
+    t = (raw or '').lower().replace('&', ' and ')
+    t = re.sub(r'\b(b\.?\s?s|b\.?\s?a|a\.?\s?b|bs|ba)\.?$', ' ', t.strip())
+    t = re.sub(r'[^a-z0-9 ]+', ' ', t)
+    return re.sub(r'\s+', ' ', t).strip()
 
 def get_school(ag):
     """Extract normalized school name from an agreement."""
@@ -307,29 +336,51 @@ def list_agreements(
 
 @app.get("/agreements/find", tags=["Browse"])
 def find_agreement(
-    school: str = Query(..., description="School name or alias, e.g. 'UC Berkeley', 'ucla', 'sfsu'"),
+    school: str = Query(..., description="School name, e.g. 'UC Berkeley', 'UC Los Angeles (UCLA)', 'San Jose State University'"),
     major: str = Query(..., description="Major name, e.g. 'Bioengineering'"),
 ):
     """
-    Find the agreement(s) for a school + major. Exact major matches come first,
-    then partial matches. An empty list means we have no data for that school +
-    major yet. The app should show "no data yet", never "complete".
+    Find the agreement for a school + major.
+
+    `agreements` contains ONLY exact major matches (ignoring case, punctuation, '&'
+    vs 'and' and degree letters). Use agreements[0] when it isn't empty.
+
+    If it's empty there's no data for that school + major. The app must show
+    "no data yet" (never complete). `suggestions` lists similar majors at that school
+    ("Engineering" → "Aerospace Engineering", "Bioengineering", …) to offer as
+    "Did you mean…?". Never use a suggestion without the student choosing it.
     """
     school_n = normalize_school(school)
-    want = re.sub(r'\s+', ' ', major).strip().lower()
-    exact, partial = [], []
-    for idx, ag in enumerate(AGREEMENTS):
-        if get_school(ag) != school_n:
-            continue
-        have = (ag.get('metadata', {}).get('major') or '').lower()
-        if have == want:
+    want = normalize_major(major)
+    exact, suggestions = [], []
+    at_school = [(idx, ag) for idx, ag in enumerate(AGREEMENTS) if get_school(ag) == school_n]
+    for idx, ag in at_school:
+        have = normalize_major(ag.get('metadata', {}).get('major'))
+        if have and have == want:
             exact.append(agreement_summary(ag, idx))
-        elif want and have and (want in have or have in want):
-            partial.append(agreement_summary(ag, idx))
-    results = exact + partial
-    out = {"school": school_n, "major": major, "count": len(results), "agreements": results}
-    if not results:
-        out["message"] = (f"No {school_n} {major} agreement yet. Show this as 'no data yet' "
+    if not exact and want:
+        want_words = set(want.split())
+        scored = []
+        for idx, ag in at_school:
+            have = normalize_major(ag.get('metadata', {}).get('major'))
+            if not have:
+                continue
+            overlap = len(want_words & set(have.split()))
+            ratio = difflib.SequenceMatcher(None, want, have).ratio()
+            if overlap or ratio >= 0.6 or want in have or have in want:
+                scored.append((-(overlap + ratio), agreement_summary(ag, idx)))
+        suggestions = [summary for _, summary in sorted(scored, key=lambda t: t[0])[:5]]
+    out = {
+        "school": school_n,
+        "school_has_data": bool(at_school),
+        "major": major,
+        "count": len(exact),
+        "agreements": exact,
+        "suggestions": suggestions,
+    }
+    if not exact:
+        where = school_n if at_school else f"{school_n} (no agreements for this school yet)"
+        out["message"] = (f"No {where} {major} agreement yet. Show this as 'no data yet' "
                           f"(never as complete).")
     return out
 

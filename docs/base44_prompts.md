@@ -8,9 +8,55 @@ API base URL: `https://transfer-tracker-api-production.up.railway.app`
 
 ## Order to send
 
-1. Prompt A, then Prompt B, then the label fix (these finish roadmap step 3).
-2. Prompt C, then Prompt D (roadmap step 4). Prompt C relies on Prompt A's
-   "no data yet" screen.
+1. ✅ Prompt A, ✅ Prompt B (sent 2026-11-16), then the label fix.
+2. ✅ Prompt C (sent 2026-11-16). **Next: Prompt C2** (fixes from testing C), then
+   Prompt D.
+
+---
+
+## Prompt C2: Fixes after testing Prompt C
+
+Testing C showed four problems:
+- **UCLA and SJSU found nothing.** The API didn't understand names like "UC Los
+  Angeles (UCLA)". That's fixed in the API.
+- **"Engineering" showed Aerospace Engineering's requirements.** The API used to
+  swap in a partial match. Now it returns suggestions instead.
+- **A false 100%.** That was a matcher/data problem, now handled cautiously in the
+  API.
+- **No banner or message for SJSU and Sonoma.**
+
+```text
+Update Major Prep to match changes in my Transfer Tracker API (base URL https://transfer-tracker-api-production.up.railway.app):
+
+1. GET /agreements/find now returns:
+   { school, school_has_data, major, count, agreements: [...], suggestions: [...], message? }
+   - "agreements" holds ONLY exact matches for that school + major. Use agreements[0] when count > 0.
+   - "suggestions" holds similar majors at that school (for example "Engineering" → Aerospace Engineering, Bioengineering, Civil Engineering, Mechanical Engineering). NEVER load a suggestion automatically.
+   - When count is 0, show the "We don't have [School] [Major] requirements yet" screen (also for schools with no data at all, like Sonoma State), and below it, if there are suggestions, show "Did you mean…?" with one button per suggestion (major name). Tapping one changes that target school's major in the profile to the suggestion, then reloads Major Prep.
+
+2. Major picker: when the student adds or edits a target school, load the majors we have data for from GET /majors?school={school name} (each item has "major" and "degree_type"). Show those first, plus an "Other (no requirement data yet)" option with a text box.
+
+3. Remove any cached Major Prep results and fetch again for every target school (results from before this change may be wrong).
+
+4. Use the API's numbers for status: the big % and "X of Y requirement groups complete" come from overall in POST /match/{id}, and each section/group status comes from the response. Don't compute your own "complete".
+
+5. Show the data-quality banner from agreements[0].data_status:
+   - "needs review": yellow banner with data_note and a link to https://assist.org (for example, every San Jose State major currently shows this).
+   - "auto-parsed": small grey note "Automatically read from ASSIST".
+   - "verified": small "Verified" badge.
+   Replace the footer "Lists are representative — verify course-by-course articulation for this campus on ASSIST.org." with: "Requirements come from ASSIST.org agreements for [academic_year]. Always confirm with a counselor."
+```
+
+**Test afterwards:**
+1. Set UC Berkeley's major to **Bioengineering**. Major Prep should show the real
+   agreement, with a Verified badge. Its admission requirements are CHEM 1A, MATH
+   51–54, PHYSICS 7A/7B and R&C (there should be no ASTRON or MCELLBI rows).
+2. UCLA Bioengineering, Biology and Economics should all show requirements.
+3. Set a school's major to "Engineering". You should see "no data yet" plus "Did you
+   mean…?" buttons.
+4. San Jose State (any major) should show the yellow ASSIST banner.
+5. Sonoma State should show "no data yet".
+6. 100% should only appear when nothing is left under "Still need".
 
 ---
 

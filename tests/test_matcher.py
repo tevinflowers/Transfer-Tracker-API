@@ -72,11 +72,25 @@ class GroupMatchingTests(unittest.TestCase):
         self.assertEqual(status(g), ("not_started", 0.0))
         self.assertEqual(status(g, prog={"CS 110B"})[0], "in_progress")
 
-    def test_one_course_across_subgroups(self):
+    def test_ambiguous_rule_over_subgroups_is_cautious(self):
+        # "Complete 1 course from the following" over A and B: the parser kept only the
+        # last subgroup's rule, so A is treated as fully required and B as "pick 1".
         g = group("Complete 1 course from the following.",
-                  {"A": [row("ENGIN 7", "ENGN 38"), row("CS 61A", "CS 111B")],
-                   "B": [row("EECS 16A", "ENGN 16"), row("CS 61B", "CS 110C")]})
-        self.assertEqual(status(g, done={"CS 110C"}), ("complete", 1.0))
+                  {"A": [row("MATH 51", "MATH 110A"), row("MATH 52", "MATH 110B")],
+                   "B": [row("CHEM 1B", "CHEM 101B"), row("BIO 1B", "BIO 100B")]})
+        self.assertEqual(status(g, done={"CHEM 101B"}), ("in_progress", 0.5))
+        self.assertEqual(status(g, done={"MATH 110A", "MATH 110B"})[0], "in_progress")
+        self.assertEqual(status(g, done={"MATH 110A", "MATH 110B", "BIO 100B"}), ("complete", 1.0))
+
+    def test_ambiguous_rule_never_completes_on_one_course(self):
+        # The Berkeley Aerospace bug: one course made the whole admission group "complete".
+        g = group("Complete 1 course from the following.",
+                  {"A": [row("MATH 51", "MATH 110A"), row("PHYSICS 7A", "PHYC 4A")],
+                   "B": [row("R&C", "ENGL C1000")],
+                   "C": [row("CHEM 1A", "CHEM 101A"), row("ASTRON 7A")]})
+        self.assertNotEqual(status(g, done={"ENGL C1000"})[0], "complete")
+        self.assertNotEqual(status(g, done={"CHEM 101A"})[0], "complete")
+        self.assertEqual(status(g, done={"MATH 110A", "PHYC 4A", "ENGL C1000", "CHEM 101A"})[0], "complete")
 
     def test_two_courses_partial(self):
         g = group("Complete 2 courses from the following.",
@@ -144,13 +158,20 @@ class RealAgreementTests(unittest.TestCase):
         r = match_agreement(ag, ["ENGN 38"])
         self.assertEqual(self.find_group(r, "Complete 1 course from A")["status"], "complete")
 
-    def test_berkeley_bioengineering_one_course_from_list(self):
+    def test_berkeley_bioengineering_recommended_group(self):
+        # Strongly recommended: A = ENGIN 7 (ENGN 38 + ENGN 10B) / COMPSCI 61A (no CCSF
+        # course), B = pick 1 (COMPSCI 61B <- CS 110C, ...). Read cautiously: A required.
         ag = self.by_file["CCSF_to_UCBerkeley_Bioengineering_BS.pdf"]
-        # ENGIN 7 needs ENGN 38 + ENGN 10B; COMPSCI 61B is satisfied by CS 110C alone.
-        r = match_agreement(ag, ["ENGN 38"])
-        self.assertEqual(self.find_group(r, "Complete 1 course from the following.")["status"], "in_progress")
-        r = match_agreement(ag, ["CS 110C"])
-        self.assertEqual(self.find_group(r, "Complete 1 course from the following.")["status"], "complete")
+        rule = "Complete 1 course from the following."
+        self.assertEqual(self.find_group(match_agreement(ag, ["CS 110C"]), rule)["status"], "in_progress")
+        r = match_agreement(ag, ["ENGN 38", "ENGN 10B", "CS 110C"])
+        self.assertEqual(self.find_group(r, rule)["status"], "complete")
+
+    def test_berkeley_aerospace_admission_not_complete_from_few_courses(self):
+        ag = self.by_file["CCSF_to_UCBerkeley_Aerospace_Engineering_BS.pdf"]
+        r = match_agreement(ag, ["MATH 110A", "MATH 110B", "ENGL C1000", "ENGL C1001", "CHEM 101A"])
+        section = next(s for s in r["sections"] if s["section_name"] == "REQUIRED COURSES FOR ADMISSION")
+        self.assertNotEqual(section["status"], "complete")
 
     def test_berkeley_bioengineering_everything_done(self):
         ag = self.by_file["CCSF_to_UCBerkeley_Bioengineering_BS.pdf"]

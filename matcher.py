@@ -105,6 +105,18 @@ def parse_completion_rule(rule):
     }
 
 
+def is_ambiguous_count_rule(rule, n_subgroups):
+    """
+    "Complete 1 course from the following" on a group with several subgroups.
+    The parser keeps only the LAST rule line it reads in a group, so this text usually
+    belongs to the last subgroup (e.g. Berkeley Aerospace: A = math/physics, all
+    required; B = R&C; C = "complete 1 course" science list). See match_group.
+    """
+    p = parse_completion_rule(rule)
+    return (p['count_unit'] == 'course' and not p['per_subgroup'] and n_subgroups >= 2
+            and 'following' in (rule or '').lower())
+
+
 # ── Row-level matching ────────────────────────────────────────────────────────
 
 def match_ccsf_equiv(ccsf_equiv, completed, in_progress):
@@ -328,6 +340,26 @@ def _per_subgroup_rule(sg_results, need):
     return 'not_started', progress
 
 
+def _cautious_rule(sg_results, need):
+    """Ambiguous multi-subgroup count rule: earlier subgroups all-required, last one counts."""
+    parts = []
+    for sg in sg_results[:-1]:
+        if sg['status'] == 'not_articulated':
+            continue
+        parts.append((sg['status'], 1.0 if sg['status'] == 'complete' else sg['progress']))
+    last = sg_results[-1]
+    if any(r['status'] != 'not_articulated' for r in last['rows']):
+        parts.append(_count_rule(last['rows'], need))
+    if not parts:
+        return 'not_started', 0.0
+    progress = sum(p[1] for p in parts) / len(parts)
+    if all(p[0] == 'complete' for p in parts):
+        return 'complete', 1.0
+    if any(p[0] in ('complete', 'in_progress') for p in parts):
+        return 'in_progress', progress
+    return 'not_started', progress
+
+
 def _row_units(row):
     """Units a row is worth at the destination school (first option if several)."""
     side = row.get('ucb_requirement', {})
@@ -380,6 +412,11 @@ def match_group(group, completed, in_progress):
     if count_unit == 'units':
         counted = _units_rule(subgroups, sg_results, direct_rows, direct_results,
                               rule_parsed['min_units'])
+    elif is_ambiguous_count_rule(group.get('completion_rule', ''), len(sg_results)):
+        # Cautious reading until the parser keeps per-subgroup rules: every earlier
+        # subgroup is fully required, and the count applies to the last subgroup only.
+        # This can understate progress but never shows "complete" too early.
+        counted = _cautious_rule(sg_results, rule_parsed['count'])
     elif count_unit == 'course' or (count_unit == 'sequence' and not sg_results):
         # Each row is one course (or one bundled sequence like PHYC 4A + 4AL).
         if rule_parsed['per_subgroup'] and sg_results:
