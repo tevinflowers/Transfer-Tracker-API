@@ -17,8 +17,9 @@ API base URL: `https://transfer-tracker-api-production.up.railway.app`
 
 ## Prompt F: Every CCSF course in autocomplete
 
-The API now has CCSF's full 2026–27 catalog: about 1,900 courses with titles, units
-and UC-transferable status, plus old course codes (ENGL 1B → ENGL C1003). The app
+The API now has CCSF's full 2026–27 **and** 2025–26 catalogs: about 2,050 courses
+with titles, units and UC-transferable status, plus old course codes (ENGL 1B → ENGL
+C1003) and courses dropped since 2025–26. The app
 already calls `/courses`, so autocomplete covers everything automatically. This prompt
 shows the extra details.
 

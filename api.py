@@ -143,21 +143,27 @@ def _build_catalog():
             usc_transfer[_ncode(code)] = transfers
 
     catalog = {}
-    # 1. The college catalog
+    latest_year = max(CCSF_CATALOG.get('catalog_years') or [''])
+    # 1. The college catalog (all years; "current" = in the newest year)
     for code, c in CCSF_CATALOG.get('courses', {}).items():
         code = _ncode(code)
         catalog[code] = {
             'code': code, 'title': c.get('title'), 'units': c.get('units'),
             'units_max': c.get('units_max'), 'uc_transferable': c.get('uc_transferable'),
-            'transfers_to_usc': usc_transfer.get(code), 'in_current_catalog': True,
+            'transfers_to_usc': usc_transfer.get(code),
+            'in_current_catalog': latest_year in c.get('catalog_years', []),
             'catalog_years': c.get('catalog_years', []), 'formerly': c.get('formerly', []),
             'renamed_to': None,
         }
     # Old codes → their replacements
     for code, c in list(catalog.items()):
+        if not c['in_current_catalog']:
+            continue
         for old in c['formerly']:
             old = _ncode(old)
-            if old not in catalog:
+            if old in catalog and not catalog[old]['in_current_catalog']:
+                catalog[old]['renamed_to'] = code   # e.g. ENGL 1B (2025–26) → ENGL C1003
+            elif old not in catalog:
                 catalog[old] = {
                     'code': old, 'title': c['title'], 'units': c['units'], 'units_max': c['units_max'],
                     'uc_transferable': c['uc_transferable'], 'transfers_to_usc': usc_transfer.get(old),
