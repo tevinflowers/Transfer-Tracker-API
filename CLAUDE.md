@@ -20,30 +20,31 @@ timestamp.
 
 ## Session log
 
-**Last updated:** 2026-11-16 03:00 UTC
+**Last updated:** 2026-11-16 03:15 UTC
 
 **Last 2 topics**
-1. The owner sent Base44 Prompts A, B and C. Testing C showed three problems, all
-   fixed in the API:
-   - **Wrong major:** `/agreements/find` returned partial matches as if exact. An
-     "Engineering" major showed **Aerospace Engineering**. Now only exact matches
-     come back, and partial ones are `suggestions`.
-   - **Long school names didn't match:** "UC Los Angeles (UCLA)", "San Jose State
-     University". `normalize_school` now uses keyword patterns.
-   - **False 100%:** "Complete 1 course from the following" over several subgroups
-     (the parser keeps only the last subgroup's rule) let one course complete
-     Berkeley engineering admission groups. The matcher now reads it cautiously, and
-     the validator calls it an error in required sections.
-2. Wrote Base44 Prompt C2 (`docs/base44_prompts.md`): use exact matches only, "Did
-   you mean…?" suggestions, a major picker from `/majors`, the API's status numbers,
-   and the data-quality banner.
+1. The owner sent Prompts C2 and D. Sonoma State now correctly shows "no data yet".
+   Fixed in the API:
+   - **`/courses` search was too loose:** "RE" matched "Culture" and "Religion". It now
+     matches code prefixes, plus title words for 3+ letters. When nothing matches it
+     returns an empty list with a `message`.
+   - **Ligature repair missed damage at the end of a word:** `Witchcra"` is now
+     "Witchcraft", and the validator now catches that case too.
+2. Wrote Base44 Prompt C3: show "Did you mean…?" suggestions and the needs-review
+   banner on the University Requirements card too, plus free-text courses when
+   autocomplete finds nothing.
+   - **Why SJSU showed no banner:** the owner's SJSU major is "Engineering", and
+     there's no exact agreement for it (SJSU has Civil, Computer and Mechanical).
 
 **Next 2 topics**
-1. **The owner, in Base44:** send Prompt C2 and test it, then the label fix and
-   Prompt D. Then rehearse the demo.
-2. **Backend:** parser fix to keep a rule for each subgroup (needs the PDFs re-uploaded,
-   ideally the 2026–27 versions; the SJSU PDFs are still SFSU copies). Then re-parse
-   and validate.
+1. **The owner, in Base44:** send Prompt C3 and test it, then the label fix if
+   "majorGPA" still shows. Then rehearse the demo.
+2. **Backend:**
+   - Parser fix to keep a rule for each subgroup.
+   - Re-download the SJSU PDFs (they're SFSU copies), ideally the 2026–27 versions.
+   - Re-parse and validate.
+   - Consider a CCSF course catalog beyond the agreements, so courses like Real
+     Estate autocomplete.
 
 ## Working with the owner
 
@@ -129,8 +130,13 @@ ASSIST PDFs → parser/parse_assist.py (pdfplumber) → all_agreements_v3.json
   - **School names:** `normalize_school` understands long names ("UC Los Angeles
     (UCLA)", "San Jose State University", "University of California, Berkeley").
     CSU names are checked first, so "Cal State LA" never becomes UCLA.
-- `GET /courses?q=X`: CCSF course search for autocomplete. The catalog is built from
-  the CCSF side of every agreement plus the USC GE list.
+- `GET /courses?q=X`: CCSF course search for autocomplete.
+  - **Matching:** code-prefix matches first, then title words that start with the
+    term (3+ letters only).
+  - **No match:** an empty list plus a `message`, and the app lets the student type the
+    course freely.
+  - **Coverage:** the catalog only has courses that appear in an agreement (plus the
+    USC GE list). Courses like CCSF Real Estate aren't in it.
 - `POST /courses/check` `{codes: [...]}`: `known` courses, and `unknown` ones with
   suggestions (`PHYS 4A` → `PHYC 4A`; `RENAMED_CODES` maps old codes like `ENGL 1A` →
   `ENGL C1000`). "Unknown" only means the course isn't in any agreement.

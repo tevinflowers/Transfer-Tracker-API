@@ -82,6 +82,18 @@ class ApiTests(unittest.TestCase):
         self.assertIn("PHYC 4A", codes)
         self.assertTrue(CLIENT.get("/courses", params={"q": "calculus"}).json()["count"] >= 3)
 
+    def test_short_search_matches_codes_only(self):
+        # "RE" must not match "Culture", "Religion", "Prehistory"...
+        r = CLIENT.get("/courses", params={"q": "RE"}).json()
+        self.assertTrue(all(c["code"].startswith("RE") for c in r["courses"]))
+        if not r["courses"]:
+            self.assertIn("message", r)
+
+    def test_title_word_search(self):
+        codes = [c["code"] for c in CLIENT.get("/courses", params={"q": "calc"}).json()["courses"]]
+        self.assertIn("MATH 110A", codes)
+        self.assertNotIn("ANTH 8", codes)
+
     def test_course_check_suggests_fix(self):
         r = CLIENT.post("/courses/check", json={"codes": ["PHYS 4A", "phyc 4a", "ENGL 1A"]}).json()
         self.assertEqual([c["code"] for c in r["known"]], ["PHYC 4A"])

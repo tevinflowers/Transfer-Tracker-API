@@ -31,6 +31,8 @@ HERE = Path(__file__).resolve().parent
 REPO = HERE.parent
 sys.path.insert(0, str(REPO))
 from matcher import parse_completion_rule  # noqa: E402  (same rule logic the API uses)
+sys.path.insert(0, str(HERE))
+from ligatures import fix_ligatures  # noqa: E402
 
 DEFAULT_DATA = REPO / "all_agreements_v3.json"
 VERIFIED_FILE = HERE / "verified.json"
@@ -252,7 +254,7 @@ def check_rows(ag, iss):
             for opt in side_options(side):
                 for c in opt:
                     title = c.get("title", "")
-                    if GARBLED_RE.search(title):
+                    if GARBLED_RE.search(title) or fix_ligatures(title) != title:
                         iss.add("warning", "garbled_text", f'Garbled characters in title "{title}" ({c.get("code")}).', w)
                     elif TRUNCATED_RE.search(title.strip()):
                         iss.add("info", "truncated_title", f'Title looks cut off: "{title}" ({c.get("code")}).', w)

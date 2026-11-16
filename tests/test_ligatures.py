@@ -15,6 +15,7 @@ class LigatureTests(unittest.TestCase):
         self.assertEqual(fix_ligatures('So"ware Engineering'), "Software Engineering")
         self.assertEqual(fix_ligatures("So!ware"), "Software")
         self.assertEqual(fix_ligatures('A"er the Roman Empire'), "After the Roman Empire")
+        self.assertEqual(fix_ligatures('Magic, Witchcra", and Religion'), "Magic, Witchcraft, and Religion")
         self.assertEqual(fix_ligatures("Complete 1 course in 3 di!erent areas."),
                          "Complete 1 course in 3 different areas.")
 

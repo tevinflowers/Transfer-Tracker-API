@@ -34,14 +34,19 @@ KNOWN_WORDS = {
     "first", "film", "films", "final", "finance", "financial", "fine", "fitness",
     "profile", "proficiency", "qualifications", "certification", "attention",
     "pattern", "patterns", "written", "matters", "settings", "battery",
+    # words ending in a ligature ("Witchcra\"" → "Witchcraft")
+    "witchcraft", "crafts", "staff", "stuff", "off", "cliff", "tariff", "sheriff",
+    "theft", "gift", "swift", "spacecraft", "handcraft", "statecraft",
 }
 
-DAMAGED_WORD_RE = re.compile(r"[A-Za-z]*[A-Za-z][" + re.escape(DAMAGE_CHARS) + r"][A-Za-z]+")
+# A damaged word: letters, a damage symbol, then letters or the end of the word
+# (ligatures can end a word, e.g. "Witchcra\"" for "Witchcraft").
+DAMAGED_WORD_RE = re.compile(r"[A-Za-z]*[A-Za-z][" + re.escape(DAMAGE_CHARS) + r"][A-Za-z]*")
 
 
 def _repair_word(word):
     for i, ch in enumerate(word):
-        if ch in DAMAGE_CHARS and 0 < i < len(word) - 1:
+        if ch in DAMAGE_CHARS and i > 0:
             for lig in LIGATURES:
                 candidate = word[:i] + lig + word[i + 1:]
                 if candidate.lower() in KNOWN_WORDS:

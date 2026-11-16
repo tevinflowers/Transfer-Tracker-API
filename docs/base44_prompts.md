@@ -9,8 +9,43 @@ API base URL: `https://transfer-tracker-api-production.up.railway.app`
 ## Order to send
 
 1. ✅ Prompt A, ✅ Prompt B (sent 2026-11-16), then the label fix.
-2. ✅ Prompt C (sent 2026-11-16). **Next: Prompt C2** (fixes from testing C), then
-   Prompt D.
+2. ✅ Prompt C, ✅ Prompt C2, ✅ Prompt D (sent 2026-11-16). **Next: Prompt C3**
+   (fixes from testing C2 and D), then the label fix if it's still needed.
+
+---
+
+## Prompt C3: Suggestions on every Major Prep card, and free-text courses
+
+Testing C2 and D showed two gaps:
+- **San Jose State "Engineering" showed "no data yet" with no way forward.** SJSU has
+  Civil, Computer and Mechanical Engineering, but there's no plain "Engineering"
+  agreement. The University Requirements card didn't offer the API's suggestions, and
+  the ASSIST banner only appears once a real agreement is chosen.
+- **The autocomplete for "RE" listed unrelated courses.** That's fixed in the API: it
+  now matches code prefixes, plus title words for 3+ letters. CCSF Real Estate
+  courses aren't in any agreement, so the API returns an empty list with a message.
+
+```text
+Two fixes, using my Transfer Tracker API (https://transfer-tracker-api-production.up.railway.app):
+
+1. Everywhere Major Prep appears for a school (the Major Prep page AND the Major Prep card on University Requirements), when GET /agreements/find returns count 0:
+   - Show the "We don't have [School] [Major] requirements yet" text.
+   - If "suggestions" isn't empty, show "Did you mean…?" with one button per suggested major (for example San Jose State: Civil Engineering, Computer Engineering, Mechanical Engineering). Tapping one sets that school's major to it in the profile and reloads.
+   - Also show the yellow data-quality banner (data_status "needs review" with data_note and an https://assist.org link) on the University Requirements card when the school's agreement needs review, not only on the Major Prep page.
+
+2. Course autocomplete on the course form:
+   - Only call GET /courses?q=… once at least 2 characters are typed (wait about 300 ms after typing stops), and show exactly the courses the API returns. Don't add, re-sort or filter the list in the app.
+   - If the API returns no courses, show one line under the field: "Not in our course list. You can still add it." Then let the student type the code, title and units themselves and save normally. Don't run the "Did you mean" typo check for these courses unless the API's /courses/check returns suggestions.
+```
+
+**Test afterwards:**
+1. San Jose State with major "Engineering" shows "Did you mean…?" buttons on both
+   the Major Prep page and the University Requirements card. Tapping **Mechanical
+   Engineering** shows its requirements with the yellow ASSIST banner. (All SJSU data
+   needs review: those files are copies of SFSU's.)
+2. Typing "RE" shows "Not in our course list. You can still add it." Adding
+   "RE 184 Real Estate Practice, 3 units" still saves.
+3. Typing "phyc 4" lists PHYC 4A, 4AL, 4B…, and "calc" lists the calculus courses.
 
 ---
 
