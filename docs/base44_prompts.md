@@ -9,8 +9,49 @@ API base URL: `https://transfer-tracker-api-production.up.railway.app`
 ## Order to send
 
 1. ✅ Prompt A, ✅ Prompt B (sent 2026-11-16), then the label fix.
-2. ✅ Prompt C, ✅ Prompt C2, ✅ Prompt D (sent 2026-11-16). **Next: Prompt C3**
-   (fixes from testing C2 and D), then the label fix if it's still needed.
+2. ✅ Prompts C, C2, D and C3 (sent 2026-11-16). **Next: Prompt E** (USC), then the
+   label fix if it's still needed.
+
+---
+
+## Prompt E: USC requirements
+
+USC isn't on ASSIST. It publishes one school-wide agreement with CCSF, covering GE,
+writing, foreign language, course equivalents and which courses transfer. There's no
+major prep. The API now serves all of it.
+
+```text
+Add real USC requirements using my Transfer Tracker API (https://transfer-tracker-api-production.up.railway.app). USC is different from the UC/CSU schools: it has one school-wide agreement and no major-specific requirements.
+
+1. Detecting USC: GET /agreements/find for USC returns count 0 plus a "school_wide" agreement. When "school_wide" is present, treat the school as USC-style.
+
+2. Get everything in one call:
+   POST /match/usc   body { "completed_courses": [...], "in_progress_courses": [...] } (same rules as /match: real grades C- or better count as completed; In Progress courses as in progress)
+   Response:
+   - ge: same shape as POST /match/{id}, with 3 sections: "USC GE CORE LITERACY" (categories A–F, 8 courses), "USC GE GLOBAL PERSPECTIVES" (G and H), "USC LOWER DIVISION WRITING". ge.overall.progress_pct is the USC GE %.
+   - course_equivalences: [{ ccsf_courses, usc_courses, status, courses_needed }]. CCSF courses that count as specific USC courses (for example CHEM 101A = USC CHEM 105A).
+   - foreign_language: { level, satisfied_by }. Highest USC language level reached (0–4).
+   - transfer_check: [{ code, status, flags }] for each of the student's courses. status is transfers, transfers_with_conditions, does_not_transfer or not_listed. Each flag has a code and a meaning, for example "ONL": online sections only earn elective units.
+   - rules, notes: USC rules to show (C- minimum grade, 64 transfer units max, 2 of the 8 GE courses must be taken at USC).
+
+3. For USC, on University Requirements:
+   - Replace the Cal-GETC / UC 7-Course / CSU Golden Four cards with a "USC General Education" card (ge.overall.progress_pct, "X of Y requirement groups complete") that opens the GE detail. Show it with the same section → group → row layout as Major Prep (rows show the USC category on the left, the CCSF course on the right, and a status).
+   - Add a "Foreign language" line: "Level {level} of 3 reached" with the note "Many USC majors require level 3 (third semester)".
+   - Show the notes as small info lines, especially: "At least 2 of the 8 GE courses must be taken at USC after you enroll."
+   - Readiness % for USC = ge.overall.progress_pct, with the existing "Major Prep not included (no data yet)" note.
+
+4. For USC, on the Major Prep page/card: show "USC doesn't publish major prep for transfer students. Check your USC department's website." and below it a "Courses that count as USC courses" list from course_equivalences: "CHEM 101A → USC CHEM 105A" with a status icon, and "Still need: …" for incomplete ones.
+
+5. On the GPA page, when USC is a target school, show a small tag on any course whose transfer_check status is "does_not_transfer" ("Doesn't transfer to USC") or has an "ONL" flag ("Online sections don't count for USC GE/language").
+
+6. Course autocomplete: some courses now come back with "title": null (we know the code exists but not its name yet). Show just the code for those, and let the student type the title.
+```
+
+**Test afterwards:**
+1. **Your real account with USC as a target:** University Requirements → USC shows "USC General Education" with a %, plus the language line and the "2 of 8 at USC" note. There should be no Cal-GETC or Golden Four cards for USC.
+2. **Major Prep for USC:** shows the "check your department" message plus "Courses that count as USC courses". CHEM 101B → USC CHEM 105B should have a check mark.
+3. **Transfer tags:** add RE 181. With USC as a target, the course gets a "Doesn't transfer to USC" tag.
+4. **Autocomplete:** typing "RE" now lists R E 181 and R E 189.
 
 ---
 

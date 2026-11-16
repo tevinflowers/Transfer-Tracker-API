@@ -55,6 +55,7 @@ INSTITUTION_KEYWORDS = [
     ("davis", "UC Davis"),
     ("san francisco state", "SFSU"),
     ("san jose state", "SJSU"),
+    ("southern california", "USC"),
 ]
 
 # Calculus course codes are distinctive per campus. If an agreement's destination
@@ -253,7 +254,7 @@ def check_rows(ag, iss):
         for side in (dest, ccsf):
             for opt in side_options(side):
                 for c in opt:
-                    title = c.get("title", "")
+                    title = c.get("title") or ""
                     if GARBLED_RE.search(title) or fix_ligatures(title) != title:
                         iss.add("warning", "garbled_text", f'Garbled characters in title "{title}" ({c.get("code")}).', w)
                     elif TRUNCATED_RE.search(title.strip()):

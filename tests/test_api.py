@@ -20,7 +20,7 @@ class ApiTests(unittest.TestCase):
     def test_health(self):
         r = CLIENT.get("/").json()
         self.assertEqual(r["status"], "ok")
-        self.assertEqual(r["agreements_loaded"], 112)
+        self.assertEqual(r["agreements_loaded"], 113)  # 112 ASSIST + USC school-wide
 
     def test_find_agreement(self):
         r = CLIENT.get("/agreements/find", params={"school": "berkeley", "major": "bioengineering"}).json()
@@ -85,7 +85,7 @@ class ApiTests(unittest.TestCase):
     def test_short_search_matches_codes_only(self):
         # "RE" must not match "Culture", "Religion", "Prehistory"...
         r = CLIENT.get("/courses", params={"q": "RE"}).json()
-        self.assertTrue(all(c["code"].startswith("RE") for c in r["courses"]))
+        self.assertTrue(all(c["code"].replace(" ", "").startswith("RE") for c in r["courses"]))
         if not r["courses"]:
             self.assertIn("message", r)
 
