@@ -493,11 +493,22 @@ def search_courses(q: str = Query("", description="Code or title text, e.g. 'phy
     if not term:
         items = sorted(CATALOG.values(), key=lambda c: c['code'])
     else:
-        starts = [c for c in CATALOG.values() if c['code'].startswith(term)]
-        contains = [c for c in CATALOG.values() if c not in starts and
-                    (term in c['code'] or term in (c['title'] or '').upper())]
-        items = sorted(starts, key=lambda c: c['code']) + sorted(contains, key=lambda c: c['code'])
-    return {"count": len(items[:limit]), "total_courses": len(CATALOG), "courses": items[:limit]}
+        # 1) codes that start with what was typed ("PHYC 4" → PHYC 4A, PHYC 4AL)
+        starts = sorted((c for c in CATALOG.values() if c['code'].startswith(term)),
+                        key=lambda c: c['code'])
+        # 2) title words that start with it ("calc" → Calculus I). Short inputs like
+        #    "RE" only match codes, so they don't pull in "Culture", "Religion", etc.
+        words = []
+        if len(term) >= 3:
+            words = sorted((c for c in CATALOG.values() if c not in starts and
+                            any(w.startswith(term) for w in re.findall(r'[A-Z0-9]+', (c['title'] or '').upper()))),
+                           key=lambda c: c['code'])
+        items = starts + words
+    out = {"count": len(items[:limit]), "total_courses": len(CATALOG), "courses": items[:limit]}
+    if not items:
+        out["message"] = ("No matching course in our agreement data. The student can still type "
+                          "the code and title in; it just won't count toward any agreement yet.")
+    return out
 
 
 @app.post("/courses/check", tags=["Courses"])
