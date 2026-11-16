@@ -20,25 +20,23 @@ timestamp.
 
 ## Session log
 
-**Last updated:** 2026-11-16 01:20 UTC
+**Last updated:** 2026-11-16 01:30 UTC
 
 **Last 2 topics**
-1. Ran the step 3 test checklist. It found 3 issues:
-   - The demo banner is missing.
-   - A school with no Major Prep data (USC) shows as 100% complete once one course is
-     tagged.
-   - Current courses should default to In Progress.
-   Wrote Base44 Prompt A (banner + "no data is never complete") and Prompt B (In
-   Progress default + projected grades).
-2. Added the Lichten task list: the ASSIST data collection pipeline and a
-   multi-school / multi-major stress test, alongside the data quality plan and the AI
-   upload idea.
+1. Built the agreement validator (`parser/validate.py`), with `parser/verified.json`
+   and 17 tests in `tests/`. Result on the current data:
+   - 2 verified, 43 auto-parsed, 67 needs review.
+   - The 2 hand-verified Bioengineering agreements pass.
+2. Added the Lichten task list (ASSIST data pipeline, multi-school stress test) and the
+   ASSIST API email timeline.
 
 **Next 2 topics**
-1. Send Prompts A and B, re-run the checklist, and rehearse the demo script. That
-   finishes step 3.
-2. Start Task 1 (data pipeline). First build `parser/validate.py`, then the batch
-   download → parse → validate workflow.
+1. Finish roadmap step 3 in Base44: send Prompts A and B, re-run the checklist, and
+   rehearse the demo script.
+2. Fix what the validator found, starting with what affects matching:
+   - Matcher bug: `pick_n_matched_as_all` (7 groups). `matcher.match_group` treats
+     direct rows as all-required even when the rule says "Complete 1 course".
+   - Then decide on the SFSU/SJSU duplicates: re-download the SJSU PDFs.
 
 ## Working with the owner
 
@@ -46,6 +44,11 @@ timestamp.
   steps one at a time and define basic concepts. Don't assume familiarity with git,
   pip or deploy tooling.
 - They work on a Mac in VS Code and use `python3` / `pip3`.
+- **Run commands yourself in the session; don't hand them to the owner.** Claude Code
+  sessions run in a cloud copy of this repo and can run the validator, tests and
+  parser directly. The owner only needs their Mac for files that live there (the
+  ASSIST PDFs). They can upload those to the chat, or connect the Mac folder through
+  Remote Control.
 
 ## Product
 
@@ -93,6 +96,9 @@ ASSIST PDFs → parser/parse_assist.py (pdfplumber) → all_agreements_v3.json
 | `api.py` | FastAPI app. Loads both JSON files into memory at startup (paths can be overridden with `AGREEMENTS_JSON` / `USC_JSON`). Agreement IDs are list indexes. `SCHOOL_ALIASES` maps names like ucb/berkeley to UC Berkeley. `get_school()` falls back to the PDF filename when `to_institution` is null. CORS is open to all origins. |
 | `matcher.py` | Matching engine (`match_agreement`, `match_all`), bottom-up: course → row → subgroup → group → section → agreement. `parse_completion_rule()` reads free-text rules ("Complete A or B", "Select 9.00 units…") into `subgroup_logic` (AND/OR) plus `min_count`. Rows with no CCSF equivalent (`not_articulated`) don't block completion. `python3 matcher.py` runs a sample report. |
 | `parser/parse_assist.py` | v3 ASSIST PDF parser (see below). |
+| `parser/validate.py` | Agreement validator (see "Validator" below). |
+| `parser/verified.json` | Agreements hand-checked against the ASSIST PDF. Only add an entry after checking it line by line. |
+| `tests/` | Unit tests: `python3 -m unittest discover tests`. |
 | `all_agreements_v3.json` | 112 agreements (UCB 21, UCLA 20, UCD 28, SFSU 23, SJSU 20) with 1,459 articulation rows. |
 | `USC_CCSF_agreement.json` | Built by hand, because USC is private and not on ASSIST. It's a flat GE model (6 core-literacy categories, a writing requirement, course equivalences) that isn't tied to a major. |
 
@@ -166,7 +172,8 @@ ASSIST PDFs → parser/parse_assist.py (pdfplumber) → all_agreements_v3.json
   `Di!erential`, `So"ware`), and some titles are cut off at line wraps.
 - **Clean and verified:** Berkeley and UCLA Bioengineering.
 - **Planned:** a validator script and a check of the receiving-school header.
-- **No tests yet.** Check endpoints with `fastapi.testclient.TestClient(api.app)`.
+- **Tests:** `python3 -m unittest discover tests` covers the validator. There are no API
+  tests yet; check endpoints with `fastapi.testclient.TestClient(api.app)`.
 
 ### Frontend: Lichten app (Base44)
 - **Stack:** Base44 (no-code app builder, which hosts the current app) + Supabase
@@ -353,7 +360,48 @@ clean.
    - Each rule gets a source link and a "last checked" date.
    - Today these rules live only in Base44 prompts.
 
-**Start with layer 2:** the validator shows exactly which agreements to fix first.
+**Status:**
+- **Layer 2: done 2026-11-16** (`parser/validate.py`, details under "Validator").
+- **Layer 3: started.** `parser/verified.json` lists the hand-checked agreements, and a
+  test fails if any of them gets errors.
+- **Layers 1 and 4: not started.** The validator does cross-check filename, PDF header
+  and course codes, which covers part of layer 1.
+
+### Validator
+- Run it after every parse: `python3 parser/validate.py`.
+  - `--details` lists every issue.
+  - `--json report.json` saves the full report.
+  - `--strict` exits with code 1 if anything needs review, for use in a pipeline.
+- **Statuses:**
+  - `verified`: in `verified.json` and has no errors.
+  - `auto-parsed`: no errors.
+  - `needs review`: at least one error.
+  - A verified agreement with errors is reported as a **parser regression**.
+- **Errors**, where the data is wrong or the matcher would compute the wrong result:
+  - `empty_agreement`, `empty_group`, `row_empty` (both sides empty).
+  - `school_unknown`, `school_mismatch`.
+  - `wrong_school_codes`: calculus codes belong to another campus. See
+    `SCHOOL_FINGERPRINTS`, and extend it when adding schools.
+  - `duplicate_other_school`: at least 90% the same rows as another school's
+    agreement. Only the mislabeled copy is blamed when the course codes show which
+    one it is.
+  - `pick_n_matched_as_all`: the rule says "Complete 1 course", but the rows aren't in
+    subgroups, so the matcher requires all of them.
+  - `suspicious_and_list`: 5+ CCSF courses from 3+ departments, all required. It's
+    almost always an OR list read as AND.
+- **Warnings:** `dest_unparsed` (the requirement is described in words, like Berkeley
+  R&C; matching still works), `no_to_institution`, `garbled_text`, shorter
+  suspicious AND lists, `duplicate_same_school`, `rule_letters_mismatch`.
+- **Info:** `truncated_title`.
+- **First run, 2026-11-16:** 2 verified, 43 auto-parsed, 67 needs review.
+  - 46 empty groups, mostly UC Davis.
+  - 28 cross-school duplicates (SFSU/SJSU).
+  - 12 broken AND lists (Berkeley Architecture requires "all 97" courses).
+  - 12 empty rows, 8 empty agreements, 7 pick-N groups, 6 SJSU files with SFSU codes.
+  - 171 garbled titles.
+
+**Next:** fix what the validator found, starting with the 7 pick-N groups (a
+`matcher.py` fix, not a data fix).
 **Long term:** the official ASSIST API (expected in 2026–27) should mostly remove
 parse errors. Layers 3 and 4 stay useful after that.
 
