@@ -12,6 +12,10 @@ Endpoints:
   POST /match/usc/ge              — check USC GE categories + course equivalences
   POST /compare                   — match courses against all agreements, ranked
   POST /compare/school/{school}   — match against one school only
+  GET  /agreements/find?school=X&major=Y — find the agreement for a school + major
+  GET  /courses?q=X               — search CCSF courses (autocomplete)
+  POST /courses/check             — flag course codes that don't exist (typos)
+  GET  /data-quality              — validator status for every agreement
 
 Run locally:
   pip install fastapi uvicorn
@@ -19,6 +23,10 @@ Run locally:
 
 Then open: http://localhost:8000/docs  (interactive API explorer)
 """
+
+import difflib
+import re
+from collections import Counter, defaultdict
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
@@ -51,6 +59,93 @@ try:
 except FileNotFoundError:
     print(f"⚠️  Could not find {USC_PATH} — USC data unavailable")
     USC_AGREEMENT = None
+
+
+# ── Data quality (parser/validate.py) ─────────────────────────────────────────
+# Each agreement gets a status the app can show: "verified" (hand-checked),
+# "auto-parsed" (no errors found) or "needs review" (don't trust its % yet).
+try:
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'parser'))
+    from validate import validate as _validate
+    DATA_QUALITY = _validate(AGREEMENTS)
+    print(f"✅ Validated agreements: {dict(Counter(r['status'] for r in DATA_QUALITY))}")
+except Exception as e:  # never let the validator stop the API from starting
+    print(f"⚠️  Validator unavailable ({e}); data_status will be 'unknown'")
+    DATA_QUALITY = [None] * len(AGREEMENTS)
+
+DATA_NOTES = {
+    'verified':     'Checked by hand against the ASSIST agreement.',
+    'auto-parsed':  'Read automatically from ASSIST; no problems found.',
+    'needs review': 'This agreement may be incomplete or wrong. Check ASSIST.org before relying on it.',
+    'unknown':      'Data quality not checked.',
+}
+
+def data_status(idx):
+    q = DATA_QUALITY[idx] if 0 <= idx < len(DATA_QUALITY) else None
+    status = q['status'] if q else 'unknown'
+    return {'data_status': status, 'data_note': DATA_NOTES[status]}
+
+
+# ── CCSF course catalog (from the CCSF side of every agreement) ──────────────
+
+def _build_catalog():
+    titles, units = defaultdict(Counter), {}
+    for ag in AGREEMENTS:
+        for s in ag.get('requirement_sections', []):
+            for g in s.get('groups', []):
+                rows = list(g.get('articulation_rows', []) or [])
+                for sg in g.get('subgroups', []) or []:
+                    rows += sg.get('articulation_rows', []) or []
+                for r in rows:
+                    side = r.get('ccsf_equivalent', {})
+                    if not side.get('articulated'):
+                        continue
+                    for opt in side.get('options') or [side]:
+                        for c in opt.get('courses', []):
+                            code = re.sub(r'\s+', ' ', c.get('code', '').strip().upper())
+                            if code:
+                                titles[code][c.get('title') or ''] += 1
+                                units.setdefault(code, c.get('units'))
+    if USC_AGREEMENT:
+        for cat in USC_AGREEMENT.get('ge_requirements', {}).get('core_literacy', {}).get('categories', {}).values():
+            for entry in cat.get('ccsf_courses', []):
+                for code in re.split(r'\s+with\s+', entry, flags=re.I):
+                    code = re.sub(r'\s+', ' ', code.strip().upper())
+                    if code and code not in titles:
+                        titles[code][''] += 1
+    catalog = {}
+    for code, t in titles.items():
+        # Prefer the longest of the most common titles (others may be cut off)
+        best = max(t.items(), key=lambda kv: (kv[1], len(kv[0])))[0]
+        catalog[code] = {'code': code, 'title': best or None, 'units': units.get(code)}
+    return catalog
+
+CATALOG = _build_catalog()
+
+def _split_code(code):
+    m = re.match(r'^([A-Z&/ ]+?)\s*(\d.*)$', code)
+    return (m.group(1).strip(), m.group(2).strip()) if m else (code, '')
+
+# Older CCSF codes replaced by California common course numbering (C-numbers).
+# Extend as needed; only add renames you've confirmed in the CCSF catalog.
+RENAMED_CODES = {
+    'ENGL 1A': 'ENGL C1000',
+}
+
+def suggest_codes(code, limit=3):
+    """Likely intended CCSF codes for an unknown one (e.g. PHYS 4A → PHYC 4A)."""
+    code = re.sub(r'\s+', ' ', code.strip().upper())
+    if code in RENAMED_CODES:
+        return [RENAMED_CODES[code]]
+    prefix, number = _split_code(code)
+    same_number = [c for c in CATALOG if _split_code(c)[1] == number and number]
+    ranked = sorted(same_number, key=lambda c: -difflib.SequenceMatcher(None, prefix, _split_code(c)[0]).ratio())
+    close = difflib.get_close_matches(code, CATALOG.keys(), n=limit, cutoff=0.75)
+    out = []
+    for c in ranked[:limit] + close:
+        if c not in out and c != code:
+            out.append(c)
+    return out[:limit]
 
 
 # ── School name normalization ─────────────────────────────────────────────────
@@ -98,6 +193,7 @@ def agreement_summary(ag, idx):
         'degree_type':  m.get('degree_type'),
         'academic_year': m.get('academic_year'),
         'source_file':  m.get('source_file'),
+        **data_status(idx),
     }
 
 
@@ -119,6 +215,9 @@ class MatchResult(BaseModel):
     overall:    dict
     sections:   list
     warnings:   list
+
+class CourseCheckRequest(BaseModel):
+    codes: list[str]
 
 class AgreementSummary(BaseModel):
     id:           int
@@ -154,7 +253,7 @@ def root():
         "status": "ok",
         "agreements_loaded": len(AGREEMENTS),
         "usc_loaded": USC_AGREEMENT is not None,
-        "message": "CCSF Transfer Tracker API — visit /docs for interactive explorer",
+        "message": "CCSF Transfer Tracker API - visit /docs for interactive explorer",
     }
 
 
@@ -206,6 +305,35 @@ def list_agreements(
     return {"count": len(results), "agreements": results}
 
 
+@app.get("/agreements/find", tags=["Browse"])
+def find_agreement(
+    school: str = Query(..., description="School name or alias, e.g. 'UC Berkeley', 'ucla', 'sfsu'"),
+    major: str = Query(..., description="Major name, e.g. 'Bioengineering'"),
+):
+    """
+    Find the agreement(s) for a school + major. Exact major matches come first,
+    then partial matches. An empty list means we have no data for that school +
+    major yet. The app should show "no data yet", never "complete".
+    """
+    school_n = normalize_school(school)
+    want = re.sub(r'\s+', ' ', major).strip().lower()
+    exact, partial = [], []
+    for idx, ag in enumerate(AGREEMENTS):
+        if get_school(ag) != school_n:
+            continue
+        have = (ag.get('metadata', {}).get('major') or '').lower()
+        if have == want:
+            exact.append(agreement_summary(ag, idx))
+        elif want and have and (want in have or have in want):
+            partial.append(agreement_summary(ag, idx))
+    results = exact + partial
+    out = {"school": school_n, "major": major, "count": len(results), "agreements": results}
+    if not results:
+        out["message"] = (f"No {school_n} {major} agreement yet. Show this as 'no data yet' "
+                          f"(never as complete).")
+    return out
+
+
 @app.get("/agreements/{agreement_id}", tags=["Browse"])
 def get_agreement(agreement_id: int):
     """Get full details of one agreement by its ID."""
@@ -233,6 +361,7 @@ def match_one(agreement_id: int, body: MatchRequest):
         body.completed_courses,
         body.in_progress_courses,
     )
+    result['agreement'].update(id=agreement_id, **data_status(agreement_id))
     return result
 
 
@@ -300,6 +429,61 @@ def compare_school(school: str, body: CompareRequest):
         "in_progress_courses": body.in_progress_courses,
         "agreements":        results,
     }
+
+
+@app.get("/courses", tags=["Courses"])
+def search_courses(q: str = Query("", description="Code or title text, e.g. 'phyc 4', 'calculus'"),
+                   limit: int = Query(20, ge=1, le=100)):
+    """
+    Search CCSF courses that appear in the agreements, for autocomplete on the course
+    form. Matches the start of the code first, then anywhere in the code or title.
+    """
+    term = re.sub(r'\s+', ' ', q.strip().upper())
+    if not term:
+        items = sorted(CATALOG.values(), key=lambda c: c['code'])
+    else:
+        starts = [c for c in CATALOG.values() if c['code'].startswith(term)]
+        contains = [c for c in CATALOG.values() if c not in starts and
+                    (term in c['code'] or term in (c['title'] or '').upper())]
+        items = sorted(starts, key=lambda c: c['code']) + sorted(contains, key=lambda c: c['code'])
+    return {"count": len(items[:limit]), "total_courses": len(CATALOG), "courses": items[:limit]}
+
+
+@app.post("/courses/check", tags=["Courses"])
+def check_courses(body: CourseCheckRequest):
+    """
+    Check course codes before saving. Codes that appear in no agreement come back in
+    `unknown` with suggestions, e.g. PHYS 4A → PHYC 4A.
+    """
+    known, unknown = [], []
+    for raw in body.codes:
+        code = re.sub(r'\s+', ' ', raw.strip().upper())
+        if code in CATALOG:
+            known.append(CATALOG[code])
+        else:
+            unknown.append({"code": raw, "suggestions": suggest_codes(code)})
+    return {
+        "known": known,
+        "unknown": unknown,
+        "note": ("Unknown codes don't appear in any agreement. That may be a typo (see "
+                 "suggestions), an old course code, or a course that just doesn't count "
+                 "toward these agreements. Let the student keep it, but show the suggestions."),
+    }
+
+
+@app.get("/data-quality", tags=["Browse"])
+def data_quality(status: Optional[str] = Query(None, description="verified, auto-parsed or needs review")):
+    """Validator status for every agreement (see parser/validate.py)."""
+    rows = []
+    for idx, ag in enumerate(AGREEMENTS):
+        q = DATA_QUALITY[idx]
+        s = data_status(idx)
+        if status and s['data_status'] != status:
+            continue
+        rows.append({**agreement_summary(ag, idx),
+                     'errors': [i['message'] for i in (q or {}).get('issues', []) if i['level'] == 'error']})
+    counts = Counter(data_status(i)['data_status'] for i in range(len(AGREEMENTS)))
+    return {"counts": dict(counts), "count": len(rows), "agreements": rows}
 
 
 @app.post("/match/usc/ge", tags=["USC"])

@@ -110,6 +110,19 @@ ASSIST PDFs → parser/parse_assist.py (pdfplumber) → all_agreements_v3.json
 - `POST /compare`: rank all agreements by completion
 - `POST /compare/school/{school}`: rank within one school
 - `POST /match/usc/ge`: USC GE checker
+- `GET /agreements/find?school=X&major=Y`: the agreement(s) for a school + major
+  (exact major first, then partial). An empty list plus a `message` means **no data
+  yet**, and the app must never show that as complete.
+- `GET /courses?q=X`: CCSF course search for autocomplete. The catalog is built from
+  the CCSF side of every agreement plus the USC GE list.
+- `POST /courses/check` `{codes: [...]}`: `known` courses, and `unknown` ones with
+  suggestions (`PHYS 4A` → `PHYC 4A`; `RENAMED_CODES` maps old codes like `ENGL 1A` →
+  `ENGL C1000`). "Unknown" only means the course isn't in any agreement.
+- `GET /data-quality?status=…`: validator status and errors for every agreement.
+- Every agreement summary, and `/match/{id}`'s `agreement`, include `data_status`
+  (`verified` / `auto-parsed` / `needs review`) and a `data_note` sentence for the UI.
+  These come from running `parser/validate.py` at startup; if the validator fails,
+  the API still starts and reports `unknown`.
 
 **How the parser works**
 - pdfplumber word bounding boxes, with a column divider at **x = 295**. The left column
@@ -189,8 +202,12 @@ ASSIST PDFs → parser/parse_assist.py (pdfplumber) → all_agreements_v3.json
   (`Di!erential`, `So"ware`) was **fixed 2026-11-16** in both the parser and the data.
 - **Clean and verified:** Berkeley and UCLA Bioengineering.
 - **Planned:** a validator script and a check of the receiving-school header.
-- **Tests:** `python3 -m unittest discover tests` covers the validator and the matcher
-  (rule parsing, counting rules, and known results on the verified agreements). There are no API
+- **Tests:** `python3 -m unittest discover tests` (47 tests) covers:
+  - the validator,
+  - the matcher (rule parsing, counting rules, known results on the verified
+    agreements),
+  - ligature repair,
+  - the API endpoints (needs `httpx`; they're skipped without it). There are no API
   tests yet; check endpoints with `fastapi.testclient.TestClient(api.app)`.
 
 ### Frontend: Lichten app (Base44)
