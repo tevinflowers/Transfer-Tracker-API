@@ -20,21 +20,25 @@ timestamp.
 
 ## Session log
 
-**Last updated:** 2026-11-16 00:05 UTC
+**Last updated:** 2026-11-16 01:05 UTC
 
 **Last 2 topics**
-1. Roadmap step 2 (prompts 5–6: labels, semester grouping, 3-dot menus) plus
-   early parts of steps 4 and 6 (prompt 7: University Requirements tab and
-   per-school "Applies to" lines). Wrote prompts 8–10: a "My Target Schools"
-   button, the IGETC → Cal-GETC switch, and Berkeley Engineering H/SS.
-2. Audited the agreement data and planned the data quality work (see "Data quality
-   plan"). It's parked until before roadmap step 6.
+1. Made Major and Major GPA per target school in Base44. Each target school now has
+   its own major, and each course has a "Counts toward Major GPA at" checkbox per
+   school. Tested with UCLA Economics B.A. and Cal State Fullerton. Before that,
+   fixed the Major GPA / Golden 7 toggles not saving, and split "Golden 7" into the
+   UC 7-Course Pattern and CSU Golden Four.
+2. Wrote the 2-minute demo script and the step 3 test checklist. Logged the owner's
+   AI agreement upload feature idea (see "AI agreement upload").
 
 **Next 2 topics**
-1. Send Base44 prompts 8–10 if not done yet, then roadmap step 3: test the tagging
-   flow end to end and write a 2-minute demo script around demo student Alex.
-2. Roadmap step 4: load the real Berkeley + UCLA Bioengineering Major Prep data from
-   the API into Base44 (the University Requirements tab already exists).
+1. Finish roadmap step 3:
+   - Send the GPA-page label prompt (raw keys like "majorGPA" still show).
+   - Run the test checklist on both demo mode and a real account.
+   - Rehearse the demo script.
+2. Roadmap step 4: connect the real Berkeley + UCLA Bioengineering Major Prep data
+   from the API. Course codes must match the CCSF codes in the agreements exactly
+   (CCSF physics is `PHYC`, not `PHYS`).
 
 ## Working with the owner
 
@@ -212,7 +216,42 @@ ASSIST PDFs → parser/parse_assist.py (pdfplumber) → all_agreements_v3.json
     IGETC/Cal-GETC. It requires its own H/SS: 6 courses, 2 Reading & Composition +
     4 breadth. The app shows this as an estimate.
   - **Still to check:** whether UCLA Samueli (engineering) has its own GE rules.
-- **Known app bugs:** none open right now.
+- **Per-school majors (done 2026-11-16):**
+  - Each target school is a school + major pair.
+  - Major GPA is per school: each course has a "Counts toward Major GPA at:" checkbox
+    for every target school, and the GPA page has a chip for each school.
+  - The major list comes from available agreements. For example, Real Estate isn't
+    offered because there's no agreement for it yet.
+- **Known app bugs:**
+  - Raw translation keys still show on the GPA page ("majorGPA", "MAJORGPA"). The
+    label-fix prompt hasn't been sent yet.
+- **Course codes must match CCSF's exact codes** (`PHYC 4A`, not `PHYS 4A`), or
+  matching against agreements fails. Consider autocomplete from the agreement data.
+
+## AI agreement upload (owner's feature idea, logged 2026-11-16)
+
+**Goal:** a student whose target school isn't covered (a private or out-of-state
+school, or any school or major missing from the data) uploads their articulation
+agreement and gets the same tracking as built-in schools: Major Prep, Major GPA and
+readiness %.
+
+**Likely design (not built yet):**
+1. The student uploads a PDF or a screenshot of the agreement.
+2. AI (the Claude API) extracts it into the same JSON schema as
+   `all_agreements_v3.json`: sections → groups → rows, with AND/OR logic.
+3. The extracted agreement runs through the same checks as the validator in the Data
+   quality plan.
+4. The student reviews and corrects the result on an easy-to-read screen before it's
+   used.
+5. `matcher.py` then treats it like any other agreement. It's saved per student, with
+   optional sharing as a community upload once reviewed.
+
+**Fits the business model:** the free tier gets 2 uploads; Premium gets unlimited
+uploads and national or private schools. Related to the "community uploads" and
+"admin model" plans.
+
+**When:** after the data quality validator exists (the AI output needs the same
+checks), so around roadmap steps 6–10.
 
 ## Data quality plan (parked, do before roadmap step 6)
 
