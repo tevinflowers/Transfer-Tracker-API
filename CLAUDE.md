@@ -20,20 +20,21 @@ timestamp.
 
 ## Session log
 
-**Last updated:** 2026-11-15 23:30 UTC
+**Last updated:** 2026-11-16 00:05 UTC
 
 **Last 2 topics**
-1. Finished roadmap step 1 in Base44: a public Welcome page with Google + email login
-   (fixes the 404), "Continue as demo" with sample student Alex Rivera (CCSF
-   Bioengineering, targeting Berkeley + UCLA, data kept in memory only), onboarding,
-   and per-school goals on Home.
-2. Restored the Railway deploy config (PR #3). The live API is confirmed working:
-   `/` returns `status: ok` with 112 agreements and USC loaded.
+1. Roadmap step 2 (prompts 5–6: labels, semester grouping, 3-dot menus) plus
+   early parts of steps 4 and 6 (prompt 7: University Requirements tab and
+   per-school "Applies to" lines). Wrote prompts 8–10: a "My Target Schools"
+   button, the IGETC → Cal-GETC switch, and Berkeley Engineering H/SS.
+2. Audited the agreement data and planned the data quality work (see "Data quality
+   plan"). It's parked until before roadmap step 6.
 
 **Next 2 topics**
-1. Roadmap step 2 in Base44: group courses by semester, add 3-dot menus, rename
-   "Courses" to "Requirements", and fix the "golden7" label.
-2. Roadmap step 3: test the tagging flow end to end and write a 2-minute demo script.
+1. Send Base44 prompts 8–10 if not done yet, then roadmap step 3: test the tagging
+   flow end to end and write a 2-minute demo script around demo student Alex.
+2. Roadmap step 4: load the real Berkeley + UCLA Bioengineering Major Prep data from
+   the API into Base44 (the University Requirements tab already exists).
 
 ## Working with the owner
 
@@ -185,10 +186,66 @@ ASSIST PDFs → parser/parse_assist.py (pdfplumber) → all_agreements_v3.json
   3. Course Planning.
   4. Home.
   5. Deadlines, Profile, polish.
-- **Known app bugs:**
-  - My Courses isn't grouped by semester.
-  - The tab label "golden7" is lowercase.
-  - "Courses" should be renamed "Requirements".
+- **Demo mode:** sample student Alex Rivera (CCSF Bioengineering, started Fall 2025,
+  targeting UC Berkeley + UCLA). Data is kept in memory only and never saved.
+- **GE rules built into the app (Base44 prompts 7–10):**
+  - **Cal-GETC** replaced IGETC for students who started Fall 2025 or later. It adds a
+    required Area 1C (Oral Communication). Students who started earlier can choose
+    IGETC or Cal-GETC.
+  - **The Golden 7** applies to UC schools only.
+  - **USC** has its own GE (`/match/usc/ge`), not Cal-GETC.
+  - **UC Berkeley's College of Engineering** (including Bioengineering) doesn't accept
+    IGETC/Cal-GETC. It requires its own H/SS: 6 courses, 2 Reading & Composition +
+    4 breadth. The app shows this as an estimate.
+  - **Still to check:** whether UCLA Samueli (engineering) has its own GE rules.
+- **Known app bugs:** none open right now.
+
+## Data quality plan (parked, do before roadmap step 6)
+
+**Why it matters:** wrong agreement data means wrong readiness %. It's fine to wait
+for now because the demo only uses Berkeley + UCLA Bioengineering, which are verified
+clean.
+
+**Deadline:**
+- Do it **before roadmap step 6**, when the major picker shows other majors to users,
+  and before any beta tester uses a major besides Bioengineering.
+- Best timing: together with the **mid-December re-parse** of the 2026–27 agreements.
+
+**Audit from 2026-11-15** (112 agreements, 1,459 rows):
+
+| Check | Result |
+|---|---|
+| No `to_institution` | 43 agreements |
+| No rows at all | 8 agreements |
+| Destination side didn't parse | 42 rows |
+| Garbled ligature characters | 90 rows |
+| CCSF side mixes 3+ departments (likely row bleed) | 45 rows |
+
+**Plan, in 4 layers:**
+1. **Identify agreements from their contents.**
+   - Read school, major and degree from the PDF header.
+   - Cross-check against the filename and against course-code patterns (for example,
+     SFSU calculus is MATH 226 while SJSU's is MATH 30).
+   - Flag agreements where these disagree instead of guessing.
+2. **Validator script** (`parser/validate.py`), run after every parse.
+   - Runs the audit checks above, plus: every requirement has courses, AND/OR rules
+     make sense, and no row pulls in unrelated departments.
+   - Gives each agreement a status: `verified` / `auto-parsed` / `needs review`.
+   - The app shows "may be incomplete, check ASSIST" on anything not verified.
+3. **Golden set.**
+   - Save hand-checked agreements (start with Berkeley + UCLA Bioengineering) as test
+     fixtures.
+   - Every parser change must still reproduce them exactly.
+   - Add a verified agreement for each major the beta testers have.
+4. **`school_rules.json`** for rules ASSIST doesn't cover:
+   - Berkeley Engineering H/SS, UCLA engineering GE, the Golden 7 being UC-only,
+     minimum GPAs, TAG.
+   - Each rule gets a source link and a "last checked" date.
+   - Today these rules live only in Base44 prompts.
+
+**Start with layer 2:** the validator shows exactly which agreements to fix first.
+**Long term:** the official ASSIST API (expected in 2026–27) should mostly remove
+parse errors. Layers 3 and 4 stay useful after that.
 
 ## ASSIST.org data access
 - Third-party API access needs a key. ASSIST restricted the undocumented endpoints in
@@ -207,15 +264,16 @@ Steps 1–5 are the interview/demo path; steps 6–10 lead to launch.
      Berkeley + UCLA.
    - Onboarding.
    - Fix the goal shown on Home.
-2. **Clean up Courses:** group by semester, 3-dot menus, rename to Requirements, fix the
+2. ✅ **Clean up Courses** (done 2026-11-15): group by semester, 3-dot menus, rename to Requirements, fix the
    "golden7" label.
 3. **Test the tagging flow** end to end and write a 2-minute demo script.
 4. **Load real Bioengineering data into Major Prep** (Berkeley + UCLA, from
-   `all_agreements_v3.json`), showing CCSF equivalents and AND/OR logic. Add the
-   University Requirements subpage.
+   `all_agreements_v3.json`), showing CCSF equivalents and AND/OR logic. *(The
+   University Requirements tab with school chips is already done, from prompt 7.)*
 5. **GPA upgrade:** a cumulative line and a Major GPA toggle, both reading the same
    course list.
-6. **Polish Home, Deadlines and Profile:** per-school readiness, preloaded UC/CSU dates,
+6. **Polish Home, Deadlines and Profile:** per-school readiness *(done early, from
+   prompts 4 and 8)*, preloaded UC/CSU dates,
    a major picker with an "Other" upload option, and a language switch.
 7. **Course Planning page** (1 year free, more with Premium), with course suggestions.
 8. **Spanish toggle, notes, reminders.**
