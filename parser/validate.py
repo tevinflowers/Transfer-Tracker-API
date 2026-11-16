@@ -192,14 +192,15 @@ def check_structure(ag, iss):
                 continue
             parsed = parse_completion_rule(rule)
 
-            # "Complete 1 course from the following" with plain rows (no subgroups):
-            # matcher.match_group treats direct rows as all-required, so this would be wrong.
-            if not subgroups and len(direct) > 1 and parsed["subgroup_logic"] == "OR":
-                need = parsed["min_count"] or 1
-                if need < len(direct):
-                    iss.add("error", "pick_n_matched_as_all",
-                            f'Rule "{rule}" asks for {need} of {len(direct)} rows, but these rows '
-                            f"aren't in subgroups, so the matcher requires all of them.", w)
+            # "Complete 1 course from the following" spread over several subgroups:
+            # the matcher counts N courses in total, but ASSIST sometimes means N from
+            # each subgroup. Worth checking against the PDF.
+            if (parsed["count_unit"] == "course" and not parsed["per_subgroup"]
+                    and len(subgroups) >= 2 and "following" in rule.lower()):
+                iss.add("warning", "count_rule_ambiguous",
+                        f'Rule "{rule}" covers subgroups {", ".join(sg.get("label", "?") for sg in subgroups)}. '
+                        f"Matched as {parsed['count']} course(s) in total; check the PDF in case it "
+                        f"means {parsed['count']} from each.", w)
 
             # Rule names subgroup letters that don't exist (or vice versa)
             letters = set(RULE_LETTERS_RE.findall(rule))
