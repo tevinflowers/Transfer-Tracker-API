@@ -20,33 +20,30 @@ timestamp.
 
 ## Session log
 
-**Last updated:** 2026-11-16 01:50 UTC
+**Last updated:** 2026-11-16 03:00 UTC
 
 **Last 2 topics**
-1. Autonomous backend session (the owner gave full freedom). PRs #7–#10, all merged:
-   - Validator.
-   - **Matcher counting-rule fix:** "Complete 1 course from A" used to require every
-     course in A. This affected 106 groups, including both verified Bioengineering
-     agreements.
-   - Ligature repair: 173 fields fixed.
-   - New API endpoints: `/agreements/find`, `data_status`, `/courses`,
-     `/courses/check`, `/data-quality`.
-   - 47 tests.
-2. Wrote Base44 Prompts C and D for roadmap step 4 (Major Prep from the API, course
-   code autocomplete and typo check), saved in `docs/base44_prompts.md`.
+1. The owner sent Base44 Prompts A, B and C. Testing C showed three problems, all
+   fixed in the API:
+   - **Wrong major:** `/agreements/find` returned partial matches as if exact. An
+     "Engineering" major showed **Aerospace Engineering**. Now only exact matches
+     come back, and partial ones are `suggestions`.
+   - **Long school names didn't match:** "UC Los Angeles (UCLA)", "San Jose State
+     University". `normalize_school` now uses keyword patterns.
+   - **False 100%:** "Complete 1 course from the following" over several subgroups
+     (the parser keeps only the last subgroup's rule) let one course complete
+     Berkeley engineering admission groups. The matcher now reads it cautiously, and
+     the validator calls it an error in required sections.
+2. Wrote Base44 Prompt C2 (`docs/base44_prompts.md`): use exact matches only, "Did
+   you mean…?" suggestions, a major picker from `/majors`, the API's status numbers,
+   and the data-quality banner.
 
 **Next 2 topics**
-1. **The owner, in Base44:**
-   - Send Prompts A, B and the label fix (finishes step 3).
-   - Then send Prompts C and D (step 4).
-   - Test, then rehearse the demo.
-   - Check that Railway deployed the new API: `/docs` should list `/agreements/find`
-     and `/courses`.
-2. **Backend:**
-   - Re-download the SJSU PDFs (they're SFSU copies), and the other "needs review"
-     agreements, ideally as the 2026–27 versions.
-   - Re-parse them through parser → ligatures → validator.
-   - Check the 22 `count_rule_ambiguous` warnings against the PDFs.
+1. **The owner, in Base44:** send Prompt C2 and test it, then the label fix and
+   Prompt D. Then rehearse the demo.
+2. **Backend:** parser fix to keep a rule for each subgroup (needs the PDFs re-uploaded,
+   ideally the 2026–27 versions; the SJSU PDFs are still SFSU copies). Then re-parse
+   and validate.
 
 ## Working with the owner
 
@@ -121,9 +118,17 @@ ASSIST PDFs → parser/parse_assist.py (pdfplumber) → all_agreements_v3.json
 - `POST /compare`: rank all agreements by completion
 - `POST /compare/school/{school}`: rank within one school
 - `POST /match/usc/ge`: USC GE checker
-- `GET /agreements/find?school=X&major=Y`: the agreement(s) for a school + major
-  (exact major first, then partial). An empty list plus a `message` means **no data
-  yet**, and the app must never show that as complete.
+- `GET /agreements/find?school=X&major=Y`: `agreements` holds **only exact** major
+  matches. The comparison ignores case, punctuation, `&` vs "and", and degree
+  letters.
+  - **No match:** an empty list plus a `message` means **no data yet**, and the app
+    must never show that as complete.
+  - **`suggestions`:** similar majors at that school, for "Did you mean…?". Never
+    use one automatically. (Before 2026-11-16, partial matches were returned as
+    matches, and "Engineering" showed Aerospace Engineering.)
+  - **School names:** `normalize_school` understands long names ("UC Los Angeles
+    (UCLA)", "San Jose State University", "University of California, Berkeley").
+    CSU names are checked first, so "Cal State LA" never becomes UCLA.
 - `GET /courses?q=X`: CCSF course search for autocomplete. The catalog is built from
   the CCSF side of every agreement plus the USC GE list.
 - `POST /courses/check` `{codes: [...]}`: `known` courses, and `unknown` ones with
@@ -187,6 +192,16 @@ ASSIST PDFs → parser/parse_assist.py (pdfplumber) → all_agreements_v3.json
     **Product question for later:** show these as "finish after transfer" instead of
     leaving them unfinished forever.
   - Rules with no count ("Complete the following", "A or B", "A and B") are unchanged.
+  - **Ambiguous** "Complete N course(s) from the following" over 2+ subgroups
+    (`is_ambiguous_count_rule`):
+    - **Why it happens:** the parser overwrites the group's rule with the *last*
+      rule line it reads. So in Berkeley engineering admission groups, A = math and
+      physics (all required), B = R&C, and C = "Complete 1 course" science list, but
+      the whole group got C's rule.
+    - **What the matcher does:** reads it cautiously. Every subgroup except the last
+      is fully required, and the count applies to the last subgroup only. This can
+      understate progress but never shows "complete" too early.
+    - **The real fix:** the parser keeps a rule for each subgroup (needs the PDFs).
 - Agreements are versioned by `date_published`.
 
 **Known data problems (from an audit on 2026-11-13, unresolved)**
@@ -433,9 +448,9 @@ clean.
     one it is.
   - `suspicious_and_list`: 5+ CCSF courses from 3+ departments, all required. It's
     almost always an OR list read as AND.
-- **Warnings:** `count_rule_ambiguous` ("Complete 1 course from the following" over
-  several subgroups: the matcher counts in total; check the PDF in case it means per
-  subgroup), `dest_unparsed` (the requirement is described in words, like Berkeley
+- **`count_rule_ambiguous`:** an **error** in sections named REQUIRED…, a warning
+  elsewhere. See "Ambiguous" under Matching rules.
+- **Warnings:** `dest_unparsed` (the requirement is described in words, like Berkeley
   R&C; matching still works), `no_to_institution`, `garbled_text`, shorter
   suspicious AND lists, `duplicate_same_school`, `rule_letters_mismatch`.
 - **Info:** `truncated_title`.
@@ -447,6 +462,8 @@ clean.
   - 171 garbled titles (fixed the same day by `parser/ligatures.py`; now 0).
 
 **After the matcher fix (2026-11-16):** 2 verified, 46 auto-parsed, 64 needs review.
+**After making `count_rule_ambiguous` an error in required sections:** 2 verified,
+41 auto-parsed, 69 needs review.
 The pick-N problem is fixed in `matcher.py`, so that check was removed.
 **Long term:** the official ASSIST API (expected in 2026–27) should mostly remove
 parse errors. Layers 3 and 4 stay useful after that.

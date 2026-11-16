@@ -33,6 +33,37 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(r["count"], 0)
         self.assertIn("no data yet", r["message"])
 
+    def find(self, school, major):
+        return CLIENT.get("/agreements/find", params={"school": school, "major": major}).json()
+
+    def test_find_with_app_school_names(self):
+        for name in ("UC Los Angeles (UCLA)", "University of California, Los Angeles", "ucla"):
+            r = self.find(name, "Bioengineering")
+            self.assertEqual((r["school"], r["count"]), ("UCLA", 1), name)
+        r = self.find("San Jose State University", "Economics")
+        self.assertEqual(r["school"], "SJSU")
+        self.assertEqual(r["agreements"][0]["data_status"], "needs review")
+
+    def test_csu_names_never_become_uc(self):
+        self.assertNotEqual(self.find("Cal State LA", "Biology")["school"], "UCLA")
+        self.assertNotEqual(self.find("California State University, Los Angeles", "Biology")["school"], "UCLA")
+
+    def test_partial_major_is_a_suggestion_not_a_match(self):
+        # "Engineering" must not silently become "Aerospace Engineering".
+        r = self.find("UC Berkeley", "Engineering")
+        self.assertEqual(r["count"], 0)
+        self.assertIn("no data yet", r["message"])
+        self.assertIn("Bioengineering", [x["major"] for x in r["suggestions"]])
+
+    def test_major_name_normalization(self):
+        self.assertEqual(self.find("UCLA", "Computer Science & Engineering")["count"], 1)
+        self.assertEqual(self.find("UC Berkeley", "Film and Media")["count"], 1)
+
+    def test_school_without_data(self):
+        r = self.find("Sonoma State University", "Biology")
+        self.assertEqual(r["count"], 0)
+        self.assertFalse(r["school_has_data"])
+
     def test_find_route_not_shadowed_by_id_route(self):
         self.assertEqual(CLIENT.get("/agreements/find", params={"school": "ucla", "major": "x"}).status_code, 200)
         self.assertEqual(CLIENT.get("/agreements/46").status_code, 200)

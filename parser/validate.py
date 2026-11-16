@@ -192,15 +192,17 @@ def check_structure(ag, iss):
                 continue
             parsed = parse_completion_rule(rule)
 
-            # "Complete 1 course from the following" spread over several subgroups:
-            # the matcher counts N courses in total, but ASSIST sometimes means N from
-            # each subgroup. Worth checking against the PDF.
+            # "Complete 1 course from the following" spread over several subgroups: the
+            # parser kept only the last subgroup's rule, so the real rules are unknown.
+            # The matcher reads it cautiously (earlier subgroups all required). In a
+            # required/admission section that's an error; elsewhere a warning.
             if (parsed["count_unit"] == "course" and not parsed["per_subgroup"]
                     and len(subgroups) >= 2 and "following" in rule.lower()):
-                iss.add("warning", "count_rule_ambiguous",
-                        f'Rule "{rule}" covers subgroups {", ".join(sg.get("label", "?") for sg in subgroups)}. '
-                        f"Matched as {parsed['count']} course(s) in total; check the PDF in case it "
-                        f"means {parsed['count']} from each.", w)
+                required = "REQUIRED" in (s.get("section_name") or "").upper()
+                iss.add("error" if required else "warning", "count_rule_ambiguous",
+                        f'Rule "{rule}" covers subgroups {", ".join(sg.get("label", "?") for sg in subgroups)}, '
+                        f"but each subgroup probably had its own rule in the PDF. Matched cautiously "
+                        f"(earlier subgroups fully required). Re-parse or check the PDF.", w)
 
             # Rule names subgroup letters that don't exist (or vice versa)
             letters = set(RULE_LETTERS_RE.findall(rule))
