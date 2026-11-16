@@ -20,23 +20,33 @@ timestamp.
 
 ## Session log
 
-**Last updated:** 2026-11-16 01:30 UTC
+**Last updated:** 2026-11-16 01:50 UTC
 
 **Last 2 topics**
-1. Built the agreement validator (`parser/validate.py`), with `parser/verified.json`
-   and 17 tests in `tests/`. Result on the current data:
-   - 2 verified, 43 auto-parsed, 67 needs review.
-   - The 2 hand-verified Bioengineering agreements pass.
-2. Added the Lichten task list (ASSIST data pipeline, multi-school stress test) and the
-   ASSIST API email timeline.
+1. Autonomous backend session (the owner gave full freedom). PRs #7–#10, all merged:
+   - Validator.
+   - **Matcher counting-rule fix:** "Complete 1 course from A" used to require every
+     course in A. This affected 106 groups, including both verified Bioengineering
+     agreements.
+   - Ligature repair: 173 fields fixed.
+   - New API endpoints: `/agreements/find`, `data_status`, `/courses`,
+     `/courses/check`, `/data-quality`.
+   - 47 tests.
+2. Wrote Base44 Prompts C and D for roadmap step 4 (Major Prep from the API, course
+   code autocomplete and typo check), saved in `docs/base44_prompts.md`.
 
 **Next 2 topics**
-1. Finish roadmap step 3 in Base44: send Prompts A and B, re-run the checklist, and
-   rehearse the demo script.
-2. Fix what the validator found, starting with what affects matching:
-   - Matcher bug: `pick_n_matched_as_all` (7 groups). `matcher.match_group` treats
-     direct rows as all-required even when the rule says "Complete 1 course".
-   - Then decide on the SFSU/SJSU duplicates: re-download the SJSU PDFs.
+1. **The owner, in Base44:**
+   - Send Prompts A, B and the label fix (finishes step 3).
+   - Then send Prompts C and D (step 4).
+   - Test, then rehearse the demo.
+   - Check that Railway deployed the new API: `/docs` should list `/agreements/find`
+     and `/courses`.
+2. **Backend:**
+   - Re-download the SJSU PDFs (they're SFSU copies), and the other "needs review"
+     agreements, ideally as the 2026–27 versions.
+   - Re-parse them through parser → ligatures → validator.
+   - Check the 22 `count_rule_ambiguous` warnings against the PDFs.
 
 ## Working with the owner
 
@@ -100,6 +110,7 @@ ASSIST PDFs → parser/parse_assist.py (pdfplumber) → all_agreements_v3.json
 | `parser/ligatures.py` | Repairs PDF ligature damage (`Di!erential` → `Differential`). The parser's `norm()` uses it, and `python3 parser/ligatures.py file.json` cleans an existing file. Add words to `KNOWN_WORDS` if new garbled text shows up. |
 | `parser/verified.json` | Agreements hand-checked against the ASSIST PDF. Only add an entry after checking it line by line. |
 | `tests/` | Unit tests: `python3 -m unittest discover tests`. |
+| `docs/base44_prompts.md` | Base44 prompts that haven't been sent yet, with test steps. Update it as prompts are sent. |
 | `all_agreements_v3.json` | 112 agreements (UCB 21, UCLA 20, UCD 28, SFSU 23, SJSU 20) with 1,459 articulation rows. |
 | `USC_CCSF_agreement.json` | Built by hand, because USC is private and not on ASSIST. It's a flat GE model (6 core-literacy categories, a writing requirement, course equivalences) that isn't tied to a major. |
 
@@ -475,9 +486,12 @@ Steps 1–5 are the interview/demo path; steps 6–10 lead to launch.
 3. **Test the tagging flow** end to end and write a 2-minute demo script. *(In
    progress: the script is written, the checklist was run once, and Prompts A/B fix
    what it found.)*
+   - All Base44 prompts not yet sent are in `docs/base44_prompts.md`.
 4. **Load real Bioengineering data into Major Prep** (Berkeley + UCLA, from
-   `all_agreements_v3.json`), showing CCSF equivalents and AND/OR logic. *(The
-   University Requirements tab with school chips is already done, from prompt 7.)*
+   `all_agreements_v3.json`), showing CCSF equivalents and AND/OR logic.
+   - *Done:* the University Requirements tab (prompt 7), and the backend side
+     (2026-11-16: matcher fix, `/agreements/find`, `data_status`, `/courses`).
+   - *Left:* send Base44 Prompts C and D (`docs/base44_prompts.md`).
 5. ✅ **GPA upgrade** (done early, 2026-11-16): a cumulative line and a Major GPA
    toggle, both reading the same course list. Major GPA is now per school.
 6. **Polish Home, Deadlines and Profile:** per-school readiness *(done early, from
