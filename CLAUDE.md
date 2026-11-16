@@ -20,31 +20,25 @@ timestamp.
 
 ## Session log
 
-**Last updated:** 2026-11-16 04:10 UTC
+**Last updated:** 2026-11-16 05:00 UTC
 
 **Last 2 topics**
-1. **CCSF catalogs 2026–27 and 2025–26**, uploaded by the owner and kept in
-   `data/source_pdfs/ccsf_catalog_<year>/`:
-   - **`parser/parse_catalog.py`** reads both layouts. 2026–27 is single-column
-     (`ACCT 1 -Title (5.0)`). 2025–26 is two-column (`JAPA 1. Title (5)`, read with
-     `--columns 2`, ending in "UC/CSU").
-   - **`data/ccsf_catalog.json`:** 2,056 courses. 1,698 are in both years, 121 only in
-     2025–26 (dropped or renamed, e.g. ENGL 1B, ART 101), and 237 only in 2026–27.
-   - **API `CATALOG`:** 2,501 entries. A course is `in_current_catalog` only if it's
-     in the newest year. Dropped courses that were renamed point to their new code
-     (`renamed_to`), and renamed codes match each other in every matching endpoint.
-2. USC: parsed the agreement PDF, added `usc.py` and `POST /match/usc`, and wrote
-   Base44 Prompt E.
+1. **Base44 connector connected** (see "Base44 app access" under Frontend).
+   - Direct code edits need the **Builder plan**. The owner is upgrading in a day or
+     so, after which Claude builds the app directly, using no Base44 message credits.
+   - Checked the owner's accidental resend of old prompts: the last turn was Prompt A,
+     and C2/C3/E features plus the entity fields are intact. That resend cost about
+     3.5 credits.
+2. All Base44 prompts A–F are sent. The prompts doc was reorganized (to-send list in
+   order, archive of sent prompts).
 
 **Next 2 topics**
-1. **The owner, in Base44:** send Prompts E (USC) and F (catalog details in
-   autocomplete), and test.
-2. **Optional older catalogs (2024–25, 2023–24):** these only add courses dropped
-   before 2025–26. Same steps:
-   - Save the pieces in `data/source_pdfs/ccsf_catalog_<year>/`.
-   - Run `python3 parser/parse_catalog.py --year <year> [--columns 2] <parts>`. Check
-     the format first: look at a course header in the extracted text.
-   - Then run the tests.
+1. **Once the owner is on Builder:**
+   - Check the code directly for regressions: footer text, "Did you mean…?",
+     a single demo banner, the In Progress default, labels like "majorGPA".
+   - Then continue building in code (label fix, roadmap step 6) instead of with
+     Base44 prompts.
+2. **Optional:** older CCSF catalogs (2024–25 and earlier) and the SJSU re-download.
 
 ## Working with the owner
 
@@ -272,6 +266,28 @@ ASSIST PDFs → parser/parse_assist.py (pdfplumber) → all_agreements_v3.json
   tests yet; check endpoints with `fastapi.testclient.TestClient(api.app)`.
 
 ### Frontend: Lichten app (Base44)
+- **Base44 app access (connected 2026-11-16 through the claude.ai Base44 connector):**
+  - **App:** "Lichten", id `6a18c0078df33f570f3aac78`, framework `vite_spa` (pages are
+    routed in `src/App.jsx`). The owner also has a separate Base44 app called
+    "Transfer-Tracker-API" (`6af752282d4b5ada6935097f`); it's not this repo.
+  - **Two ways to change the app:**
+    - Base44's builder AI (`edit_base44_app`), which **costs the owner's message
+      credits** (about 3.5 per turn).
+    - Direct code editing (`read_file`, `grep`, `edit_file`, `write_file`,
+      `run_command`), which uses **no credits but needs the Builder plan.** On the
+      free plan it fails with "External coding agents require the Builder plan".
+  - **Prefer direct editing once on Builder.** Call `create_checkpoint` after each
+    set of edits; Base44's Restore/Revert discards anything after the last
+    checkpoint. Don't edit files while the app status is `processing`.
+  - **Free on any plan:** `list_entity_schemas`, `query_entities`, `get_app_status`,
+    and reading the builder chat (`GET /api/apps/{app_id}/chat/full-conversation`
+    with a small `limit`).
+  - **Entities** (2026-11-16): Course (`courseName`, `units`, `grade` incl. IP,
+    `projectedGrade`, `semester` + `year`, `igetcArea`, `isMajorPrep`,
+    `majorGpaSchools[]`, plus legacy `isGolden7` and `isMajorGPA`), UserProfile
+    (`targetSchoolPlans[{school, major}]`, `startTerm`, `gePattern`, …), Deadline,
+    Note, Assignment, User. Courses have **no separate code field**: the code is
+    inside `courseName`.
 - **Stack:** Base44 (no-code app builder, which hosts the current app) + Supabase
   (database). The API chat also mentioned React Native or Flutter without deciding.
   **Confirm with the owner which frontend to use before writing UI code.**
