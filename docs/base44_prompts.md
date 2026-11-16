@@ -6,14 +6,71 @@ Send them one at a time, in order, and test after each one.
 API base URL: `https://transfer-tracker-api-production.up.railway.app`
 (interactive docs at `/docs`).
 
-## Still to send (roadmap step 3)
+## Order to send
 
-- **Prompt A**: demo banner + "no data is never complete"
-- **Prompt B**: In Progress by default + projected grades
-- **Label fix**: raw translation keys such as "majorGPA"
+1. Prompt A, then Prompt B, then the label fix (these finish roadmap step 3).
+2. Prompt C, then Prompt D (roadmap step 4). Prompt C relies on Prompt A's
+   "no data yet" screen.
 
-These were written in the Claude Code session on 2026-11-16. Send them before the
-step 4 prompts below; Prompt C relies on Prompt A's "no data yet" screen.
+---
+
+## Prompt A: Demo banner and missing-data bug
+
+```text
+Fix two bugs:
+
+1. The demo banner is missing. In demo mode, show a small teal banner at the top of every page: "You're viewing a demo. Create an account to save your progress." Make "Create an account" link to sign-up, and add an "Exit demo" link that goes back to the Welcome page. Keep it visible while scrolling, but small enough not to cover content on a phone.
+
+2. Schools with no requirement data show as complete. For example, tagging one course as Major Prep for USC marked all USC requirements complete, but there is no USC major requirement data at all.
+   - If a school + major has no Major Prep requirement data, never show it as complete or count it as 100%. Instead show: "We don't have [School] [Major] requirements yet. Your tagged courses are saved and will count once requirements are added." Show the courses the user tagged for that school as a simple list.
+   - Leave Major Prep out of that school's readiness % until data exists, and show a small note under the readiness % saying "Major Prep not included (no data yet)".
+   - Apply the same rule to every requirement type and every school (for example, Cal State Fullerton). Empty requirements always mean "no data yet", never "complete".
+```
+
+**Test afterwards:**
+1. Demo mode shows the banner on every page, and "Exit demo" works.
+2. USC and Fullerton show "We don't have … requirements yet" instead of complete, and their readiness % shows the "no data yet" note.
+
+---
+
+## Prompt B: In Progress by default, plus projected grades
+
+```text
+Improve how current and future courses work on the GPA page:
+
+1. Default to In Progress. When adding a course in the current semester or a future one, set the grade to "In Progress" by default. Work out the current semester from today's date: Spring = January–May, Summer = June–July, Fall = August–December. Past semesters still need a real grade.
+
+2. Projected grades. For In Progress courses, add an optional "Projected grade" field to the course form. It's just a guess the student can change any time, and it never counts as a real grade.
+   - Show it on the course row as "IP · projected A-".
+   - Add an "Include projected grades" switch on the GPA page, off by default. When it's on:
+     - Show a "Projected GPA" number next to the real GPA (for both Cumulative and per-school Major GPA).
+     - Draw the projected part of the GPA Trend chart as a dashed line.
+   - Requirements and readiness % always use real grades only. Projected grades never mark anything complete.
+
+3. When a semester ends (based on today's date), show a reminder on the GPA page for any courses still In Progress from past semesters: "Add your final grades for [Semester]", with a button to edit them. If a course has a projected grade, pre-fill it as a suggestion.
+
+4. Demo: give Alex's Fall 2026 courses projected grades (MATH 110C: B+, PHYC 4A: A-, PHYC 4AL: A, BIO 100A: B) so the switch can be shown in the demo. Keep them In Progress.
+```
+
+**Test afterwards:**
+1. A new Fall 2026 course defaults to In Progress, while a new Spring 2026 course asks for a grade.
+2. Turning on "Include projected grades" shows a Projected GPA and a dashed line on the chart. Readiness % doesn't change.
+
+---
+
+## Label fix: raw translation keys
+
+```text
+Some labels show raw translation keys instead of words. Add proper English and Spanish text for every key, for example:
+- majorGPA → "Major GPA" (Spanish: "Promedio de la especialidad")
+- MAJORGPA heading → "MAJOR GPA"
+- noMajorGPAData → "No courses tagged for Major GPA yet. Edit a course and check the schools it counts toward." (with a button to open the course list)
+- semesterGPALabel → "Semester GPA" (Spanish: "Promedio del semestre")
+- cumulativeGPALabel → "Cumulative GPA" (Spanish: "Promedio acumulado")
+Check the whole app for any other raw keys showing (camelCase words with no spaces, like "majorGPA") and fix those too. Don't change anything else.
+```
+
+**Test afterwards:** no camelCase words like "majorGPA" or "semesterGPALabel" anywhere in the app.
 
 ---
 
