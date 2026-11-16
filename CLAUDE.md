@@ -44,6 +44,11 @@ timestamp.
   steps one at a time and define basic concepts. Don't assume familiarity with git,
   pip or deploy tooling.
 - They work on a Mac in VS Code and use `python3` / `pip3`.
+- **Run commands yourself in the session; don't hand them to the owner.** Claude Code
+  sessions run in a cloud copy of this repo and can run the validator, tests and
+  parser directly. The owner only needs their Mac for files that live there (the
+  ASSIST PDFs). They can upload those to the chat, or connect the Mac folder through
+  Remote Control.
 
 ## Product
 
