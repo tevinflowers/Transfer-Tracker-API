@@ -168,12 +168,15 @@ ASSIST PDFs → parser/parse_assist.py (pdfplumber) → all_agreements_v3.json
 - **Stack:** Base44 (no-code app builder, which hosts the current app) + Supabase
   (database). The API chat also mentioned React Native or Flutter without deciding.
   **Confirm with the owner which frontend to use before writing UI code.**
-- **Pages:** Home/Dashboard (transfer readiness %), Requirements (subpages for IGETC,
-  Golden 7, Major Prep, University Requirements), GPA, Deadlines (California transfer
+- **Pages:** Home/Dashboard (transfer readiness %), Requirements (subpages for
+  Cal-GETC/IGETC, UC 7-Course Pattern, CSU Golden Four, Major Prep, University
+  Requirements), GPA, Deadlines (California transfer
   dates preloaded), Notes, Course Planning, Profile.
 - **Core rule:** the GPA page is the **only** place courses are entered.
-  - Each course has: name, semester, units, grade, IGETC area (1A, 1B, 2, 3A, 3B, 4,
-    5A, 5B, 5C, 6, None), and toggles for Golden 7, Major Prep and Major GPA.
+  - Each course has: name, semester, units, grade, Cal-GETC/IGETC area (1A, 1B, 1C, 2,
+    3A, 3B, 4, 5A, 5B, 5C, 6, None), and toggles for Major Prep and Major GPA.
+  - A Base44 bug (fixed 2026-11-16): the Course entity had no Golden 7 / Major GPA
+    fields, so those toggles were silently dropped for real users. Demo mode hid it.
   - Saving a course updates every Requirements subpage and the readiness %.
 - **GPA page:** courses grouped by semester; a 3-dot menu (Edit/Delete) in place of
   trash icons; a chart with semester and cumulative lines; a toggle between Cumulative
@@ -192,7 +195,18 @@ ASSIST PDFs → parser/parse_assist.py (pdfplumber) → all_agreements_v3.json
   - **Cal-GETC** replaced IGETC for students who started Fall 2025 or later. It adds a
     required Area 1C (Oral Communication). Students who started earlier can choose
     IGETC or Cal-GETC.
-  - **The Golden 7** applies to UC schools only.
+  - **"Golden 7" was a mistake.** It merged two different requirement sets, and the
+    app was asked to split them on 2026-11-16. Both are worked out from the course's
+    area tag, with no manual toggle:
+    - **UC 7-Course Pattern** (UC targets only): 2 English composition (1A + 1B),
+      1 math (2), and 4 more from at least 2 of: arts & humanities (3A/3B), social &
+      behavioral (4), physical & biological (5A/5B). Each needs a C or better and at
+      least 3 units. Plus 60 units and a 2.4 GPA (2.8 for nonresidents).
+    - **CSU Golden Four** (CSU targets only): oral communication (1C), written
+      communication (1A), critical thinking (1B), math (2), each with a C or better.
+      Plus 60 units and a 2.0 GPA. Confirm C vs C- on calstate.edu.
+    - Sources: UC "Basic requirements" (admission.universityofcalifornia.edu) and
+      CSU "Golden Four" (calstate.edu/apply).
   - **USC** has its own GE (`/match/usc/ge`), not Cal-GETC.
   - **UC Berkeley's College of Engineering** (including Bioengineering) doesn't accept
     IGETC/Cal-GETC. It requires its own H/SS: 6 courses, 2 Reading & Composition +
@@ -238,7 +252,8 @@ clean.
    - Every parser change must still reproduce them exactly.
    - Add a verified agreement for each major the beta testers have.
 4. **`school_rules.json`** for rules ASSIST doesn't cover:
-   - Berkeley Engineering H/SS, UCLA engineering GE, the Golden 7 being UC-only,
+   - Berkeley Engineering H/SS, UCLA engineering GE, the UC 7-Course Pattern, the
+     CSU Golden Four,
      minimum GPAs, TAG.
    - Each rule gets a source link and a "last checked" date.
    - Today these rules live only in Base44 prompts.
@@ -265,7 +280,7 @@ Steps 1–5 are the interview/demo path; steps 6–10 lead to launch.
    - Onboarding.
    - Fix the goal shown on Home.
 2. ✅ **Clean up Courses** (done 2026-11-15): group by semester, 3-dot menus, rename to Requirements, fix the
-   "golden7" label.
+   "golden7" label (later replaced by the UC 7-Course Pattern and CSU Golden Four).
 3. **Test the tagging flow** end to end and write a 2-minute demo script.
 4. **Load real Bioengineering data into Major Prep** (Berkeley + UCLA, from
    `all_agreements_v3.json`), showing CCSF equivalents and AND/OR logic. *(The
