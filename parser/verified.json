@@ -1,0 +1,7 @@
+{
+  "_about": "Agreements a person has checked line by line against the ASSIST PDF. Add a source_file here only after hand-checking it. The validator flags any of these that later gets errors (a parser regression).",
+  "verified": [
+    "CCSF_to_UCBerkeley_Bioengineering_BS.pdf",
+    "CCSF_to_UCLA_Bioengineering_BS.pdf"
+  ]
+}
