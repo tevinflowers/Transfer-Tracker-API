@@ -83,13 +83,23 @@ class ValidatorTests(unittest.TestCase):
              "subgroups": [{"label": "A", "articulation_rows": []}]}]
         self.assertIn("empty_group", codes_for(self.run_one(agreement(groups=groups))))
 
-    def test_pick_one_matched_as_all(self):
+    def test_pick_one_from_plain_rows_is_fine(self):
+        # The matcher counts courses for "Complete 1 course from the following".
         groups = [{"group_number": 1, "completion_rule": "Complete 1 course from the following",
                    "subgroups": [],
                    "articulation_rows": [row(single("PSYCH 1"), single("PSYC 1")),
                                          row(single("PSYCH 2"), single("PSYC 2")),
                                          row(single("PSYCH 3"), single("PSYC 3"))]}]
-        self.assertIn("pick_n_matched_as_all", codes_for(self.run_one(agreement(groups=groups))))
+        r = self.run_one(agreement(groups=groups))
+        self.assertEqual(r[0]["status"], "auto-parsed")
+
+    def test_count_rule_over_subgroups_is_ambiguous_warning(self):
+        groups = [{"group_number": 1, "completion_rule": "Complete 1 course from the following",
+                   "subgroups": [{"label": "A", "articulation_rows": [row(single("X 1"), single("A 1"))]},
+                                 {"label": "B", "articulation_rows": [row(single("X 2"), single("B 1"))]}]}]
+        r = self.run_one(agreement(groups=groups))
+        self.assertIn("count_rule_ambiguous", codes_for(r))
+        self.assertEqual(r[0]["status"], "auto-parsed")
 
     def test_row_with_both_sides_empty_is_error(self):
         groups = [{"group_number": 1, "completion_rule": "Complete the following", "subgroups": [],

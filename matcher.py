@@ -70,10 +70,38 @@ def parse_completion_rule(rule):
     else:
         subgroup_logic = 'AND'
 
+    # What a numeric rule counts. ASSIST wording:
+    #   "Complete 1 course from the following"   → count completed rows (courses)
+    #   "Select 3 from the following"            → same (no noun means courses)
+    #   "Complete 1 sequence from A, B, or C"    → count completed subgroups
+    #   "Select 9.00 units from the following"   → add up units of completed rows
+    #   "Complete 1 course in 3 different areas" → at least 3 courses
+    count_unit = None
+    min_units  = None
+    count = None
+    cm = re.search(r'(\d+(?:\.\d+)?)\s*(units?|courses?|sequences?|series|from)\b', r)
+    if cm:
+        noun = cm.group(2)
+        if noun.startswith('unit'):
+            count_unit, min_units = 'units', float(cm.group(1))
+        else:
+            count_unit = 'sequence' if noun.startswith(('sequence', 'series')) else 'course'
+            count = int(float(cm.group(1)))
+            areas = re.search(r'in (\d+) \S+ areas', r)
+            if areas:
+                count = max(count, int(areas.group(1)))
+
+    # "1 course from A and B" / "from A, B, and C" → N from EACH listed subgroup
+    per_subgroup = bool(re.search(r'from [a-f](\s*,\s*[a-f])*\s*,?\s*and\s+[a-f]\b', r))
+
     return {
         'subgroup_logic': subgroup_logic,
         'min_count': int(min_count) if min_count and not is_units else None,
         'is_units': is_units,
+        'count_unit': count_unit,      # 'course' | 'sequence' | 'units' | None
+        'count': count,                # how many courses/sequences are needed
+        'min_units': min_units,        # how many units are needed
+        'per_subgroup': per_subgroup,  # count applies to each listed subgroup
     }
 
 
@@ -261,6 +289,73 @@ def match_subgroup(subgroup, completed, in_progress):
     }
 
 
+# ── Counting rules ("Complete N courses", "Select 9 units", ...) ─────────────
+
+def _count_rule(items, need, partial=None):
+    """
+    Status for "complete N of these" where items are row or subgroup results.
+    Progress = completed / needed, plus partial credit for the best unfinished item
+    when `partial` is given (used for sequences).
+    """
+    articulated = [i for i in items if i['status'] != 'not_articulated']
+    if not articulated:
+        return 'not_started', 0.0   # nothing at CCSF counts toward this (same as before)
+    # Like rows with no CCSF equivalent, options that can't be taken at CCSF don't
+    # block completion: ask for at most what CCSF can actually satisfy.
+    need = min(max(int(need or 1), 1), len(articulated))
+    done = sum(1 for i in articulated if i['status'] == 'complete')
+    if done >= need:
+        return 'complete', 1.0
+    progress = done / need
+    if partial:
+        unfinished = [partial(i) for i in articulated if i['status'] != 'complete']
+        progress += max(unfinished, default=0.0) / need
+    started = done or any(i['status'] == 'in_progress' for i in articulated)
+    return ('in_progress' if started else 'not_started'), min(progress, 1.0)
+
+
+def _per_subgroup_rule(sg_results, need):
+    """ "Complete 1 course from A and B": N completed rows from EACH subgroup. """
+    parts = [_count_rule(sg['rows'], need) for sg in sg_results
+             if any(r['status'] != 'not_articulated' for r in sg['rows'])]
+    if not parts:
+        return 'not_started', 0.0
+    progress = sum(p[1] for p in parts) / len(parts)
+    if all(p[0] == 'complete' for p in parts):
+        return 'complete', 1.0
+    if any(p[0] in ('complete', 'in_progress') for p in parts):
+        return 'in_progress', progress
+    return 'not_started', progress
+
+
+def _row_units(row):
+    """Units a row is worth at the destination school (first option if several)."""
+    side = row.get('ucb_requirement', {})
+    if not side.get('articulated'):
+        side = row.get('ccsf_equivalent', {})
+    opts = side.get('options') or ([side] if side.get('courses') else [])
+    if not opts:
+        return 0.0
+    return sum(float(c.get('units') or 0) for c in opts[0].get('courses', []))
+
+
+def _units_rule(subgroups, sg_results, direct_rows, direct_results, need):
+    """ "Select 9.00 units from the following": add up units of completed rows. """
+    pairs = [(raw, res) for sg, sgr in zip(subgroups, sg_results)
+             for raw, res in zip(sg.get('articulation_rows', []), sgr['rows'])]
+    pairs += list(zip(direct_rows, direct_results))
+    articulated = [(raw, res) for raw, res in pairs if res['status'] != 'not_articulated']
+    if not articulated:
+        return 'not_started', 0.0
+    possible = sum(_row_units(raw) for raw, _ in articulated)
+    need = min(float(need or 0) or 1.0, possible) or 1.0
+    done = sum(_row_units(raw) for raw, res in articulated if res['status'] == 'complete')
+    if done >= need:
+        return 'complete', 1.0
+    started = done or any(res['status'] == 'in_progress' for _, res in articulated)
+    return ('in_progress' if started else 'not_started'), min(done / need, 1.0)
+
+
 # ── Group-level matching ──────────────────────────────────────────────────────
 
 def match_group(group, completed, in_progress):
@@ -280,8 +375,28 @@ def match_group(group, completed, in_progress):
     # Match direct rows (groups without subgroups)
     direct_results = [match_row(r, completed, in_progress) for r in direct_rows]
 
+    count_unit = rule_parsed['count_unit']
+    counted = None
+    if count_unit == 'units':
+        counted = _units_rule(subgroups, sg_results, direct_rows, direct_results,
+                              rule_parsed['min_units'])
+    elif count_unit == 'course' or (count_unit == 'sequence' and not sg_results):
+        # Each row is one course (or one bundled sequence like PHYC 4A + 4AL).
+        if rule_parsed['per_subgroup'] and sg_results:
+            counted = _per_subgroup_rule(sg_results, rule_parsed['count'])
+        else:
+            pool = [r for sg in sg_results for r in sg['rows']] + direct_results
+            counted = _count_rule(pool, rule_parsed['count'])
+    elif count_unit == 'sequence':
+        # Each subgroup is one sequence; need N whole subgroups.
+        counted = _count_rule(sg_results, rule_parsed['count'],
+                              partial=lambda sg: sg['progress'])
+
     # Determine group status based on completion rule
-    if sg_results:
+    if counted is not None:
+        status, progress = counted
+
+    elif sg_results:
         complete_sgs = [sg for sg in sg_results if sg['status'] == 'complete']
         articulated_sgs = [sg for sg in sg_results if sg['status'] != 'not_articulated']
 

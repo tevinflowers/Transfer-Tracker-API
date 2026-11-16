@@ -146,6 +146,22 @@ ASSIST PDFs → parser/parse_assist.py (pdfplumber) → all_agreements_v3.json
   progress shows as in-progress with a status per course, not as a flat 0%.
 - For OR options, the branch with the most progress is picked automatically.
 - `same_institution_required` is shown as a warning in the UI.
+- **Counting rules** (fixed 2026-11-16; before this, "Complete 1 course from A"
+  required every course in A, which affected 106 groups, including both verified
+  Bioengineering agreements):
+  - "Complete N course(s) from …" or "Select N from …": N completed **rows** in
+    total. A row with a bundled sequence (PHYC 4A + 4AL) counts as one.
+  - "Complete N course(s) from A and B": N rows from **each** listed subgroup.
+  - "Complete N sequence(s)/series from A, B, or C": N whole **subgroups**.
+  - "Select N.00 units from …": add up the destination-side units of completed rows.
+  - "N course(s) in M different areas": at least max(N, M) rows. The area variety
+    itself isn't checked.
+  - Counting never asks for more than CCSF can satisfy (options with no CCSF
+    equivalent don't block), which is the same idea as `not_articulated` rows.
+  - A group where nothing can be taken at CCSF stays `not_started` (unchanged).
+    **Product question for later:** show these as "finish after transfer" instead of
+    leaving them unfinished forever.
+  - Rules with no count ("Complete the following", "A or B", "A and B") are unchanged.
 - Agreements are versioned by `date_published`.
 
 **Known data problems (from an audit on 2026-11-13, unresolved)**
@@ -172,7 +188,8 @@ ASSIST PDFs → parser/parse_assist.py (pdfplumber) → all_agreements_v3.json
   `Di!erential`, `So"ware`), and some titles are cut off at line wraps.
 - **Clean and verified:** Berkeley and UCLA Bioengineering.
 - **Planned:** a validator script and a check of the receiving-school header.
-- **Tests:** `python3 -m unittest discover tests` covers the validator. There are no API
+- **Tests:** `python3 -m unittest discover tests` covers the validator and the matcher
+  (rule parsing, counting rules, and known results on the verified agreements). There are no API
   tests yet; check endpoints with `fastapi.testclient.TestClient(api.app)`.
 
 ### Frontend: Lichten app (Base44)
@@ -385,11 +402,11 @@ clean.
   - `duplicate_other_school`: at least 90% the same rows as another school's
     agreement. Only the mislabeled copy is blamed when the course codes show which
     one it is.
-  - `pick_n_matched_as_all`: the rule says "Complete 1 course", but the rows aren't in
-    subgroups, so the matcher requires all of them.
   - `suspicious_and_list`: 5+ CCSF courses from 3+ departments, all required. It's
     almost always an OR list read as AND.
-- **Warnings:** `dest_unparsed` (the requirement is described in words, like Berkeley
+- **Warnings:** `count_rule_ambiguous` ("Complete 1 course from the following" over
+  several subgroups: the matcher counts in total; check the PDF in case it means per
+  subgroup), `dest_unparsed` (the requirement is described in words, like Berkeley
   R&C; matching still works), `no_to_institution`, `garbled_text`, shorter
   suspicious AND lists, `duplicate_same_school`, `rule_letters_mismatch`.
 - **Info:** `truncated_title`.
@@ -400,8 +417,8 @@ clean.
   - 12 empty rows, 8 empty agreements, 7 pick-N groups, 6 SJSU files with SFSU codes.
   - 171 garbled titles.
 
-**Next:** fix what the validator found, starting with the 7 pick-N groups (a
-`matcher.py` fix, not a data fix).
+**After the matcher fix (2026-11-16):** 2 verified, 46 auto-parsed, 64 needs review.
+The pick-N problem is fixed in `matcher.py`, so that check was removed.
 **Long term:** the official ASSIST API (expected in 2026–27) should mostly remove
 parse errors. Layers 3 and 4 stay useful after that.
 
