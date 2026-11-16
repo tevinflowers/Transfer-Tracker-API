@@ -35,6 +35,21 @@ Noncredit
 """
 
 
+SAMPLE_2025 = """
+Credit, Degree Applicable Courses:
+JAPA 1. Elementary Japanese (5)
+Lec-87.5 P/NP available
+Introductory course in grammar, reading, writing and Japanese cul-
+ture. UC/CSU
+JAPA 1A. Elementary Japanese Part I (3)
+Lec-52.5 P/NP available
+Half of the introductory course.
+ADMJ 71. Student Campus Patrol Work Experience (1-3)
+CSU
+LERN 10. Study Skills (.5)
+"""
+
+
 class ParserTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -60,6 +75,14 @@ class ParserTests(unittest.TestCase):
         self.assertEqual(self.courses["ENGL C1003"]["formerly"], ["ENGL 1B"])
         self.assertEqual(self.courses["SPAN 2"]["formerly"], [])  # "SPAN 2A + 2B" isn't a rename
 
+    def test_two_column_2025_format(self):
+        courses, _, _ = parse_catalog.parse_lines(SAMPLE_2025.splitlines())
+        self.assertEqual((courses["JAPA 1"]["title"], courses["JAPA 1"]["units"]), ("Elementary Japanese", 5.0))
+        self.assertTrue(courses["JAPA 1"]["uc_transferable"])
+        self.assertFalse(courses["JAPA 1A"]["uc_transferable"])
+        self.assertEqual((courses["ADMJ 71"]["units"], courses["ADMJ 71"]["units_max"]), (1.0, 3.0))
+        self.assertEqual(courses["LERN 10"]["units"], 0.5)
+
     def test_merge_years(self):
         a = parse_catalog.merge(None, "2025-26", {"X 1": {"code": "X 1", "title": "Old", "formerly": []}}, {}, {})
         b = parse_catalog.merge(a, "2026-27", {"X 1": {"code": "X 1", "title": "New", "formerly": []}}, {}, {})
@@ -70,7 +93,9 @@ class ParserTests(unittest.TestCase):
 class CatalogDataTests(unittest.TestCase):
     def test_committed_catalog(self):
         data = json.loads((REPO / "data" / "ccsf_catalog.json").read_text())
-        self.assertIn("2026-27", data["catalog_years"])
+        self.assertEqual(data["catalog_years"], ["2025-26", "2026-27"])
+        self.assertEqual(data["courses"]["ENGL 1B"]["catalog_years"], ["2025-26"])
+        self.assertEqual(data["courses"]["R E 184"]["catalog_years"], ["2025-26", "2026-27"])
         self.assertGreater(len(data["courses"]), 1800)
         c = data["courses"]
         self.assertEqual(c["MATH 110A"]["title"], "Calculus I")
@@ -103,6 +128,12 @@ class CatalogApiTests(unittest.TestCase):
         code_matches = [c for c in r if c["code"].replace(" ", "").startswith("ENGL1")]
         flags = [c["in_current_catalog"] is False for c in code_matches]
         self.assertEqual(flags, sorted(flags))  # current codes first, then old ones (ENGL 1A, 1B, 1C)
+
+    def test_dropped_course_points_to_new_code(self):
+        known = CLIENT.post("/courses/check", json={"codes": ["ENGL 1B", "ART 101"]}).json()["known"]
+        self.assertEqual({k["code"]: k["renamed_to"] for k in known},
+                         {"ENGL 1B": "ENGL C1003", "ART 101": "ARTH C1100"})
+        self.assertTrue(all(k["in_current_catalog"] is False for k in known))
 
     def test_renamed_code_satisfies_old_agreement_code(self):
         # The Berkeley Bioengineering R&C row lists ENGL 1B (now ENGL C1003).

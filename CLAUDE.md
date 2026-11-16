@@ -20,32 +20,31 @@ timestamp.
 
 ## Session log
 
-**Last updated:** 2026-11-16 04:00 UTC
+**Last updated:** 2026-11-16 04:10 UTC
 
 **Last 2 topics**
-1. **CCSF course catalog 2026–27**, uploaded by the owner in 10 parts, pages 1–920
-   (in `data/source_pdfs/ccsf_catalog_2026-27/`):
-   - **New parser:** `parser/parse_catalog.py` → `data/ccsf_catalog.json`. It holds
-     1,935 courses: title, units (with ranges), credit type, UC transferable, and
-     one-to-one "Formerly" renames (219, e.g. ENGL 1B → ENGL C1003, PSYC 1 →
-     PSYC C1000, MATH 80 → STAT C1000).
-   - **Autocomplete:** the API's `CATALOG` now has 2,413 entries (the catalog, plus
-     old codes, plus agreement and USC codes). Search sorts current courses first in
-     natural order, and multi-word title search works ("real estate").
-   - **Renamed codes count as the same course** in every matching endpoint
-     (`expand_courses`).
-   - **Base44 Prompt F** written.
+1. **CCSF catalogs 2026–27 and 2025–26**, uploaded by the owner and kept in
+   `data/source_pdfs/ccsf_catalog_<year>/`:
+   - **`parser/parse_catalog.py`** reads both layouts. 2026–27 is single-column
+     (`ACCT 1 -Title (5.0)`). 2025–26 is two-column (`JAPA 1. Title (5)`, read with
+     `--columns 2`, ending in "UC/CSU").
+   - **`data/ccsf_catalog.json`:** 2,056 courses. 1,698 are in both years, 121 only in
+     2025–26 (dropped or renamed, e.g. ENGL 1B, ART 101), and 237 only in 2026–27.
+   - **API `CATALOG`:** 2,501 entries. A course is `in_current_catalog` only if it's
+     in the newest year. Dropped courses that were renamed point to their new code
+     (`renamed_to`), and renamed codes match each other in every matching endpoint.
 2. USC: parsed the agreement PDF, added `usc.py` and `POST /match/usc`, and wrote
    Base44 Prompt E.
 
 **Next 2 topics**
-1. **The owner, in Base44:** send Prompts E (USC) and F (catalog details), and test.
-2. **More catalog years:** the owner plans to upload 2025–26 (and maybe older years).
-   For each year:
+1. **The owner, in Base44:** send Prompts E (USC) and F (catalog details in
+   autocomplete), and test.
+2. **Optional older catalogs (2024–25, 2023–24):** these only add courses dropped
+   before 2025–26. Same steps:
    - Save the pieces in `data/source_pdfs/ccsf_catalog_<year>/`.
-   - Run `python3 parser/parse_catalog.py --year <year> <parts in order>`. It merges
-     into `data/ccsf_catalog.json`, newest year wins.
-   - Check the summary counts and run the tests.
+   - Run `python3 parser/parse_catalog.py --year <year> [--columns 2] <parts>`. Check
+     the format first: look at a course header in the extracted text.
+   - Then run the tests.
 
 ## Working with the owner
 
@@ -115,8 +114,8 @@ ASSIST PDFs → parser/parse_assist.py (pdfplumber) → all_agreements_v3.json
 | `usc.py` | `build_usc_agreement()` turns USC GE + writing into a standard agreement (`metadata.scope = "school-wide"`). Also `equivalences()`, `language_level()`, `transfer_status()`, and `catalog_entries()`. |
 | `parser/parse_usc.py` | Parser for USC's agreement PDF. Language levels come from word x-positions, because the 4-column table loses its columns in plain text. `tests/test_usc.py` re-parses the PDF and checks it matches the committed JSON. |
 | `data/source_pdfs/` | Source PDFs kept for re-parsing: the USC agreement and `ccsf_catalog_<year>/` catalog pieces. |
-| `parser/parse_catalog.py` | CCSF catalog parser. It reads course descriptions (`ACCT 1 -Financial Accounting (5.0)` … "UC Transferable", "Formerly X"), falls back to program requirement tables, and merges years into `data/ccsf_catalog.json`. Only one-to-one "Formerly CODE" notes count as renames ("Formerly SPAN 2A + 2B" doesn't). |
-| `data/ccsf_catalog.json` | `{catalog_years, departments, courses: {code: {title, units, units_max, credit_type, uc_transferable, formerly, catalog_years}}}`. 2026–27: 1,935 courses. |
+| `parser/parse_catalog.py` | CCSF catalog parser. It reads two layouts: 2026–27 single-column, and 2025–26 two-column (`--columns 2`, which reads each page's left and right halves separately). It reads course descriptions (`ACCT 1 -Financial Accounting (5.0)` … "UC Transferable", "Formerly X"), falls back to program requirement tables, and merges years into `data/ccsf_catalog.json`. Only one-to-one "Formerly CODE" notes count as renames ("Formerly SPAN 2A + 2B" doesn't). |
+| `data/ccsf_catalog.json` | `{catalog_years, departments, courses: {code: {title, units, units_max, credit_type, uc_transferable, formerly, catalog_years}}}`. Years: 2025–26 + 2026–27, 2,056 courses. The newest year's title and units win; `formerly` renames come from 2026–27 (2025–26 "Formerly" notes are font-garbled). |
 
 **Endpoints**
 - `GET /`: health check

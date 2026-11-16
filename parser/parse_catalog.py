@@ -14,6 +14,13 @@ Course descriptions look like:
     Catalog Notes: Formerly ...
     UC Transferable
 
+Older catalogs (2025–26) use a two-column layout with headers like
+
+    JAPA 1. Elementary Japanese (5)                ← units may be "(1-3)" or "(.5)"
+    ...description... UC/CSU                       ← transfer marker
+
+so they need --columns 2 (each page is read as a left and a right column).
+
 Degree requirement tables ("R E 184 Real Estate Practice 3.0") are also read, as a
 fallback for any course that has no description entry.
 
@@ -38,7 +45,11 @@ PREFIX = r"[A-Z][A-Z&]*(?: [A-Z&]{1,4})*?"       # "MATH", "R E", "PE A", "M B"
 NUMBER = r"[A-Z]?\d{1,4}[A-Z]{0,3}"               # "110A", "C1000", "A60"
 HEADER_RE = re.compile(rf"^(?P<prefix>{PREFIX}) (?P<num>{NUMBER}) ?- ?(?P<title>.+?)"
                        rf" \((?P<units>\d+(?:\.\d+)?(?: ?- ?\d+(?:\.\d+)?)?)\)$")
-HEADER_START_RE = re.compile(rf"^(?:{PREFIX}) {NUMBER} ?-\S")
+HEADER_START_RE = re.compile(rf"^(?:{PREFIX}) {NUMBER} ?-\S|^(?:{PREFIX}) {NUMBER}\. \S")
+# 2025–26 style: "JAPA 1. Elementary Japanese (5)"
+HEADER2_RE = re.compile(rf"^(?P<prefix>{PREFIX}) (?P<num>{NUMBER})\. (?P<title>.+?)"
+                        rf" \((?P<units>\d*\.?\d+(?: ?- ?\d*\.?\d+)?)\)$")
+UC_MARK_RE = re.compile(r"^UC Transferable$|\bUC/CSU\.?$")
 TABLE_RE = re.compile(rf"^(?P<prefix>{PREFIX}) (?P<num>{NUMBER}) (?P<title>[A-Z][^\n]*?) "
                       rf"(?P<units>\d{{1,2}}\.\d)(?: ?- ?\d{{1,2}}\.\d)?$")
 DEPT_RE = re.compile(r"^(?P<name>[A-Z][A-Za-z,&'’/ .-]+) \((?P<prefix>[A-Z][A-Z& ]{0,8})\)$")
@@ -52,13 +63,19 @@ def norm(s):
     return fix_ligatures(re.sub(r"\s+", " ", s or "").strip())
 
 
-def pdf_lines(paths):
+def pdf_lines(paths, columns=1):
     import pdfplumber
     for path in paths:
         with pdfplumber.open(path) as pdf:
             for page in pdf.pages:
-                for line in (page.extract_text() or "").splitlines():
-                    yield line
+                if columns == 2:
+                    w, h = page.width, page.height
+                    parts = [page.crop((0, 0, w / 2, h)), page.crop((w / 2, 0, w, h))]
+                else:
+                    parts = [page]
+                for part in parts:
+                    for line in (part.extract_text() or "").splitlines():
+                        yield line
 
 
 def parse_lines(lines):
@@ -72,14 +89,15 @@ def parse_lines(lines):
         line = lines[i]
         # Course headers can wrap: "BIO 21M -Coastal Ecosystem Field" / "Studies (2.0)"
         candidate = line
-        if HEADER_START_RE.match(line) and not HEADER_RE.match(line) and i + 1 < len(lines):
+        is_header = lambda t: HEADER_RE.match(t) or HEADER2_RE.match(t)
+        if HEADER_START_RE.match(line) and not is_header(line) and i + 1 < len(lines):
             joined = f"{line} {lines[i + 1]}"
-            if HEADER_RE.match(joined):
+            if is_header(joined):
                 candidate, i = joined, i + 1
-        m = HEADER_RE.match(candidate)
+        m = HEADER_RE.match(candidate) or HEADER2_RE.match(candidate)
         if m:
             code = f"{m.group('prefix')} {m.group('num')}"
-            units = re.split(r" ?- ?", m.group("units"))
+            units = re.split(r" ?- ?", m.group("units").strip())
             current = {
                 "code": code,
                 "title": m.group("title").strip(),
@@ -107,7 +125,7 @@ def parse_lines(lines):
         if current is not None:
             if current["credit_type"] is None and (line.startswith("Credit") or line.startswith("Noncredit")):
                 current["credit_type"] = line
-            elif line == "UC Transferable":
+            elif UC_MARK_RE.search(line):
                 current["uc_transferable"] = True
             for old in FORMERLY_RE.findall(line):
                 if old != current["code"] and old not in current["formerly"]:
@@ -122,7 +140,7 @@ def parse_lines(lines):
     return courses, departments, table
 
 
-def build_year(lines):
+def build_year(lines):  # noqa: D401
     courses, departments, table = parse_lines(lines)
     only_in_tables = {}
     for code, row in table.items():
@@ -163,10 +181,12 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description="Parse CCSF catalog PDFs into data/ccsf_catalog.json")
     ap.add_argument("--year", required=True, help="catalog year, e.g. 2026-27")
     ap.add_argument("--out", default=str(OUT))
+    ap.add_argument("--columns", type=int, default=1, choices=(1, 2),
+                    help="2 for two-column catalogs like 2025-26")
     ap.add_argument("pdfs", nargs="+", help="catalog PDF pieces in page order")
     args = ap.parse_args(argv)
 
-    courses, departments, extra = build_year(pdf_lines(args.pdfs))
+    courses, departments, extra = build_year(pdf_lines(args.pdfs, columns=args.columns))
     out_path = Path(args.out)
     existing = json.loads(out_path.read_text()) if out_path.exists() else None
     merged = merge(existing, args.year, courses, departments, extra)
