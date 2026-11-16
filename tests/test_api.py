@@ -96,10 +96,12 @@ class ApiTests(unittest.TestCase):
 
     def test_course_check_suggests_fix(self):
         r = CLIENT.post("/courses/check", json={"codes": ["PHYS 4A", "phyc 4a", "ENGL 1A"]}).json()
-        self.assertEqual([c["code"] for c in r["known"]], ["PHYC 4A"])
+        known = {c["code"]: c for c in r["known"]}
+        self.assertIn("PHYC 4A", known)
+        # ENGL 1A is CCSF's old code for ENGL C1000: known, but marked as renamed
+        self.assertEqual(known["ENGL 1A"]["renamed_to"], "ENGL C1000")
         sugg = {u["code"]: u["suggestions"] for u in r["unknown"]}
         self.assertEqual(sugg["PHYS 4A"][0], "PHYC 4A")
-        self.assertEqual(sugg["ENGL 1A"], ["ENGL C1000"])
 
     def test_data_quality(self):
         r = CLIENT.get("/data-quality", params={"status": "verified"}).json()

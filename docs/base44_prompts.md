@@ -9,8 +9,34 @@ API base URL: `https://transfer-tracker-api-production.up.railway.app`
 ## Order to send
 
 1. ✅ Prompt A, ✅ Prompt B (sent 2026-11-16), then the label fix.
-2. ✅ Prompts C, C2, D and C3 (sent 2026-11-16). **Next: Prompt E** (USC), then the
-   label fix if it's still needed.
+2. ✅ Prompts C, C2, D and C3 (sent 2026-11-16). **Next: Prompt E** (USC), then
+   **Prompt F** (catalog details in autocomplete), then the label fix if it's still
+   needed.
+
+---
+
+## Prompt F: Every CCSF course in autocomplete
+
+The API now has CCSF's full 2026–27 catalog: about 1,900 courses with titles, units
+and UC-transferable status, plus old course codes (ENGL 1B → ENGL C1003). The app
+already calls `/courses`, so autocomplete covers everything automatically. This prompt
+shows the extra details.
+
+```text
+Improve the course form's autocomplete using the extra fields GET /courses now returns for each course:
+{ code, title, units, units_max, uc_transferable, transfers_to_usc, in_current_catalog, renamed_to, catalog_years }
+
+1. Dropdown rows: "CODE · Title · N units". If units and units_max differ (for example 1.0–3.0), show "1–3 units" and let the student pick the units they took when saving.
+2. If uc_transferable is true, add a small "UC transferable" tag on the row.
+3. If renamed_to is set, it's an old course code (for example ENGL 1B, now ENGL C1003). Show "Old code, now {renamed_to}" in grey. Picking it keeps the code the student actually took (old codes still count; the API treats them as the same course).
+4. When the student picks a course, fill in the code, title and units automatically.
+```
+
+**Test afterwards:**
+1. Typing "real estate" lists R E 181–191 with titles and 3 units each.
+2. Typing "ENGL 1B" shows "Old code, now ENGL C1003". If you save it, Berkeley's
+   Reading & Composition requirement still counts it.
+3. Typing "calc" lists MATH 100A/B, 101, 110A/B/C with a "UC transferable" tag.
 
 ---
 

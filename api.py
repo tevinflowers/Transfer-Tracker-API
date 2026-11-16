@@ -44,6 +44,7 @@ import usc as usc_lib
 # ── Load data ─────────────────────────────────────────────────────────────────
 DATA_PATH = os.environ.get('AGREEMENTS_JSON', 'all_agreements_v3.json')
 USC_PATH  = os.environ.get('USC_JSON', 'USC_CCSF_agreement.json')
+CCSF_CATALOG_PATH = os.environ.get('CCSF_CATALOG_JSON', os.path.join('data', 'ccsf_catalog.json'))
 
 try:
     with open(DATA_PATH) as f:
@@ -96,8 +97,29 @@ def data_status(idx):
 
 # ── CCSF course catalog (from the CCSF side of every agreement) ──────────────
 
+# ── CCSF course catalog ───────────────────────────────────────────────────────
+# Sources, best first:
+#   1. data/ccsf_catalog.json: every course in CCSF's college catalog (parser/parse_catalog.py)
+#   2. the CCSF side of every agreement (titles can be cut off)
+#   3. every course USC lists (codes only)
+# Old codes replaced by new ones ("Formerly ENGL 1B" → ENGL C1003) are kept too, so
+# students who took a course under its old code can still enter it.
+
+try:
+    with open(CCSF_CATALOG_PATH) as f:
+        CCSF_CATALOG = json.load(f)
+    print(f"✅ Loaded CCSF catalog: {len(CCSF_CATALOG['courses'])} courses, years {CCSF_CATALOG['catalog_years']}")
+except FileNotFoundError:
+    print(f"⚠️  Could not find {CCSF_CATALOG_PATH}; course search uses agreement data only")
+    CCSF_CATALOG = {"catalog_years": [], "departments": {}, "courses": {}}
+
+
+def _ncode(code):
+    return re.sub(r'\s+', ' ', (code or '').strip().upper())
+
+
 def _build_catalog():
-    titles, units = defaultdict(Counter), {}
+    agreement_titles, agreement_units = defaultdict(Counter), {}
     for ag in AGREEMENTS:
         for s in ag.get('requirement_sections', []):
             for g in s.get('groups', []):
@@ -110,26 +132,71 @@ def _build_catalog():
                         continue
                     for opt in side.get('options') or [side]:
                         for c in opt.get('courses', []):
-                            code = re.sub(r'\s+', ' ', c.get('code', '').strip().upper())
+                            code = _ncode(c.get('code'))
                             if code:
-                                titles[code][c.get('title') or ''] += 1
-                                units.setdefault(code, c.get('units'))
+                                if c.get('title'):
+                                    agreement_titles[code][c['title']] += 1
+                                agreement_units.setdefault(code, c.get('units'))
     usc_transfer = {}
     if USC_AGREEMENT:
-        # Every CCSF course USC lists (Part III transfers, Part IV doesn't).
         for code, transfers in usc_lib.catalog_entries(USC_AGREEMENT):
-            code = re.sub(r'\s+', ' ', code.strip().upper())
-            titles[code]['']  # make sure it's in the catalog, even without a title
-            usc_transfer[code] = transfers
+            usc_transfer[_ncode(code)] = transfers
+
     catalog = {}
-    for code, t in titles.items():
-        # Prefer the longest of the most common titles (others may be cut off)
-        best = max(t.items(), key=lambda kv: (kv[1], len(kv[0])))[0] if t else ''
-        catalog[code] = {'code': code, 'title': best or None, 'units': units.get(code),
-                         'transfers_to_usc': usc_transfer.get(code)}
+    # 1. The college catalog
+    for code, c in CCSF_CATALOG.get('courses', {}).items():
+        code = _ncode(code)
+        catalog[code] = {
+            'code': code, 'title': c.get('title'), 'units': c.get('units'),
+            'units_max': c.get('units_max'), 'uc_transferable': c.get('uc_transferable'),
+            'transfers_to_usc': usc_transfer.get(code), 'in_current_catalog': True,
+            'catalog_years': c.get('catalog_years', []), 'formerly': c.get('formerly', []),
+            'renamed_to': None,
+        }
+    # Old codes → their replacements
+    for code, c in list(catalog.items()):
+        for old in c['formerly']:
+            old = _ncode(old)
+            if old not in catalog:
+                catalog[old] = {
+                    'code': old, 'title': c['title'], 'units': c['units'], 'units_max': c['units_max'],
+                    'uc_transferable': c['uc_transferable'], 'transfers_to_usc': usc_transfer.get(old),
+                    'in_current_catalog': False, 'catalog_years': [], 'formerly': [],
+                    'renamed_to': code,
+                }
+    # 2–3. Agreement and USC codes not in the catalog (discontinued or old courses)
+    for code in set(agreement_titles) | set(agreement_units) | set(usc_transfer):
+        if code in catalog:
+            continue
+        t = agreement_titles.get(code)
+        best = max(t.items(), key=lambda kv: (kv[1], len(kv[0])))[0] if t else None
+        catalog[code] = {
+            'code': code, 'title': best, 'units': agreement_units.get(code), 'units_max': None,
+            'uc_transferable': None, 'transfers_to_usc': usc_transfer.get(code),
+            'in_current_catalog': False if CCSF_CATALOG.get('courses') else None,
+            'catalog_years': [], 'formerly': [], 'renamed_to': None,
+        }
     return catalog
 
+
 CATALOG = _build_catalog()
+
+# Renamed courses count as the same course when matching: a student with ENGL C1003
+# satisfies an agreement that still lists ENGL 1B, and the other way round.
+ALIASES = defaultdict(set)
+for _code, _c in CATALOG.items():
+    if _c.get('renamed_to'):
+        ALIASES[_code].add(_c['renamed_to'])
+        ALIASES[_c['renamed_to']].add(_code)
+
+def expand_courses(codes):
+    """The student's codes plus old/new codes of the same courses."""
+    out = []
+    for code in codes:
+        out.append(code)
+        for alias in sorted(ALIASES.get(_ncode(code), ())):
+            out.append(alias)
+    return list(dict.fromkeys(out))
 
 def _compact(code):
     return re.sub(r'\s+', '', (code or '').upper())
@@ -151,6 +218,7 @@ def _split_code(code):
 # Older CCSF codes replaced by California common course numbering (C-numbers).
 # Extend as needed; only add renames you've confirmed in the CCSF catalog.
 RENAMED_CODES = {
+    **{code: c['renamed_to'] for code, c in CATALOG.items() if c.get('renamed_to')},
     'ENGL 1A': 'ENGL C1000',
 }
 
@@ -440,7 +508,10 @@ def match_usc(body: MatchRequest):
     """
     if not USC_AGREEMENT or USC_AGREEMENT_ID is None:
         raise HTTPException(status_code=503, detail="USC agreement data not loaded")
-    ge = match_agreement(AGREEMENTS[USC_AGREEMENT_ID], body.completed_courses, body.in_progress_courses)
+    ge = match_agreement(AGREEMENTS[USC_AGREEMENT_ID], expand_courses(body.completed_courses),
+                         expand_courses(body.in_progress_courses))
+    ge['student'] = {'completed_courses': body.completed_courses,
+                     'in_progress_courses': body.in_progress_courses}
     ge['agreement'].update(id=USC_AGREEMENT_ID, **data_status(USC_AGREEMENT_ID))
     checks = []
     for code in body.completed_courses + body.in_progress_courses:
@@ -448,9 +519,9 @@ def match_usc(body: MatchRequest):
     return {
         "school": "USC",
         "ge": ge,
-        "course_equivalences": usc_lib.equivalences(USC_AGREEMENT, body.completed_courses,
-                                                    body.in_progress_courses),
-        "foreign_language": usc_lib.language_level(USC_AGREEMENT, body.completed_courses),
+        "course_equivalences": usc_lib.equivalences(USC_AGREEMENT, expand_courses(body.completed_courses),
+                                                    expand_courses(body.in_progress_courses)),
+        "foreign_language": usc_lib.language_level(USC_AGREEMENT, expand_courses(body.completed_courses)),
         "transfer_check": checks,
         "rules": USC_AGREEMENT.get("transfer_rules", {}),
         "notes": USC_AGREEMENT.get("metadata", {}).get("notes", []),
@@ -470,9 +541,11 @@ def match_one(agreement_id: int, body: MatchRequest):
 
     result = match_agreement(
         AGREEMENTS[agreement_id],
-        body.completed_courses,
-        body.in_progress_courses,
+        expand_courses(body.completed_courses),
+        expand_courses(body.in_progress_courses),
     )
+    result['student'] = {'completed_courses': body.completed_courses,
+                         'in_progress_courses': body.in_progress_courses}
     result['agreement'].update(id=agreement_id, **data_status(agreement_id))
     return result
 
@@ -488,8 +561,8 @@ def compare_all(body: CompareRequest):
     """
     results = match_all(
         AGREEMENTS,
-        body.completed_courses,
-        body.in_progress_courses,
+        expand_courses(body.completed_courses),
+        expand_courses(body.in_progress_courses),
         min_progress=body.min_progress,
         section_filter=body.section_filter,
     )
@@ -528,8 +601,8 @@ def compare_school(school: str, body: CompareRequest):
 
     results = match_all(
         filtered,
-        body.completed_courses,
-        body.in_progress_courses,
+        expand_courses(body.completed_courses),
+        expand_courses(body.in_progress_courses),
         min_progress=body.min_progress,
         section_filter=body.section_filter,
     )
@@ -543,32 +616,48 @@ def compare_school(school: str, body: CompareRequest):
     }
 
 
+def _course_sort_key(c):
+    """Current courses first, then natural order: MATH 2 < MATH 10 < MATH 110A."""
+    prefix, number = _split_code(c['code'])
+    m = re.match(r'([A-Z]?)(\d+)(.*)', number or '')
+    num = (m.group(1), int(m.group(2)), m.group(3)) if m else ('', 0, number or '')
+    return (c.get('in_current_catalog') is False, prefix, num)
+
+
 @app.get("/courses", tags=["Courses"])
 def search_courses(q: str = Query("", description="Code or title text, e.g. 'phyc 4', 'calculus'"),
                    limit: int = Query(20, ge=1, le=100)):
     """
-    Search CCSF courses that appear in the agreements, for autocomplete on the course
-    form. Matches the start of the code first, then anywhere in the code or title.
+    Search every CCSF course (the full college catalog, plus old and discontinued codes
+    from agreements), for autocomplete on the course form.
+
+    Code-prefix matches come first, then title words starting with the text (3+
+    letters). Current catalog courses are listed before old codes; an old code has
+    `renamed_to` set (e.g. ENGL 1B → ENGL C1003).
     """
     term = re.sub(r'\s+', ' ', q.strip().upper())
     if not term:
-        items = sorted(CATALOG.values(), key=lambda c: c['code'])
+        items = sorted(CATALOG.values(), key=_course_sort_key)
     else:
         # 1) codes that start with what was typed ("PHYC 4" → PHYC 4A, PHYC 4AL)
         starts = sorted((c for c in CATALOG.values() if _compact(c['code']).startswith(_compact(term))),
-                        key=lambda c: c['code'])
+                        key=_course_sort_key)
         # 2) title words that start with it ("calc" → Calculus I). Short inputs like
         #    "RE" only match codes, so they don't pull in "Culture", "Religion", etc.
         words = []
         if len(term) >= 3:
-            words = sorted((c for c in CATALOG.values() if c not in starts and
-                            any(w.startswith(term) for w in re.findall(r'[A-Z0-9]+', (c['title'] or '').upper()))),
-                           key=lambda c: c['code'])
+            # every typed word must start some word of the title ("real est" → Real Estate …)
+            typed = re.findall(r'[A-Z0-9]+', term)
+            def title_match(c):
+                title_words = re.findall(r'[A-Z0-9]+', (c['title'] or '').upper())
+                return all(any(w.startswith(t) for w in title_words) for t in typed)
+            words = sorted((c for c in CATALOG.values() if c not in starts and title_match(c)),
+                           key=_course_sort_key)
         items = starts + words
     out = {"count": len(items[:limit]), "total_courses": len(CATALOG), "courses": items[:limit]}
     if not items:
-        out["message"] = ("No matching course in our agreement data. The student can still type "
-                          "the code and title in; it just won't count toward any agreement yet.")
+        out["message"] = ("No matching CCSF course. The student can still type the code and title "
+                          "in; it just won't count toward any agreement.")
     return out
 
 
@@ -589,9 +678,9 @@ def check_courses(body: CourseCheckRequest):
     return {
         "known": known,
         "unknown": unknown,
-        "note": ("Unknown codes don't appear in any agreement. That may be a typo (see "
-                 "suggestions), an old course code, or a course that just doesn't count "
-                 "toward these agreements. Let the student keep it, but show the suggestions."),
+        "note": ("Unknown codes aren't in CCSF's catalog or any agreement, so they're probably "
+                 "typos (see suggestions). Known courses with renamed_to set are old codes: "
+                 "they still count, under their new code."),
     }
 
 
@@ -620,8 +709,8 @@ def match_usc_ge(body: MatchRequest):
         raise HTTPException(status_code=503, detail="USC agreement data not loaded")
 
     from matcher import normalize_set, normalize_course
-    completed   = normalize_set(body.completed_courses)
-    in_progress = normalize_set(body.in_progress_courses)
+    completed   = normalize_set(expand_courses(body.completed_courses))
+    in_progress = normalize_set(expand_courses(body.in_progress_courses))
 
     categories = USC_AGREEMENT['ge_requirements']['core_literacy']['categories']
     results = {}
