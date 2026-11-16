@@ -363,8 +363,21 @@ parse errors. Layers 3 and 4 stay useful after that.
   academic year. **Don't scrape.**
 - The beta uses about 100 hand-downloaded PDFs. The architecture is meant to let
   official API data replace them later.
-- An email asking for early API access was sent to help@assist.org. Follow up, and
-  re-run the parser on the 2026–27 agreements (around mid-December).
+- **API access request timeline:**
+  - First email to help@assist.org, around July 2026. ASSIST replied to wait until
+    the 2026–27 academic year.
+  - Second request sent around mid-November 2026, timed for the new 2026–27
+    agreements. Waiting for a reply.
+- **While waiting:** don't block on ASSIST.
+  - Build the validator (useful for API data and AI uploads too).
+  - Keep building the app.
+  - If there's still no reply by beta time, download the beta testers'
+    majors/schools by hand (about 10–20 PDFs) and run them through the
+    parser + validator.
+  - Ask the Calc 3 classmates for their majors and target schools to know which
+    agreements to get.
+- Re-run the parser on the 2026–27 agreements (around mid-December) if the API isn't
+  available by then.
 
 ## Roadmap (10 steps, from 2026-11-13)
 Steps 1–5 are the interview/demo path; steps 6–10 lead to launch.
