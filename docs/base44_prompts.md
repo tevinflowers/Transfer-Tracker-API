@@ -6,42 +6,25 @@ Send them one at a time, in order, and test after each one.
 API base URL: `https://transfer-tracker-api-production.up.railway.app`
 (interactive docs at `/docs`).
 
-## Order to send
+## Status
 
-1. ✅ Prompt A, ✅ Prompt B (sent 2026-11-16), then the label fix.
-2. ✅ Prompts C, C2, D and C3 (sent 2026-11-16). **Next: Prompt E** (USC), then
-   **Prompt F** (catalog details in autocomplete), then the label fix if it's still
-   needed.
+**Send these, in this order.** Delete a prompt from this list once it's sent and works.
 
----
+| # | Prompt | Status |
+|---|---|---|
+| 1 | Prompt E: USC requirements | ⬜ to send |
+| 2 | Prompt F: course details in autocomplete | ⬜ to send |
+| 3 | Label fix | ⬜ only if "majorGPA"-style labels still show |
+| 4 | "Not in our course list" line | ⬜ optional, only if it doesn't show when you have target schools |
 
-## Prompt F: Every CCSF course in autocomplete
+Already sent, kept in the archive at the bottom for reference: A, B, C, C2, C3, D
+(all 2026-11-16). **Don't resend those.**
 
-The API now has CCSF's full 2026–27 **and** 2025–26 catalogs: about 2,050 courses
-with titles, units and UC-transferable status, plus old course codes (ENGL 1B → ENGL
-C1003) and courses dropped since 2025–26. The app
-already calls `/courses`, so autocomplete covers everything automatically. This prompt
-shows the extra details.
-
-```text
-Improve the course form's autocomplete using the extra fields GET /courses now returns for each course:
-{ code, title, units, units_max, uc_transferable, transfers_to_usc, in_current_catalog, renamed_to, catalog_years }
-
-1. Dropdown rows: "CODE · Title · N units". If units and units_max differ (for example 1.0–3.0), show "1–3 units" and let the student pick the units they took when saving.
-2. If uc_transferable is true, add a small "UC transferable" tag on the row.
-3. If renamed_to is set, it's an old course code (for example ENGL 1B, now ENGL C1003). Show "Old code, now {renamed_to}" in grey. Picking it keeps the code the student actually took (old codes still count; the API treats them as the same course).
-4. When the student picks a course, fill in the code, title and units automatically.
-```
-
-**Test afterwards:**
-1. Typing "real estate" lists R E 181–191 with titles and 3 units each.
-2. Typing "ENGL 1B" shows "Old code, now ENGL C1003". If you save it, Berkeley's
-   Reading & Composition requirement still counts it.
-3. Typing "calc" lists MATH 100A/B, 101, 110A/B/C with a "UC transferable" tag.
+New prompts get added to the **end** of the "to send" list, never the top.
 
 ---
 
-## Prompt E: USC requirements
+## 1. Prompt E: USC requirements
 
 USC isn't on ASSIST. It publishes one school-wide agreement with CCSF, covering GE,
 writing, foreign language, course equivalents and which courses transfer. There's no
@@ -82,88 +65,63 @@ Add real USC requirements using my Transfer Tracker API (https://transfer-tracke
 
 ---
 
-## Prompt C3: Suggestions on every Major Prep card, and free-text courses
+## 2. Prompt F: Every CCSF course in autocomplete
 
-Testing C2 and D showed two gaps:
-- **San Jose State "Engineering" showed "no data yet" with no way forward.** SJSU has
-  Civil, Computer and Mechanical Engineering, but there's no plain "Engineering"
-  agreement. The University Requirements card didn't offer the API's suggestions, and
-  the ASSIST banner only appears once a real agreement is chosen.
-- **The autocomplete for "RE" listed unrelated courses.** That's fixed in the API: it
-  now matches code prefixes, plus title words for 3+ letters. CCSF Real Estate
-  courses aren't in any agreement, so the API returns an empty list with a message.
+The API now has CCSF's full 2026–27 **and** 2025–26 catalogs: about 2,050 courses
+with titles, units and UC-transferable status, plus old course codes (ENGL 1B → ENGL
+C1003) and courses dropped since 2025–26. The app
+already calls `/courses`, so autocomplete covers everything automatically. This prompt
+shows the extra details.
 
 ```text
-Two fixes, using my Transfer Tracker API (https://transfer-tracker-api-production.up.railway.app):
+Improve the course form's autocomplete using the extra fields GET /courses now returns for each course:
+{ code, title, units, units_max, uc_transferable, transfers_to_usc, in_current_catalog, renamed_to, catalog_years }
 
-1. Everywhere Major Prep appears for a school (the Major Prep page AND the Major Prep card on University Requirements), when GET /agreements/find returns count 0:
-   - Show the "We don't have [School] [Major] requirements yet" text.
-   - If "suggestions" isn't empty, show "Did you mean…?" with one button per suggested major (for example San Jose State: Civil Engineering, Computer Engineering, Mechanical Engineering). Tapping one sets that school's major to it in the profile and reloads.
-   - Also show the yellow data-quality banner (data_status "needs review" with data_note and an https://assist.org link) on the University Requirements card when the school's agreement needs review, not only on the Major Prep page.
-
-2. Course autocomplete on the course form:
-   - Only call GET /courses?q=… once at least 2 characters are typed (wait about 300 ms after typing stops), and show exactly the courses the API returns. Don't add, re-sort or filter the list in the app.
-   - If the API returns no courses, show one line under the field: "Not in our course list. You can still add it." Then let the student type the code, title and units themselves and save normally. Don't run the "Did you mean" typo check for these courses unless the API's /courses/check returns suggestions.
+1. Dropdown rows: "CODE · Title · N units". If units and units_max differ (for example 1.0–3.0), show "1–3 units" and let the student pick the units they took when saving.
+2. If uc_transferable is true, add a small "UC transferable" tag on the row.
+3. If renamed_to is set, it's an old course code (for example ENGL 1B, now ENGL C1003). Show "Old code, now {renamed_to}" in grey. Picking it keeps the code the student actually took (old codes still count; the API treats them as the same course).
+4. When the student picks a course, fill in the code, title and units automatically.
 ```
 
 **Test afterwards:**
-1. San Jose State with major "Engineering" shows "Did you mean…?" buttons on both
-   the Major Prep page and the University Requirements card. Tapping **Mechanical
-   Engineering** shows its requirements with the yellow ASSIST banner. (All SJSU data
-   needs review: those files are copies of SFSU's.)
-2. Typing "RE" shows "Not in our course list. You can still add it." Adding
-   "RE 184 Real Estate Practice, 3 units" still saves.
-3. Typing "phyc 4" lists PHYC 4A, 4AL, 4B…, and "calc" lists the calculus courses.
+1. Typing "real estate" lists R E 181–191 with titles and 3 units each.
+2. Typing "ENGL 1B" shows "Old code, now ENGL C1003". If you save it, Berkeley's
+   Reading & Composition requirement still counts it.
+3. Typing "calc" lists MATH 100A/B, 101, 110A/B/C with a "UC transferable" tag.
 
 ---
 
-## Prompt C2: Fixes after testing Prompt C
+## 3. Label fix (only if needed): raw translation keys
 
-Testing C showed four problems:
-- **UCLA and SJSU found nothing.** The API didn't understand names like "UC Los
-  Angeles (UCLA)". That's fixed in the API.
-- **"Engineering" showed Aerospace Engineering's requirements.** The API used to
-  swap in a partial match. Now it returns suggestions instead.
-- **A false 100%.** That was a matcher/data problem, now handled cautiously in the
-  API.
-- **No banner or message for SJSU and Sonoma.**
+Only send this if you still see camelCase words like "majorGPA" or "semesterGPALabel" in the app.
 
 ```text
-Update Major Prep to match changes in my Transfer Tracker API (base URL https://transfer-tracker-api-production.up.railway.app):
-
-1. GET /agreements/find now returns:
-   { school, school_has_data, major, count, agreements: [...], suggestions: [...], message? }
-   - "agreements" holds ONLY exact matches for that school + major. Use agreements[0] when count > 0.
-   - "suggestions" holds similar majors at that school (for example "Engineering" → Aerospace Engineering, Bioengineering, Civil Engineering, Mechanical Engineering). NEVER load a suggestion automatically.
-   - When count is 0, show the "We don't have [School] [Major] requirements yet" screen (also for schools with no data at all, like Sonoma State), and below it, if there are suggestions, show "Did you mean…?" with one button per suggestion (major name). Tapping one changes that target school's major in the profile to the suggestion, then reloads Major Prep.
-
-2. Major picker: when the student adds or edits a target school, load the majors we have data for from GET /majors?school={school name} (each item has "major" and "degree_type"). Show those first, plus an "Other (no requirement data yet)" option with a text box.
-
-3. Remove any cached Major Prep results and fetch again for every target school (results from before this change may be wrong).
-
-4. Use the API's numbers for status: the big % and "X of Y requirement groups complete" come from overall in POST /match/{id}, and each section/group status comes from the response. Don't compute your own "complete".
-
-5. Show the data-quality banner from agreements[0].data_status:
-   - "needs review": yellow banner with data_note and a link to https://assist.org (for example, every San Jose State major currently shows this).
-   - "auto-parsed": small grey note "Automatically read from ASSIST".
-   - "verified": small "Verified" badge.
-   Replace the footer "Lists are representative — verify course-by-course articulation for this campus on ASSIST.org." with: "Requirements come from ASSIST.org agreements for [academic_year]. Always confirm with a counselor."
+Some labels show raw translation keys instead of words. Add proper English and Spanish text for every key, for example:
+- majorGPA → "Major GPA" (Spanish: "Promedio de la especialidad")
+- MAJORGPA heading → "MAJOR GPA"
+- noMajorGPAData → "No courses tagged for Major GPA yet. Edit a course and check the schools it counts toward." (with a button to open the course list)
+- semesterGPALabel → "Semester GPA" (Spanish: "Promedio del semestre")
+- cumulativeGPALabel → "Cumulative GPA" (Spanish: "Promedio acumulado")
+Check the whole app for any other raw keys showing (camelCase words with no spaces, like "majorGPA") and fix those too. Don't change anything else.
 ```
 
-**Test afterwards:**
-1. Set UC Berkeley's major to **Bioengineering**. Major Prep should show the real
-   agreement, with a Verified badge. Its admission requirements are CHEM 1A, MATH
-   51–54, PHYSICS 7A/7B and R&C (there should be no ASTRON or MCELLBI rows).
-2. UCLA Bioengineering, Biology and Economics should all show requirements.
-3. Set a school's major to "Engineering". You should see "no data yet" plus "Did you
-   mean…?" buttons.
-4. San Jose State (any major) should show the yellow ASSIST banner.
-5. Sonoma State should show "no data yet".
-6. 100% should only appear when nothing is left under "Still need".
+**Test afterwards:** no camelCase words like "majorGPA" or "semesterGPALabel" anywhere in the app.
 
 ---
 
-## Prompt A: Demo banner and missing-data bug
+## 4. Optional: "Not in our course list" line
+
+Only send this if the "Not in our course list. You can still add it." line doesn't show when you have target schools selected.
+
+```text
+On the course form, the "Not in our course list. You can still add it." line should depend only on the course search: show it whenever GET /courses returns no courses for what was typed, whether or not the student has any target schools. Don't change anything else.
+```
+
+---
+
+# Archive: already sent (don't resend)
+
+## ✅ Prompt A: Demo banner and missing-data bug
 
 ```text
 Fix two bugs:
@@ -182,7 +140,7 @@ Fix two bugs:
 
 ---
 
-## Prompt B: In Progress by default, plus projected grades
+## ✅ Prompt B: In Progress by default, plus projected grades
 
 ```text
 Improve how current and future courses work on the GPA page:
@@ -207,23 +165,7 @@ Improve how current and future courses work on the GPA page:
 
 ---
 
-## Label fix: raw translation keys
-
-```text
-Some labels show raw translation keys instead of words. Add proper English and Spanish text for every key, for example:
-- majorGPA → "Major GPA" (Spanish: "Promedio de la especialidad")
-- MAJORGPA heading → "MAJOR GPA"
-- noMajorGPAData → "No courses tagged for Major GPA yet. Edit a course and check the schools it counts toward." (with a button to open the course list)
-- semesterGPALabel → "Semester GPA" (Spanish: "Promedio del semestre")
-- cumulativeGPALabel → "Cumulative GPA" (Spanish: "Promedio acumulado")
-Check the whole app for any other raw keys showing (camelCase words with no spaces, like "majorGPA") and fix those too. Don't change anything else.
-```
-
-**Test afterwards:** no camelCase words like "majorGPA" or "semesterGPALabel" anywhere in the app.
-
----
-
-## Prompt C: Major Prep from real ASSIST data (roadmap step 4)
+## ✅ Prompt C: Major Prep from real ASSIST data (roadmap step 4)
 
 ```text
 Connect Major Prep to my Transfer Tracker API so it uses real ASSIST articulation data instead of manual tags.
@@ -278,7 +220,53 @@ All endpoints are public JSON (no key needed, CORS is open).
 
 ---
 
-## Prompt D: Course code autocomplete and typo check
+## ✅ Prompt C2: Fixes after testing Prompt C
+
+Testing C showed four problems:
+- **UCLA and SJSU found nothing.** The API didn't understand names like "UC Los
+  Angeles (UCLA)". That's fixed in the API.
+- **"Engineering" showed Aerospace Engineering's requirements.** The API used to
+  swap in a partial match. Now it returns suggestions instead.
+- **A false 100%.** That was a matcher/data problem, now handled cautiously in the
+  API.
+- **No banner or message for SJSU and Sonoma.**
+
+```text
+Update Major Prep to match changes in my Transfer Tracker API (base URL https://transfer-tracker-api-production.up.railway.app):
+
+1. GET /agreements/find now returns:
+   { school, school_has_data, major, count, agreements: [...], suggestions: [...], message? }
+   - "agreements" holds ONLY exact matches for that school + major. Use agreements[0] when count > 0.
+   - "suggestions" holds similar majors at that school (for example "Engineering" → Aerospace Engineering, Bioengineering, Civil Engineering, Mechanical Engineering). NEVER load a suggestion automatically.
+   - When count is 0, show the "We don't have [School] [Major] requirements yet" screen (also for schools with no data at all, like Sonoma State), and below it, if there are suggestions, show "Did you mean…?" with one button per suggestion (major name). Tapping one changes that target school's major in the profile to the suggestion, then reloads Major Prep.
+
+2. Major picker: when the student adds or edits a target school, load the majors we have data for from GET /majors?school={school name} (each item has "major" and "degree_type"). Show those first, plus an "Other (no requirement data yet)" option with a text box.
+
+3. Remove any cached Major Prep results and fetch again for every target school (results from before this change may be wrong).
+
+4. Use the API's numbers for status: the big % and "X of Y requirement groups complete" come from overall in POST /match/{id}, and each section/group status comes from the response. Don't compute your own "complete".
+
+5. Show the data-quality banner from agreements[0].data_status:
+   - "needs review": yellow banner with data_note and a link to https://assist.org (for example, every San Jose State major currently shows this).
+   - "auto-parsed": small grey note "Automatically read from ASSIST".
+   - "verified": small "Verified" badge.
+   Replace the footer "Lists are representative — verify course-by-course articulation for this campus on ASSIST.org." with: "Requirements come from ASSIST.org agreements for [academic_year]. Always confirm with a counselor."
+```
+
+**Test afterwards:**
+1. Set UC Berkeley's major to **Bioengineering**. Major Prep should show the real
+   agreement, with a Verified badge. Its admission requirements are CHEM 1A, MATH
+   51–54, PHYSICS 7A/7B and R&C (there should be no ASTRON or MCELLBI rows).
+2. UCLA Bioengineering, Biology and Economics should all show requirements.
+3. Set a school's major to "Engineering". You should see "no data yet" plus "Did you
+   mean…?" buttons.
+4. San Jose State (any major) should show the yellow ASSIST banner.
+5. Sonoma State should show "no data yet".
+6. 100% should only appear when nothing is left under "Still need".
+
+---
+
+## ✅ Prompt D: Course code autocomplete and typo check
 
 ```text
 On the GPA page course form, help students enter the exact CCSF course code so matching works (for example "PHYC 4A", not "PHYS 4A").
@@ -305,3 +293,38 @@ API base URL: https://transfer-tracker-api-production.up.railway.app
 2. Saving "PHYS 4A" asks "Did you mean PHYC 4A?". Choosing it fixes the code.
 3. Saving "ENGL 1A" suggests "ENGL C1000" (the new code).
 4. Your existing "PHYS 4A" course shows a "Fix" note on the GPA page.
+
+---
+
+## ✅ Prompt C3: Suggestions on every Major Prep card, and free-text courses
+
+Testing C2 and D showed two gaps:
+- **San Jose State "Engineering" showed "no data yet" with no way forward.** SJSU has
+  Civil, Computer and Mechanical Engineering, but there's no plain "Engineering"
+  agreement. The University Requirements card didn't offer the API's suggestions, and
+  the ASSIST banner only appears once a real agreement is chosen.
+- **The autocomplete for "RE" listed unrelated courses.** That's fixed in the API: it
+  now matches code prefixes, plus title words for 3+ letters. CCSF Real Estate
+  courses aren't in any agreement, so the API returns an empty list with a message.
+
+```text
+Two fixes, using my Transfer Tracker API (https://transfer-tracker-api-production.up.railway.app):
+
+1. Everywhere Major Prep appears for a school (the Major Prep page AND the Major Prep card on University Requirements), when GET /agreements/find returns count 0:
+   - Show the "We don't have [School] [Major] requirements yet" text.
+   - If "suggestions" isn't empty, show "Did you mean…?" with one button per suggested major (for example San Jose State: Civil Engineering, Computer Engineering, Mechanical Engineering). Tapping one sets that school's major to it in the profile and reloads.
+   - Also show the yellow data-quality banner (data_status "needs review" with data_note and an https://assist.org link) on the University Requirements card when the school's agreement needs review, not only on the Major Prep page.
+
+2. Course autocomplete on the course form:
+   - Only call GET /courses?q=… once at least 2 characters are typed (wait about 300 ms after typing stops), and show exactly the courses the API returns. Don't add, re-sort or filter the list in the app.
+   - If the API returns no courses, show one line under the field: "Not in our course list. You can still add it." Then let the student type the code, title and units themselves and save normally. Don't run the "Did you mean" typo check for these courses unless the API's /courses/check returns suggestions.
+```
+
+**Test afterwards:**
+1. San Jose State with major "Engineering" shows "Did you mean…?" buttons on both
+   the Major Prep page and the University Requirements card. Tapping **Mechanical
+   Engineering** shows its requirements with the yellow ASSIST banner. (All SJSU data
+   needs review: those files are copies of SFSU's.)
+2. Typing "RE" shows "Not in our course list. You can still add it." Adding
+   "RE 184 Real Estate Practice, 3 units" still saves.
+3. Typing "phyc 4" lists PHYC 4A, 4AL, 4B…, and "calc" lists the calculus courses.
