@@ -20,25 +20,25 @@ timestamp.
 
 ## Session log
 
-**Last updated:** 2026-11-16 01:05 UTC
+**Last updated:** 2026-11-16 01:20 UTC
 
 **Last 2 topics**
-1. Made Major and Major GPA per target school in Base44. Each target school now has
-   its own major, and each course has a "Counts toward Major GPA at" checkbox per
-   school. Tested with UCLA Economics B.A. and Cal State Fullerton. Before that,
-   fixed the Major GPA / Golden 7 toggles not saving, and split "Golden 7" into the
-   UC 7-Course Pattern and CSU Golden Four.
-2. Wrote the 2-minute demo script and the step 3 test checklist. Logged the owner's
-   AI agreement upload feature idea (see "AI agreement upload").
+1. Ran the step 3 test checklist. It found 3 issues:
+   - The demo banner is missing.
+   - A school with no Major Prep data (USC) shows as 100% complete once one course is
+     tagged.
+   - Current courses should default to In Progress.
+   Wrote Base44 Prompt A (banner + "no data is never complete") and Prompt B (In
+   Progress default + projected grades).
+2. Added the Lichten task list: the ASSIST data collection pipeline and a
+   multi-school / multi-major stress test, alongside the data quality plan and the AI
+   upload idea.
 
 **Next 2 topics**
-1. Finish roadmap step 3:
-   - Send the GPA-page label prompt (raw keys like "majorGPA" still show).
-   - Run the test checklist on both demo mode and a real account.
-   - Rehearse the demo script.
-2. Roadmap step 4: connect the real Berkeley + UCLA Bioengineering Major Prep data
-   from the API. Course codes must match the CCSF codes in the agreements exactly
-   (CCSF physics is `PHYC`, not `PHYS`).
+1. Send Prompts A and B, re-run the checklist, and rehearse the demo script. That
+   finishes step 3.
+2. Start Task 1 (data pipeline). First build `parser/validate.py`, then the batch
+   download → parse → validate workflow.
 
 ## Working with the owner
 
@@ -222,11 +222,67 @@ ASSIST PDFs → parser/parse_assist.py (pdfplumber) → all_agreements_v3.json
     for every target school, and the GPA page has a chip for each school.
   - The major list comes from available agreements. For example, Real Estate isn't
     offered because there's no agreement for it yet.
-- **Known app bugs:**
+- **Known app bugs** (fix prompts written 2026-11-16 as Prompts A and B):
+  - Demo banner missing.
+  - A school + major with no requirement data (USC, Cal State Fullerton) shows as 100%
+    complete. Rule: **empty requirements always mean "no data yet", never complete.**
+  - Current/future courses should default to In Progress, with optional projected
+    grades.
   - Raw translation keys still show on the GPA page ("majorGPA", "MAJORGPA"). The
     label-fix prompt hasn't been sent yet.
 - **Course codes must match CCSF's exact codes** (`PHYC 4A`, not `PHYS 4A`), or
   matching against agreements fails. Consider autocomplete from the agreement data.
+
+## Lichten task list (bigger projects, in order)
+
+1. **ASSIST data collection pipeline** (requested 2026-11-16).
+   - **Goal:** get every CCSF agreement available, for every UC and CSU and every
+     major, so the major list and Major Prep cover real choices.
+   - **Rule: don't scrape ASSIST** and don't automate its website. Its undocumented
+     endpoints were locked in March 2025 because of scraping. Collect data only in
+     these ways:
+     - **(a) Official API** — follow up on the early-access request to
+       help@assist.org. This is the real long-term answer.
+     - **(b) Hand download plus automation:** the owner downloads agreement PDFs by
+       hand, and an automated pipeline handles everything after that:
+       1. Rename the files to `CCSF_to_[SCHOOL]_[Major].pdf`.
+       2. Parse them with `parser/parse_assist.py`.
+       3. Validate them with `parser/validate.py` (Data quality plan, layer 2).
+       4. Write a report: what's new, what's broken, what needs review.
+       5. Publish only the agreements that pass to `all_agreements_v3.json`.
+     - **(c) AI agreement upload** (below) for anything ASSIST doesn't cover.
+   - **Build the validator first.** More data without checks means more wrong
+     readiness %.
+   - Do the mid-December re-parse of the 2026–27 agreements through this pipeline.
+
+2. **Multi-school / multi-major stress test** (requested 2026-11-16).
+   - Run it once the data covers more than Bioengineering. Make a few test accounts,
+     each set up to break something, and check readiness, Major Prep and Major GPA
+     for every school. Scenarios:
+     - 3+ target schools with a different major at each (UC + CSU + USC mix).
+     - The same course counting at one school and not another (Major Prep, Major
+       GPA, GE area).
+     - A school or major with no data (it must show "no data yet", never complete).
+     - A major that exists at one school but not another; a renamed major.
+     - Two majors at the same school. UC/CSU applications usually allow one major per
+       campus (some allow an alternate), so check the rules and decide whether to
+       block it or show it as "alternate".
+     - Changing a school's major after courses are tagged: what happens to old Major
+       Prep / Major GPA checks?
+     - Removing a target school that has tagged courses, then adding it back.
+     - OR requirements (the best branch is picked), AND series partly done,
+       `same_institution_required` warnings, and `sequence_only` rows.
+     - UC 7-Course Pattern vs CSU Golden Four vs USC GE vs Berkeley Engineering H/SS
+       at the same time.
+     - Course code typos (`PHYS` vs `PHYC`), and In Progress or projected grades
+       never counting as complete.
+     - Moving between agreement years (2025–26 → 2026–27).
+   - Turn each scenario into an automated test in this repo once the matching logic
+     moves into the API.
+
+3. **Data quality plan:** see its section below. It's a prerequisite for task 1.
+
+4. **AI agreement upload:** see its section below. Do it after the validator exists.
 
 ## AI agreement upload (owner's feature idea, logged 2026-11-16)
 
@@ -320,12 +376,14 @@ Steps 1–5 are the interview/demo path; steps 6–10 lead to launch.
    - Fix the goal shown on Home.
 2. ✅ **Clean up Courses** (done 2026-11-15): group by semester, 3-dot menus, rename to Requirements, fix the
    "golden7" label (later replaced by the UC 7-Course Pattern and CSU Golden Four).
-3. **Test the tagging flow** end to end and write a 2-minute demo script.
+3. **Test the tagging flow** end to end and write a 2-minute demo script. *(In
+   progress: the script is written, the checklist was run once, and Prompts A/B fix
+   what it found.)*
 4. **Load real Bioengineering data into Major Prep** (Berkeley + UCLA, from
    `all_agreements_v3.json`), showing CCSF equivalents and AND/OR logic. *(The
    University Requirements tab with school chips is already done, from prompt 7.)*
-5. **GPA upgrade:** a cumulative line and a Major GPA toggle, both reading the same
-   course list.
+5. ✅ **GPA upgrade** (done early, 2026-11-16): a cumulative line and a Major GPA
+   toggle, both reading the same course list. Major GPA is now per school.
 6. **Polish Home, Deadlines and Profile:** per-school readiness *(done early, from
    prompts 4 and 8)*, preloaded UC/CSU dates,
    a major picker with an "Other" upload option, and a language switch.
