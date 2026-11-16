@@ -39,6 +39,7 @@ import sys
 # ── Load matcher ──────────────────────────────────────────────────────────────
 sys.path.insert(0, os.path.dirname(__file__))
 from matcher import match_agreement, match_all
+import usc as usc_lib
 
 # ── Load data ─────────────────────────────────────────────────────────────────
 DATA_PATH = os.environ.get('AGREEMENTS_JSON', 'all_agreements_v3.json')
@@ -59,6 +60,13 @@ try:
 except FileNotFoundError:
     print(f"⚠️  Could not find {USC_PATH} — USC data unavailable")
     USC_AGREEMENT = None
+
+# USC has no ASSIST agreements; its school-wide agreement (GE + writing) is added as
+# one more agreement so /agreements/find, /match/{id} and the app screens work for it.
+USC_AGREEMENT_ID = None
+if USC_AGREEMENT:
+    AGREEMENTS.append(usc_lib.build_usc_agreement(USC_AGREEMENT))
+    USC_AGREEMENT_ID = len(AGREEMENTS) - 1
 
 
 # ── Data quality (parser/validate.py) ─────────────────────────────────────────
@@ -106,21 +114,35 @@ def _build_catalog():
                             if code:
                                 titles[code][c.get('title') or ''] += 1
                                 units.setdefault(code, c.get('units'))
+    usc_transfer = {}
     if USC_AGREEMENT:
-        for cat in USC_AGREEMENT.get('ge_requirements', {}).get('core_literacy', {}).get('categories', {}).values():
-            for entry in cat.get('ccsf_courses', []):
-                for code in re.split(r'\s+with\s+', entry, flags=re.I):
-                    code = re.sub(r'\s+', ' ', code.strip().upper())
-                    if code and code not in titles:
-                        titles[code][''] += 1
+        # Every CCSF course USC lists (Part III transfers, Part IV doesn't).
+        for code, transfers in usc_lib.catalog_entries(USC_AGREEMENT):
+            code = re.sub(r'\s+', ' ', code.strip().upper())
+            titles[code]['']  # make sure it's in the catalog, even without a title
+            usc_transfer[code] = transfers
     catalog = {}
     for code, t in titles.items():
         # Prefer the longest of the most common titles (others may be cut off)
-        best = max(t.items(), key=lambda kv: (kv[1], len(kv[0])))[0]
-        catalog[code] = {'code': code, 'title': best or None, 'units': units.get(code)}
+        best = max(t.items(), key=lambda kv: (kv[1], len(kv[0])))[0] if t else ''
+        catalog[code] = {'code': code, 'title': best or None, 'units': units.get(code),
+                         'transfers_to_usc': usc_transfer.get(code)}
     return catalog
 
 CATALOG = _build_catalog()
+
+def _compact(code):
+    return re.sub(r'\s+', '', (code or '').upper())
+
+# "RE 181" and "R E 181" are the same course (CCSF's Real Estate prefix is "R E").
+CATALOG_BY_COMPACT = {_compact(c): c for c in CATALOG}
+
+def catalog_lookup(code):
+    code = re.sub(r'\s+', ' ', (code or '').strip().upper())
+    if code in CATALOG:
+        return CATALOG[code]
+    real = CATALOG_BY_COMPACT.get(_compact(code))
+    return CATALOG[real] if real else None
 
 def _split_code(code):
     m = re.match(r'^([A-Z&/ ]+?)\s*(\d.*)$', code)
@@ -210,6 +232,7 @@ def get_school(ag):
     if 'angeles' in dest:   return 'UCLA'
     if 'sfsu' in src.lower() or 'san francisco state' in dest: return 'SFSU'
     if 'sjsu' in src.lower() or 'san jose state' in dest:      return 'SJSU'
+    if 'southern california' in dest:                          return 'USC'
     return m.get('to_institution') or 'Unknown'
 
 def agreement_summary(ag, idx):
@@ -291,8 +314,6 @@ def list_schools():
     """List all schools with agreement counts."""
     from collections import Counter
     counts = Counter(get_school(ag) for ag in AGREEMENTS)
-    if USC_AGREEMENT:
-        counts['USC'] = 1
     return {
         "schools": [
             {"name": school, "agreement_count": count}
@@ -378,10 +399,19 @@ def find_agreement(
         "agreements": exact,
         "suggestions": suggestions,
     }
+    school_wide = [agreement_summary(ag, idx) for idx, ag in at_school
+                   if ag.get('metadata', {}).get('scope') == 'school-wide']
+    if school_wide:
+        out["school_wide"] = school_wide[0]
     if not exact:
         where = school_n if at_school else f"{school_n} (no agreements for this school yet)"
         out["message"] = (f"No {where} {major} agreement yet. Show this as 'no data yet' "
                           f"(never as complete).")
+        if school_wide:
+            out["message"] = (f"{school_n} has no major-specific agreements, so show Major Prep as "
+                              f"'no data yet'. Use school_wide (GE and "
+                              f"writing for every major) with POST /match/{{id}}, and POST /match/usc "
+                              f"for course equivalents. Major prep: check the {school_n} department site.")
     return out
 
 
@@ -394,6 +424,37 @@ def get_agreement(agreement_id: int):
     out = agreement_summary(ag, agreement_id)
     out['sections'] = ag.get('requirement_sections', [])
     return out
+
+
+# Declared before /match/{agreement_id} so "usc" isn't read as an id.
+@app.post("/match/usc", tags=["USC"])
+def match_usc(body: MatchRequest):
+    """
+    Everything USC-specific for a student's CCSF courses:
+    - ge: USC GE Core Literacy, Global Perspectives and writing (same shape as /match/{id})
+    - course_equivalences: every CCSF → USC course equivalent with the student's status
+      (the closest thing USC publishes to major prep, e.g. CHEM 101A → CHEM 105A)
+    - foreign_language: highest USC language level reached (many majors need level 3)
+    - transfer_check: whether each of the student's courses transfers to USC
+    - notes: USC rules to show (2 of the 8 GE courses must be taken at USC, etc.)
+    """
+    if not USC_AGREEMENT or USC_AGREEMENT_ID is None:
+        raise HTTPException(status_code=503, detail="USC agreement data not loaded")
+    ge = match_agreement(AGREEMENTS[USC_AGREEMENT_ID], body.completed_courses, body.in_progress_courses)
+    ge['agreement'].update(id=USC_AGREEMENT_ID, **data_status(USC_AGREEMENT_ID))
+    checks = []
+    for code in body.completed_courses + body.in_progress_courses:
+        checks.append({"code": code, **usc_lib.transfer_status(USC_AGREEMENT, code)})
+    return {
+        "school": "USC",
+        "ge": ge,
+        "course_equivalences": usc_lib.equivalences(USC_AGREEMENT, body.completed_courses,
+                                                    body.in_progress_courses),
+        "foreign_language": usc_lib.language_level(USC_AGREEMENT, body.completed_courses),
+        "transfer_check": checks,
+        "rules": USC_AGREEMENT.get("transfer_rules", {}),
+        "notes": USC_AGREEMENT.get("metadata", {}).get("notes", []),
+    }
 
 
 @app.post("/match/{agreement_id}", tags=["Match"], response_model=MatchResult)
@@ -494,7 +555,7 @@ def search_courses(q: str = Query("", description="Code or title text, e.g. 'phy
         items = sorted(CATALOG.values(), key=lambda c: c['code'])
     else:
         # 1) codes that start with what was typed ("PHYC 4" → PHYC 4A, PHYC 4AL)
-        starts = sorted((c for c in CATALOG.values() if c['code'].startswith(term)),
+        starts = sorted((c for c in CATALOG.values() if _compact(c['code']).startswith(_compact(term))),
                         key=lambda c: c['code'])
         # 2) title words that start with it ("calc" → Calculus I). Short inputs like
         #    "RE" only match codes, so they don't pull in "Culture", "Religion", etc.
@@ -520,8 +581,9 @@ def check_courses(body: CourseCheckRequest):
     known, unknown = [], []
     for raw in body.codes:
         code = re.sub(r'\s+', ' ', raw.strip().upper())
-        if code in CATALOG:
-            known.append(CATALOG[code])
+        found = catalog_lookup(code)
+        if found:
+            known.append(found)
         else:
             unknown.append({"code": raw, "suggestions": suggest_codes(code)})
     return {

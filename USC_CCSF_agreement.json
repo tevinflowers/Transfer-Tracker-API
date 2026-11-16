@@ -6,16 +6,17 @@
     "from_institution": "City College of San Francisco",
     "to_institution": "University of Southern California",
     "agreement_type": "comprehensive",
-    "date_published": "2025",
     "notes": [
-      "This is a flat agreement covering all CCSF \u2192 USC transfers.",
-      "Major-specific requirements must be checked separately on USC department websites.",
+      "USC publishes one school-wide agreement per college; there are no major-specific agreements.",
+      "Major-specific requirements must be checked on USC department websites.",
+      "Students take 8 GE Core Literacy courses, but at least 2 must be taken at USC after enrolling.",
       "Courses not listed may still be appropriate for transfer in some instances."
-    ]
+    ],
+    "date_published": "2025"
   },
   "ge_requirements": {
     "core_literacy": {
-      "description": "Students must take 8 courses from 6 GE Core Literacy areas.",
+      "description": "Students must take 8 courses from 6 GE Core Literacy areas (at least 2 of them at USC after enrolling).",
       "categories": {
         "A_arts": {
           "label": "Category A: The Arts",
@@ -320,7 +321,7 @@
       }
     },
     "global_perspectives": {
-      "description": "May be fulfilled with transfer courses before entering USC or in summer terms after starting USC.",
+      "description": "May be fulfilled with transfer courses before entering USC or in summer terms after starting USC. A course can count for one Global Perspective and one Core Literacy category.",
       "categories": {
         "G_citizenship_global_era": {
           "label": "Category G: Citizenship in a Global Era",
@@ -379,7 +380,7 @@
     },
     "writing_requirement": {
       "label": "Lower Division Writing Requirement",
-      "description": "Equivalent to USC WRIT 130 / WRIT 150. Must be completed after high school graduation and before starting at USC.",
+      "description": "Equivalent to USC WRIT 130 / WRIT 150. Must be completed after high school graduation and before starting at USC. Can't be taken pass/no pass.",
       "ccsf_courses": [
         "ENGL 1B",
         "ENGL C1001"
@@ -387,7 +388,7 @@
     },
     "foreign_language": {
       "label": "Foreign Language Requirement",
-      "description": "Many majors require third-semester foreign language or equivalent.",
+      "description": "Many majors require a third-semester foreign language course or equivalent (International Relations: fourth). Must be taken in a classroom, not online.",
       "levels": {
         "level_1": [
           "CHIN 1",
@@ -397,21 +398,21 @@
         ],
         "level_2": [
           "CHIN 2A with CHIN 2B",
-          "FREN 3",
           "GERM 2 / GERM 2A with GERM 2B",
-          "JAPA 3 / JAPA 3A with JAPA 3B",
           "PIL 2",
           "SPAN 2"
         ],
         "level_3": [
-          "CHIN 4 / CHIN 4A with CHIN 4B",
-          "FREN 4",
+          "FREN 3",
           "GERM 3A with GERM 3B",
-          "JAPA 4 / JAPA 4A with JAPA 4B",
-          "SPAN 6"
+          "JAPA 3 / JAPA 3A with JAPA 3B"
         ],
         "level_4": [
-          "GERM 4"
+          "CHIN 4 / CHIN 4A with CHIN 4B",
+          "FREN 4",
+          "GERM 4",
+          "JAPA 4 / JAPA 4A with JAPA 4B",
+          "SPAN 6"
         ]
       }
     }
@@ -426,8 +427,7 @@
         "BISC 120",
         "BISC 220"
       ],
-      "requires_all": true,
-      "notes": "Both CCSF courses required together"
+      "requires_all": true
     },
     {
       "ccsf_courses": [
@@ -702,6 +702,1149 @@
       "requires_all": false
     }
   ],
+  "transferable": {
+    "ADMJ": {
+      "57": [],
+      "59": [],
+      "67": []
+    },
+    "AFAM": {
+      "30": [],
+      "40": [],
+      "42": [],
+      "55": [],
+      "60": [],
+      "70": []
+    },
+    "AM C": {
+      "11A": [],
+      "11B": []
+    },
+    "AMSL": {
+      "1A": [],
+      "1B": []
+    },
+    "AMS": {
+      "5": []
+    },
+    "ANTH": {
+      "1": [],
+      "1L": [],
+      "2": [],
+      "3": [],
+      "3AC": [],
+      "4": [],
+      "8": [],
+      "11": [],
+      "12": [],
+      "15": [],
+      "20": [],
+      "25": []
+    },
+    "ARCH": {
+      "22A": [],
+      "29A": [],
+      "29B": [],
+      "31A": [],
+      "31B": [],
+      "32": [],
+      "101": [],
+      "102": [],
+      "103": []
+    },
+    "ART": {
+      "101": [],
+      "102": [],
+      "103": [],
+      "104": [],
+      "105": [],
+      "106": [],
+      "107": [],
+      "108": [],
+      "109": [],
+      "116": [],
+      "118": [],
+      "122A": [],
+      "123U": [],
+      "123V": [],
+      "123W": [],
+      "123X": [],
+      "123Y": [],
+      "123Z": [],
+      "124": [],
+      "125A": [],
+      "125B": [],
+      "126": [],
+      "130A": [],
+      "130B": [],
+      "132A": [],
+      "132B": [],
+      "140A": [],
+      "140B": [],
+      "140C": [],
+      "141": [],
+      "145A": [],
+      "145B": [],
+      "146A": [],
+      "146B": [],
+      "150A": [],
+      "150B": [],
+      "150C": [],
+      "151A": [],
+      "151B": [],
+      "151C": [],
+      "156": [],
+      "160A": [],
+      "160B": [],
+      "160C": [],
+      "162A": [],
+      "162B": [],
+      "170A": [],
+      "170B": [],
+      "170C": []
+    },
+    "ASAM": {
+      "6": [],
+      "8": [],
+      "10": [],
+      "20": [],
+      "22": [],
+      "23": [],
+      "27": [],
+      "30": [],
+      "35": [],
+      "40": [],
+      "42": []
+    },
+    "ASIA": {
+      "1": [],
+      "11": [],
+      "15": [],
+      "30": []
+    },
+    "ASTR": {
+      "1": [],
+      "4": [],
+      "16": [],
+      "17": [],
+      "18": [],
+      "19": [],
+      "20": []
+    },
+    "ANAT": {
+      "25": []
+    },
+    "BIO": {
+      "9": [
+        "ONL"
+      ],
+      "11": [],
+      "15": [],
+      "19": [],
+      "20": [],
+      "30": [],
+      "31": [],
+      "32": [],
+      "32L": [],
+      "40": [],
+      "41L": [],
+      "55": [],
+      "100A": [],
+      "101B": [],
+      "106": [],
+      "108": [],
+      "112": [],
+      "132": [],
+      "134": []
+    },
+    "BOT": {
+      "10": []
+    },
+    "GEN": {
+      "10": [],
+      "11": [],
+      "15": []
+    },
+    "M B": {
+      "10": [],
+      "12": []
+    },
+    "NUTR": {
+      "12": [],
+      "52": []
+    },
+    "ZOOL": {
+      "10": []
+    },
+    "BCST": {
+      "100": [],
+      "101": [],
+      "103": [],
+      "104": []
+    },
+    "BSL": {
+      "1": []
+    },
+    "ACCT": {
+      "1": [
+        "CDP"
+      ],
+      "2": [
+        "CDP"
+      ]
+    },
+    "CLW": {
+      "18": [],
+      "19": []
+    },
+    "GNBS": {
+      "119": []
+    },
+    "MABS": {
+      "60": []
+    },
+    "CHEM": {
+      "32": [],
+      "101A": [],
+      "101B": [],
+      "103A": [],
+      "107": [],
+      "110": [],
+      "110L": [],
+      "205": [],
+      "208A": [],
+      "208B": [],
+      "212A": [],
+      "212B": []
+    },
+    "CDEV": {
+      "53": [],
+      "67": []
+    },
+    "CHIN": {
+      "1": [],
+      "1A": [
+        "ONL"
+      ],
+      "1B": [
+        "ONL"
+      ],
+      "2": [
+        "ONL"
+      ],
+      "2A": [],
+      "2B": [],
+      "3": [
+        "ONL"
+      ],
+      "3A": [
+        "ONL"
+      ],
+      "3B": [
+        "ONL"
+      ],
+      "4": [],
+      "4A": [
+        "ONL"
+      ],
+      "4B": [
+        "ONL"
+      ],
+      "16": [],
+      "17": [],
+      "22": [
+        "PTN"
+      ],
+      "30B": [],
+      "31A": [],
+      "31B": [],
+      "39": []
+    },
+    "CINE": {
+      "18": [],
+      "19": [],
+      "20A": [],
+      "20B": [],
+      "21": [],
+      "22": [],
+      "23A": [],
+      "23B": [],
+      "24": [],
+      "124A": [],
+      "124B": []
+    },
+    "CLAS": {
+      "35": []
+    },
+    "COMM": {
+      "C1000": []
+    },
+    "CMST": {
+      "4": [],
+      "5": [],
+      "8": [],
+      "20": []
+    },
+    "CAD": {
+      "181": []
+    },
+    "CS": {
+      "100": [],
+      "110A": [],
+      "110B": [],
+      "110C": [],
+      "111A": [],
+      "111B": [],
+      "111C": [],
+      "112A": [],
+      "113A": [],
+      "131B": [],
+      "160A": [],
+      "160B": [],
+      "177": [],
+      "211S": [],
+      "270": []
+    },
+    "DANC": {
+      "30": [],
+      "32": [],
+      "33": [],
+      "34A": [],
+      "37": [],
+      "100A": [],
+      "101A": [],
+      "101B": [],
+      "101C": [],
+      "102A": [],
+      "102B": [],
+      "102C": [],
+      "107A": [],
+      "107B": [],
+      "107C": [],
+      "108A": [],
+      "108B": [],
+      "108C": [],
+      "109A": [],
+      "109B": [],
+      "110A": [],
+      "110B": [],
+      "111A": [],
+      "119A": [],
+      "119C": [],
+      "121B": [],
+      "122": [],
+      "123A": [],
+      "124C": [],
+      "125A": [],
+      "125C": [],
+      "126B": [],
+      "127": [],
+      "129A": [],
+      "130A": [],
+      "130B": [],
+      "130C": [],
+      "132A": [],
+      "132B": [],
+      "132C": [],
+      "135A": [],
+      "135B": [],
+      "136": [],
+      "137B": [],
+      "138A": [],
+      "138D": [],
+      "140A": [],
+      "140B": [],
+      "141A": [],
+      "141B": [],
+      "142A": [],
+      "142B": [],
+      "145A": [],
+      "145B": [],
+      "146A": [],
+      "146B": [],
+      "150A": [],
+      "150B": [],
+      "150C": [],
+      "151A": [],
+      "151B": [],
+      "155A": [],
+      "155B": [],
+      "155C": [],
+      "160A": [],
+      "160B": [],
+      "160C": [],
+      "161": [],
+      "170": [],
+      "175": []
+    },
+    "DSGN": {
+      "101": [],
+      "105": [],
+      "110": [],
+      "150": []
+    },
+    "GEOG": {
+      "1": [],
+      "1L": [],
+      "3": [],
+      "4": [],
+      "7": [],
+      "110": []
+    },
+    "GEOL": {
+      "10": [],
+      "10L": [
+        "ONL"
+      ],
+      "11": [],
+      "11L": [
+        "ONL"
+      ],
+      "18": [],
+      "30": [],
+      "30L": [],
+      "41": [
+        "PTN"
+      ],
+      "42": [
+        "PTN"
+      ],
+      "43": [
+        "PTN"
+      ]
+    },
+    "OCAN": {
+      "1": [],
+      "1L": [
+        "ONL"
+      ]
+    },
+    "PALE": {
+      "1": []
+    },
+    "ECON": {
+      "1": [],
+      "3": [],
+      "5": [],
+      "6": [],
+      "10": [],
+      "15": [],
+      "22": [],
+      "25": [],
+      "30": []
+    },
+    "ENRG": {
+      "3": [],
+      "3L": []
+    },
+    "ENGN": {
+      "1A": [],
+      "20": [],
+      "20L": [],
+      "24": [],
+      "36": [],
+      "37": [],
+      "38": [],
+      "45": []
+    },
+    "ENGL": {
+      "1B": [],
+      "8": [],
+      "20": [],
+      "30A": [],
+      "30B": [],
+      "35A": [],
+      "35B": [],
+      "35C": [],
+      "35D": [],
+      "35E": [],
+      "35F": [],
+      "36": [],
+      "43": [],
+      "44A": [],
+      "44B": [],
+      "46A": [],
+      "46B": [],
+      "46C": [],
+      "48B": [],
+      "48C": [],
+      "48G": [],
+      "48H": [],
+      "48I": [],
+      "48K": [],
+      "48L": [],
+      "48O": [],
+      "50": [],
+      "52": [],
+      "53": [],
+      "55": [],
+      "56A": [
+        "PTN"
+      ],
+      "56B": [
+        "PTN"
+      ],
+      "56C": [
+        "PTN"
+      ],
+      "57": [],
+      "58": [],
+      "C1000": [],
+      "C1001": []
+    },
+    "ESL": {
+      "140": [],
+      "150": [],
+      "160": [],
+      "170": []
+    },
+    "FREN": {
+      "1": [
+        "ONL"
+      ],
+      "1A": [
+        "ONL"
+      ],
+      "1B": [
+        "ONL"
+      ],
+      "2": [
+        "ONL"
+      ],
+      "2A": [
+        "ONL"
+      ],
+      "2B": [
+        "ONL"
+      ],
+      "3": [],
+      "3A": [
+        "ONL"
+      ],
+      "3B": [
+        "ONL"
+      ],
+      "4": [],
+      "11A": [],
+      "11B": [],
+      "22": [],
+      "41": [
+        "DED"
+      ],
+      "42": [
+        "PTN"
+      ]
+    },
+    "GERM": {
+      "1": [],
+      "1A": [
+        "ONL"
+      ],
+      "1B": [
+        "ONL"
+      ],
+      "2": [],
+      "2A": [],
+      "2B": [],
+      "3": [
+        "ONL"
+      ],
+      "3A": [],
+      "3B": [],
+      "4": [],
+      "4A": [],
+      "4B": [],
+      "11A": [],
+      "11B": []
+    },
+    "GRPH": {
+      "21": []
+    },
+    "HLTH": {
+      "5": [],
+      "10": [],
+      "14": [],
+      "25": [],
+      "27": [],
+      "33": [],
+      "50": [],
+      "53": [],
+      "54": [],
+      "221": [],
+      "231": []
+    },
+    "HIST": {
+      "1": [],
+      "3A": [],
+      "3B": [],
+      "4A": [],
+      "4B": [],
+      "5": [],
+      "9": [],
+      "12A": [],
+      "12B": [],
+      "15A": [],
+      "15B": [],
+      "17A": [],
+      "17B": [],
+      "18A": [],
+      "18B": [],
+      "20": [],
+      "21": [],
+      "31": [],
+      "32": [],
+      "33": [],
+      "34": [],
+      "35A": [],
+      "35B": [],
+      "36": [],
+      "37": [],
+      "38": [],
+      "39": [],
+      "40": [],
+      "41A": [],
+      "41B": [],
+      "44": [],
+      "45": [],
+      "47A": [],
+      "47D": [
+        "PTN"
+      ],
+      "48": []
+    },
+    "HUM": {
+      "7": [],
+      "8": [],
+      "11": [],
+      "12": [],
+      "20": [],
+      "25": [],
+      "35": [],
+      "41A": [],
+      "41B": [],
+      "48": []
+    },
+    "IDST": {
+      "3": [],
+      "4": [],
+      "7": [],
+      "9": [],
+      "10D": [],
+      "14": [],
+      "17": [],
+      "27A": [],
+      "27B": [],
+      "28G": [],
+      "29": [],
+      "30": [],
+      "31": [],
+      "36": [],
+      "37": [],
+      "38": [],
+      "42": [],
+      "44": [],
+      "45": [],
+      "46": [],
+      "47": [],
+      "100A": [],
+      "170": []
+    },
+    "ITAL": {
+      "1": [
+        "PTN"
+      ],
+      "1A": [
+        "PTN"
+      ],
+      "1B": [
+        "PTN"
+      ],
+      "2": [
+        "PTN"
+      ],
+      "2A": [
+        "PTN"
+      ],
+      "2B": [
+        "PTN"
+      ],
+      "3A": [
+        "PTN"
+      ],
+      "3B": [
+        "PTN"
+      ],
+      "4A": [
+        "PTN"
+      ],
+      "4B": [
+        "PTN"
+      ],
+      "15A": [
+        "PTN"
+      ],
+      "15B": [
+        "PTN"
+      ],
+      "41": []
+    },
+    "JAPA": {
+      "1": [],
+      "1A": [
+        "ONL"
+      ],
+      "1B": [
+        "ONL"
+      ],
+      "2": [
+        "ONL"
+      ],
+      "2A": [
+        "ONL"
+      ],
+      "2B": [
+        "ONL"
+      ],
+      "3": [],
+      "3A": [],
+      "3B": [],
+      "4": [],
+      "4A": [],
+      "4B": [],
+      "39": []
+    },
+    "JOUR": {
+      "19": []
+    },
+    "LBCS": {
+      "15": [],
+      "70A": [],
+      "70B": [],
+      "88": [],
+      "98A": [],
+      "98B": [],
+      "98C": [],
+      "100": []
+    },
+    "LALS": {
+      "1": [],
+      "5": [],
+      "9": [],
+      "10": [],
+      "11": [],
+      "13": [],
+      "14": [
+        "DED"
+      ],
+      "15": []
+    },
+    "LGBT": {
+      "5": [],
+      "9": [],
+      "11": [],
+      "12": [],
+      "15": [],
+      "18": [],
+      "20": [],
+      "25": [],
+      "30": [],
+      "50": [],
+      "55": [],
+      "60": [],
+      "70": [],
+      "75": [],
+      "77": []
+    },
+    "MATH": {
+      "70": [],
+      "75": [],
+      "80": [],
+      "90": [],
+      "97": [],
+      "98": [],
+      "100A": [],
+      "100B": [],
+      "110A": [],
+      "110B": [],
+      "110C": [],
+      "115": [],
+      "120": [],
+      "125": [],
+      "130": [],
+      "199": [
+        "PTN"
+      ]
+    },
+    "MUS": {
+      "1A": [],
+      "1B": [],
+      "2A": [],
+      "2B": [],
+      "2C": [],
+      "2D": [],
+      "3A": [],
+      "3B": [],
+      "4": [],
+      "5A": [],
+      "5B": [],
+      "6A": [],
+      "9C": [],
+      "10A": [],
+      "10B": [],
+      "11": [],
+      "12": [],
+      "13A": [],
+      "13B": [],
+      "14": [],
+      "15": [],
+      "16": [],
+      "17": [],
+      "18": [],
+      "19": [],
+      "20": [],
+      "21": [],
+      "22A": [],
+      "22B": [],
+      "22C": [],
+      "23": [],
+      "24": [],
+      "25": [],
+      "26": [],
+      "27A": [],
+      "27B": [],
+      "27R": [],
+      "27T": [],
+      "28": [],
+      "29": [],
+      "30": [],
+      "41": [],
+      "42": [],
+      "43": [],
+      "44": [],
+      "45": [],
+      "46": [],
+      "48A": [],
+      "48B": [],
+      "48C": [],
+      "50": []
+    },
+    "O H": {
+      "76": [],
+      "77": []
+    },
+    "PHST": {
+      "20": [],
+      "30": [],
+      "40": []
+    },
+    "PHIL": {
+      "2": [],
+      "4": [],
+      "12A": [],
+      "12B": [],
+      "25A": [],
+      "25C": [],
+      "40": []
+    },
+    "PHOT": {
+      "50A": [],
+      "50B": [],
+      "51": []
+    },
+    "PE": {
+      "258B": [],
+      "2": [],
+      "13": [],
+      "14": [],
+      "40": [],
+      "41": [],
+      "42": [],
+      "43": [],
+      "44": [],
+      "45": [],
+      "46": [],
+      "A60": [],
+      "A96": [],
+      "A97": [],
+      "A99": [],
+      "200A": [],
+      "200B": [],
+      "200C": [],
+      "200D": [],
+      "202": [],
+      "233C": [],
+      "204A": [],
+      "204B": [],
+      "204C": [],
+      "205": [],
+      "206": [],
+      "207": [],
+      "208A": [],
+      "208B": [],
+      "208C": [],
+      "209": [],
+      "210": [],
+      "211": [],
+      "212": [],
+      "212B": [],
+      "213": [],
+      "214": [],
+      "214A": [],
+      "214B": [],
+      "215A": [],
+      "215B": [],
+      "216": [],
+      "216A": [],
+      "217": [],
+      "218": [],
+      "219A": [],
+      "219B": [],
+      "220": [],
+      "221": [],
+      "233A": [],
+      "233B": [],
+      "235B": [],
+      "240A": [],
+      "250A": [],
+      "255D": [],
+      "255E": [],
+      "256A": [],
+      "258A": [],
+      "523A": [],
+      "255A": [],
+      "256C": [],
+      "274A": [],
+      "6": []
+    },
+    "PE A": {
+      "60": [],
+      "61": [],
+      "62": [],
+      "63": [],
+      "64": [],
+      "66": [],
+      "67": [],
+      "80": [],
+      "81": [],
+      "82": [],
+      "83": [],
+      "87": [],
+      "88": [],
+      "97": [],
+      "98": []
+    },
+    "P SC": {
+      "11": [],
+      "11L": []
+    },
+    "PHYC": {
+      "2A": [],
+      "2AL": [],
+      "2B": [],
+      "2AC": [],
+      "2BC": [],
+      "2BL": [
+        "ONL"
+      ],
+      "4B": [],
+      "4BL": [],
+      "4C": [],
+      "4CL": [],
+      "4D": [],
+      "4DL": [],
+      "4A": [
+        "ONL"
+      ],
+      "4AL": [
+        "ONL"
+      ],
+      "10": [],
+      "10L": [],
+      "40": [],
+      "41": []
+    },
+    "PIL": {
+      "1": [
+        "ONL"
+      ],
+      "2": [],
+      "39A": [],
+      "39B": []
+    },
+    "POLS": {
+      "2": [],
+      "3": [],
+      "4": [],
+      "5": [],
+      "6": [],
+      "7": [],
+      "8": [],
+      "9": [],
+      "10": [],
+      "12": [],
+      "13": [],
+      "15": [],
+      "18": [],
+      "22": [],
+      "35": [],
+      "43": [],
+      "45": [],
+      "46": [],
+      "47": [],
+      "48": [],
+      "C1000": []
+    },
+    "PSYC": {
+      "1B": [],
+      "2": [],
+      "5": [],
+      "10": [],
+      "11": [],
+      "21": [],
+      "23": [],
+      "25": [],
+      "32": [],
+      "40": [],
+      "41": [
+        "PTN"
+      ],
+      "42": [
+        "PTN"
+      ],
+      "43": [
+        "PTN"
+      ],
+      "C1000": []
+    },
+    "RUSS": {
+      "1A": [],
+      "1B": [],
+      "21A": [],
+      "21B": []
+    },
+    "SOC": {
+      "1": [],
+      "2": [],
+      "3": [],
+      "11": [],
+      "21": [],
+      "25": [],
+      "35": []
+    },
+    "SPAN": {
+      "1": [
+        "ONL"
+      ],
+      "1A": [
+        "ONL"
+      ],
+      "1B": [
+        "ONL"
+      ],
+      "2": [],
+      "2A": [
+        "ONL"
+      ],
+      "2B": [
+        "ONL"
+      ],
+      "3": [
+        "ONL"
+      ],
+      "3A": [
+        "ONL"
+      ],
+      "3B": [
+        "ONL"
+      ],
+      "5": [],
+      "5S": [],
+      "6": [],
+      "6A": [
+        "ONL"
+      ],
+      "6B": [
+        "ONL"
+      ],
+      "7": [],
+      "22A": [],
+      "22B": [],
+      "22C": [],
+      "31": [],
+      "31A": [],
+      "31B": [],
+      "32": [],
+      "41": [
+        "DED"
+      ]
+    },
+    "SPCH": {
+      "1A": [],
+      "3": [],
+      "4": [],
+      "5": [],
+      "20": []
+    },
+    "SUST": {
+      "31": []
+    },
+    "TH A": {
+      "15": [],
+      "30": [],
+      "31": [],
+      "32": [],
+      "60": [],
+      "61": [],
+      "62": [],
+      "71": [],
+      "72": [],
+      "73": [],
+      "107": [],
+      "150A": [],
+      "150B": [],
+      "150C": [],
+      "151": [],
+      "152A": [],
+      "152B": [],
+      "152C": [],
+      "153A": [],
+      "153B": [],
+      "153C": [],
+      "154A": [],
+      "154B": [],
+      "154C": [],
+      "160A": [],
+      "163": [],
+      "170A": [],
+      "200": [],
+      "202A": [],
+      "202B": [],
+      "202C": [],
+      "204B": []
+    },
+    "THA": {
+      "30": []
+    },
+    "VMD": {
+      "101": [],
+      "110": [],
+      "118": []
+    },
+    "WGST": {
+      "25": []
+    },
+    "WOMN": {
+      "10": []
+    }
+  },
+  "transferable_code_definitions": {
+    "ONL": "Online or hybrid sections earn elective units only (no GE or language level).",
+    "PTN": "Petition needed: no credit without review (submit syllabus).",
+    "CDP": "Elective units; see the USC department for possible equivalence.",
+    "DED": "Special review needed: non-traditional schedule or location.",
+    "SYL": "Elective units; subject credit (e.g. GE) may be available by petition.",
+    "WSY": "May satisfy the writing requirement by petition with writing samples."
+  },
   "non_transferable": {
     "BCST": [
       "119",
@@ -716,11 +1859,15 @@
     "MABS": [
       "101"
     ],
+    "CRER": [
+      "60"
+    ],
+    "CHEM": [],
     "CDEV": [
-      "71",
       "101",
       "114",
-      "150"
+      "150",
+      "71"
     ],
     "CINE": [
       "60",
@@ -737,6 +1884,9 @@
     "CS": [
       "150A"
     ],
+    "DMI": [
+      "49"
+    ],
     "ENGL": [
       "1AS"
     ],
@@ -744,29 +1894,187 @@
       "186",
       "188"
     ],
+    "ENTR": [
+      "101"
+    ],
+    "FIN": [
+      "133",
+      "138"
+    ],
+    "F SC": [
+      "50"
+    ],
+    "HLTH": [
+      "91M"
+    ],
+    "IDST": [
+      "50",
+      "80A",
+      "80C",
+      "80D",
+      "80F",
+      "80G"
+    ],
+    "INTR": [
+      "162"
+    ],
+    "JAPA": [
+      "10A"
+    ],
+    "LERN": [
+      "55"
+    ],
+    "LI S": [
+      "10"
+    ],
+    "MAKR": [
+      "33"
+    ],
+    "MRKT": [
+      "122",
+      "180"
+    ],
     "MATH": [
       "40",
       "80S",
+      "860",
       "90S",
-      "95",
-      "860"
+      "95"
+    ],
+    "PE": [
+      "8"
+    ],
+    "R E": [
+      "181",
+      "189"
     ],
     "SOC": [
       "12"
+    ],
+    "SPAN": [
+      "10A"
+    ],
+    "SPCH": [
+      "11"
     ],
     "VMD": [
       "100",
       "105",
       "154",
       "162A"
+    ],
+    "WKEX": [
+      "303",
+      "333",
+      "777"
     ]
+  },
+  "department_prefixes": {
+    "ADMINISTRATION OF JUSTICE": "ADMJ",
+    "AFRICAN AMERICAN STUDIES": "AFAM",
+    "AMERICAN CIVILIZATION": "AM C",
+    "AMERICAN SIGN LANGUAGE": "AMSL",
+    "AMERICAN STUDIES": "AMS",
+    "ANTHROPOLOGY": "ANTH",
+    "ARCHITECTURE": "ARCH",
+    "ART": "ART",
+    "ASIAN AMERICAN STUDIES": "ASAM",
+    "ASIAN STUDIES": "ASIA",
+    "ASTRONOMY": "ASTR",
+    "BIO SCI: ANATOMY": "ANAT",
+    "BIO SCI: BIOLOGY": "BIO",
+    "BIO SCI: BOTANY": "BOT",
+    "BIO SCI: GENETICS": "GEN",
+    "BIO SCI: MICROBIOLOGY": "M B",
+    "BIO SCI: NUTRITION": "NUTR",
+    "BIO SCI: ZOOLOGY": "ZOOL",
+    "BROADCAST ELEC MEDIA ARTS": "BCST",
+    "BUSINESS LAW": "BSL",
+    "BUSINESS MATH": "BSMA",
+    "BUSINESS: ACCOUNTING": "ACCT",
+    "BUSINESS: COMMERCIAL LAW": "CLW",
+    "BUSINESS: GENERAL": "GNBS",
+    "BUSINESS: MICROCOMP APPS": "MABS",
+    "CAREER DEVELOPMENT": "CRER",
+    "CHEMISTRY": "CHEM",
+    "CHILD DEVELOPMENT": "CDEV",
+    "CHINESE": "CHIN",
+    "CINEMA": "CINE",
+    "CLASSICS": "CLAS",
+    "COMMUNICATION (CCN)": "COMM",
+    "COMMUNICATION STUDIES": "CMST",
+    "COMPUTER AIDED DRAFTING": "CAD",
+    "COMPUTER NETWORKING & IT": "CNIT",
+    "COMPUTER SCIENCE": "CS",
+    "DANCE": "DANC",
+    "DESIGN": "DSGN",
+    "DIAGNOSTIC MEDICAL IMAGING": "DMI",
+    "EARTH SCI: GEOGRAPHY": "GEOG",
+    "EARTH SCI: GEOLOGY": "GEOL",
+    "EARTH SCI: OCEANOGRAPHY": "OCAN",
+    "EARTH SCI: PALEONTOLOGY": "PALE",
+    "ECONOMICS": "ECON",
+    "ENERGY": "ENRG",
+    "ENGINEERING": "ENGN",
+    "ENGLISH": "ENGL",
+    "ENGLISH (CCN)": "ENGL",
+    "ENGLISH SECOND LANGUAGE": "ESL",
+    "ENTREPRENEURSHIP": "ENTR",
+    "FINANCE": "FIN",
+    "FIRE SCIENCE": "F SC",
+    "FRENCH": "FREN",
+    "GERMAN": "GERM",
+    "GRAPHIC ARTS": "GRPH",
+    "HEALTH SCIENCE": "HLTH",
+    "HISTORY": "HIST",
+    "HUMANITIES": "HUM",
+    "INTERDISCIPLINARY STUDIES": "IDST",
+    "INTL BUSINESS": "INTR",
+    "ITALIAN": "ITAL",
+    "JAPANESE": "JAPA",
+    "JOURNALISM": "JOUR",
+    "LABOR STUDIES": "LBCS",
+    "LATIN AMER &LATINO/A STUDIES": "LALS",
+    "LEARNING": "LERN",
+    "LESIBIAN, GAY AND TRANSGENDER STUDIES": "LGBT",
+    "LIBRARY INFORMATION SKILLS": "LI S",
+    "MAKR": "MAKR",
+    "MARKETING": "MRKT",
+    "MATHEMATICS": "MATH",
+    "MUSIC": "MUS",
+    "ORNAMENTAL HORTICULTURE": "O H",
+    "PHILIPPINE STUDIES": "PHST",
+    "PHILOSOPHY": "PHIL",
+    "PHOTOGRAPHY": "PHOT",
+    "PHYSICAL EDUCATION": "PE",
+    "PHYSICAL EDUCATION & DANC": "PE",
+    "PHYSICAL EDUCATION ATHLETICS": "PE A",
+    "PHYSICAL SCIENCE": "P SC",
+    "PHYSICS": "PHYC",
+    "PILIPINO": "PIL",
+    "POLITICAL SCIENCE": "POLS",
+    "POLITICAL SCIENCE (CCN)": "POLS",
+    "PSYCHOLOGY": "PSYC",
+    "PSYCHOLOGY (CCN)": "PSYC",
+    "REAL ESTATE": "R E",
+    "RUSSIAN": "RUSS",
+    "SOCIOLOGY": "SOC",
+    "SPANISH": "SPAN",
+    "SPEECH": "SPCH",
+    "SUSTAINABILITY": "SUST",
+    "THEATER ARTS": "TH A",
+    "THEATRE ARTS": "THA",
+    "VISUAL MEDIA DESIGN": "VMD",
+    "WGST": "WGST",
+    "WOMEN'S STUDIES": "WOMN",
+    "WORK EXPERIENCE": "WKEX"
   },
   "transfer_rules": {
     "minimum_grade": "C- or better (or Pass/Credit)",
     "max_transfer_units": 64,
     "pass_no_pass_limit": "No more than 24 units total; no more than 4 units of GE",
     "writing_requirement_cannot_be_pass_no_pass": true,
-    "online_courses": "Online/hybrid foreign language and lab science courses earn elective units only \u2014 do not satisfy GE or language requirements",
+    "online_courses": "Online/hybrid foreign language and lab science courses earn elective units only — do not satisfy GE or language requirements",
     "high_school_courses": "Courses taken before high school graduation cannot fulfill writing requirement, foreign language requirement, or earn USC course equivalence",
     "quarter_conversion": "Divide quarter units by 1.5 to get semester units"
   }
